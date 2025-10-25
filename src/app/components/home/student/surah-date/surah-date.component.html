@@ -1,0 +1,14 @@
+<div class="main-container">
+  <p class="d-flex justify-content-center gap-2 m-0">
+    <span class="fw-bold">السورة:</span>
+    <span>{{ surah()?.nameAr }}</span>
+  </p>
+  <p class="d-flex justify-content-center gap-2 m-0">
+    <span class="fw-bold">تاريخ التسميع:</span>
+    <span>{{ successDate() }}</span>
+  </p>
+  <p class="d-flex justify-content-center gap-2 m-0">
+    <span class="fw-bold">التقييم:</span>
+    <span>{{ getArabicGrade(grade()) }}</span>
+  </p>
+</div>

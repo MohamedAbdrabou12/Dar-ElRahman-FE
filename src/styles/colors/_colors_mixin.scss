@@ -1,0 +1,103 @@
+// Generate color utilities and CSS variables
+@mixin colors-variation($colors) {
+  :root {
+    // Text colors
+    @each $label, $color in $colors {
+      .text-#{$label} {
+        color: #{$color} !important;
+      }
+    }
+
+    // CSS variables
+    @each $label, $color in $colors {
+      --color-#{$label}: #{$color};
+    }
+
+    // Background colors
+    @each $label, $color in $colors {
+      .background-#{$label} {
+        background-color: #{$color} !important;
+      }
+    }
+
+    // Border colors
+    @each $label, $color in $colors {
+      .border-color-#{$label} {
+        border-color: #{$color} !important;
+      }
+    }
+
+    // SVG strokes
+    @each $label, $color in $colors {
+      .stroke-#{$label} {
+        stroke: #{$color} !important;
+      }
+    }
+
+    // SVG fills
+    @each $label, $color in $colors {
+      .fill-#{$label} {
+        fill: #{$color} !important;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// @mixin colors-variation($colors) {
+//   :root {
+//     @each $label, $color in $colors {
+//       .text-#{$label} {
+//         color: #{$color} !important;
+//       }
+//     }
+
+//     @each $label, $color in $colors {
+//       --color-#{$label}: #{$color};
+//     }
+
+//     @each $label, $color in $colors {
+//       .background-#{$label} {
+//         background-color: #{$color} !important;
+//       }
+//     }
+
+//     @each $label, $color in $colors {
+//       .border-color-#{$label} {
+//         border-color: #{$color} !important;
+//       }
+//     }
+
+//     @each $label, $color in $colors {
+//       .stroke-#{$label} {
+//         stroke: #{$color} !important;
+//       }
+//     }
+
+//     @each $label, $color in $colors {
+//       .fill-#{$label} {
+//         fill: #{$color} !important;
+//       }
+//     }
+//   }
+// }

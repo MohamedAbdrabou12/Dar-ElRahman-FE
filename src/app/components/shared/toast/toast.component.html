@@ -1,0 +1,21 @@
+<div
+  *ngIf="visible"
+  class="fixed top-6 left-1/2 transform -translate-x-1/2 z-50"
+>
+  <div
+    class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg border animate-fade-slide-in"
+    [ngClass]="bgColor"
+  >
+    <i class="fa-solid text-xl" [ngClass]="iconClass"></i>
+    <p class="font-medium text-sm">{{ message }}</p>
+    <button
+      class="ml-3 text-gray-400 hover:text-gray-600 transition"
+      (click)="closeToast()"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+</div>
+
+
+

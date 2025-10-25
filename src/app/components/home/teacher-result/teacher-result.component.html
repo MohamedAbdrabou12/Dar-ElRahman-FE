@@ -1,0 +1,359 @@
+@if (rowSelected) {
+  <div class="d-flex justify-content-between details-container">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات المُعلم</h3>
+        <p class="d-flex justify-content-between">
+          <strong>رقم المسلسل:</strong> {{ rowSelected?.teacher?.id }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الاسم رباعي:</strong> {{ rowSelected?.teacher?.fullName }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الرقم القومي:</strong> {{ rowSelected?.teacher?.nationalId }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>رقم الهاتف:</strong> {{ rowSelected?.teacher?.phoneNumber }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>البريد الالكترونى:</strong> {{ rowSelected?.teacher?.emailAddress }}
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات التسميع والمراجعه</h3>
+        <p class="card-text d-flex justify-content-between">
+          <strong>طلاب التسميع:</strong> {{ rowSelected.memorizationCount }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>الناجحين فى التسميع:</strong> {{ rowSelected.memorizationSuccessCount }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>إجمالى طلاب التسميع:</strong> {{ rowSelected.memorizationStudentCount }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>طلاب المراجعة:</strong> {{ rowSelected.revisionCount }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>الناجحين فى المراجعة:</strong> {{ rowSelected.revisionSuccessCount }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>إجمالى طلاب المراجعة:</strong> {{ rowSelected.revisionStudentCount }}
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات النجاح</h3>
+        <p class="card-text d-flex justify-content-between">
+          <strong>الناجحين فى السؤال الأول:</strong> {{ rowSelected.firstQuestionSuccessCount }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الناجحين فى السؤال الثانى:</strong>
+          {{ rowSelected.secondQuestionSuccessCount }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>الناجحين فى السؤال الثالث:</strong>
+          {{ rowSelected.thirdQuestionSuccessCount }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>نسبة النجاح فى التسميع:</strong>
+          {{ rowSelected.memorizationPercentage }}%
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>نسبة النجاح فى المراجعة:</strong>
+          {{ rowSelected.revisionPercentage }}%
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>إجمالى نسبة النجاح:</strong>
+          {{ rowSelected.successPercentage }}%
+        </p>
+      </div>
+    </div>
+  </div>
+}
+<!-- Button to trigger the modal -->
+<button
+  type="button"
+  class="details-button add-button butn"
+  data-bs-toggle="modal"
+  data-bs-target="#teacherResultModal"
+  (click)="handleAddClick()"
+>
+  اضافة نتيجة مُعَلِم جديد
+</button>
+
+<!-- Modal -->
+<div
+  #teacherResultModal
+  class="modal fade"
+  id="teacherResultModal"
+  tabindex="-1"
+  aria-labelledby="teacherResultModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error.error.errorDescription }}
+        </div>
+        <h5 class="modal-title" id="teacherResultModalLabel">بيانات المُعلم</h5>
+      </div>
+      <div class="modal-body">
+        <form
+          *ngIf="teacherResultForm"
+          [formGroup]="teacherResultForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="currentSurah">المُعلم:</label>
+            <select
+              class="form-control"
+              id="teacher"
+              formControlName="teacher"
+              [compareWith]="compareObjects"
+            >
+              <option *ngFor="let teacher of teachers" [ngValue]="teacher">{{ teacher.fullName }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="resultDate">تاريخ السؤال:</label>
+            <input
+              id="resultDate"
+              formControlName="resultDate"
+              class="form-control"
+              type="date"
+            />
+            <div
+              *ngIf="
+                teacherResultForm.get('resultDate')?.invalid &&
+                teacherResultForm.get('resultDate')?.touched
+              "
+              class="alert alert-danger"
+            >
+              <small *ngIf="teacherResultForm.get('resultDate')?.errors?.['required']"
+              >يجب تاريخ النتيجة</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="memorizationCount">عدد طلاب التسميع:</label>
+            <input
+              class="form-control"
+              id="memorizationCount"
+              formControlName="memorizationCount"
+              type="number"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                teacherResultForm.get('memorizationCount')?.invalid &&
+                teacherResultForm.get('memorizationCount')?.touched
+              "
+            >
+              <small *ngIf="teacherResultForm.get('memorizationCount')?.errors?.['pattern']"
+              >يجب عدد طلاب التسميع</small
+              >
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="memorizationSuccessCount">عدد الناجحين فى التسميع</label>
+            <input
+              class="form-control"
+              id="memorizationSuccessCount"
+              formControlName="memorizationSuccessCount"
+              type="number"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                teacherResultForm.get('memorizationSuccessCount')?.invalid &&
+                teacherResultForm.get('memorizationSuccessCount')?.touched
+              "
+            >
+              <small *ngIf="teacherResultForm.get('memorizationSuccessCount')?.errors?.['pattern']"
+              >يجب ادخال عدد الناجحين فى التسيمع</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="memorizationStudentCount"
+            >إجمالى طلاب التسميع:</label
+            >
+            <input
+              class="form-control"
+              id="memorizationStudentCount"
+              formControlName="memorizationStudentCount"
+              type="number"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                teacherResultForm.get('memorizationStudentCount')?.invalid &&
+                teacherResultForm.get('memorizationStudentCount')?.touched
+              "
+            >
+              <small
+                *ngIf="teacherResultForm.get('memorizationStudentCount')?.errors?.['pattern']"
+              >يجب أدخال عدد طلاب التسميع</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="revisionCount">عدد طلاب المراجعة</label>
+            <input
+              class="form-control"
+              id="revisionCount"
+              formControlName="revisionCount"
+              type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="revisionSuccessCount">عدد الناجحين فى المراجعة:</label>
+            <input
+              class="form-control"
+              id="revisionSuccessCount"
+              formControlName="revisionSuccessCount"
+              type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="revisionStudentCount">إجمالى طلاب المراجعة:</label>
+            <input
+              class="form-control"
+              id="revisionStudentCount"
+              formControlName="revisionStudentCount"
+              type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="firstQuestionSuccessCount">عدد الناجحين فى السؤال الأول:</label>
+            <input
+              class="form-control"
+              id="firstQuestionSuccessCount"
+              formControlName="firstQuestionSuccessCount"
+              type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="secondQuestionSuccessCount">عدد الناجحين فى السؤال الثانى:</label>
+            <input
+              id="secondQuestionSuccessCount"
+              formControlName="secondQuestionSuccessCount"
+              class="form-control"
+              type="number"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="thirdQuestionSuccessCount">عدد الناجحين فى السؤال الثالث:</label>
+            <input
+              class="form-control"
+              id="thirdQuestionSuccessCount"
+              formControlName="thirdQuestionSuccessCount"
+              type="number"
+            />
+          </div>
+
+          <div class="mb-3" class="modal-footer d-flex justify-content-end">
+            <div>
+              <button
+                *ngIf="buttonName === 'إضافة'"
+                type="submit"
+                [disabled]="teacherResultForm.invalid"
+                class="details-button butn"
+              >
+                {{ buttonName }}
+              </button>
+              <button
+                *ngIf="buttonName === 'تعديل'"
+                type="submit"
+                type="submit"
+                class="details-button butn"
+              >
+                {{ buttonName }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="danger-button butn"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div *ngIf="deleteError" class="alert alert-danger">
+    {{ deleteError }}
+  </div>
+  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي نتائج للمعلمين\للمعلمات حتى الآن. </h2>
+  <table class="custom-table" *ngIf="data && data!.length > 0">
+    <thead class="thead-dark">
+    <tr>
+      <th>إسم المُعلم رباعي</th>
+      <th>الناجحين فى التسميع</th>
+      <th>الناجحين فى المراجعة</th>
+      <th>نسبة النجاح فى التسميع</th>
+      <th>نسبة النجاح فى المراجعة</th>
+      <th>إجمالى نسبة النجاح</th>
+      <th>العمليات</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (row of data; track row.id; ) {
+        <tr>
+          <td>{{ row?.teacher?.fullName }}</td>
+          <td>{{ row.memorizationSuccessCount }}</td>
+          <td>{{ row.revisionSuccessCount }}</td>
+          <td>{{ row.memorizationPercentage }}%</td>
+          <td>{{ row.revisionPercentage }}%</td>
+          <td>{{ row.successPercentage }}%</td>
+          <td>
+            <div class="d-flex justify-content-between">
+              <button class="btn-sm details-button" (click)="selectRow(row)">
+                <i class="fa fa-eye"></i>
+                <span>البيانات</span>
+              </button>
+
+              <button
+                class="btn-sm edit-button"
+                (click)="editTeacherResult(row)"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#teacherResultModal"
+              >
+                <i class="fa fa-eye"></i>
+                <span>تعديل</span>
+              </button>
+
+              <button class="btn-sm delete-button" (click)="deleteTeacherResult(row)">
+                <i class="fa fa-eye"></i>
+                <span>حذف</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

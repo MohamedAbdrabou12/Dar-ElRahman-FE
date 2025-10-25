@@ -1,0 +1,16 @@
+<div class="container-fluid p-0">
+  <app-header />
+  <div class="d-flex gap-4">
+    <div>
+      <app-sidebar />
+    </div>
+    <div class="w-100 px-2">
+      <router-outlet />
+    </div>
+  </div>
+</div>
+
+
+@if(loadingService.isLoading){
+   <app-loading />
+}

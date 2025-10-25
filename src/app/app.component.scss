@@ -1,0 +1,11 @@
+/* styles.css */
+.main-layout {
+  display: flex;
+  flex-direction: row-reverse; /* Place the sidebar on the right */
+}
+
+.content {
+  width: 80%;
+  padding: 20px;
+  text-align: right;
+}

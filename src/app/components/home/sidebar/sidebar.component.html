@@ -1,0 +1,103 @@
+<!-- sidebar.component.html -->
+<div class="sidebar" [class.minimized]="isMinimized">
+  <div class="logo">
+    <img src="assets/imgs/logo.png" alt="Logo" class="logo"/>
+    <h2 *ngIf="!isMinimized">دار عبد الرحمن</h2>
+  </div>
+  <ul class="menu">
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <a [routerLink]="[AppRoutes.STUDENT]">
+        <li *ngIf="isMinimized" class="fas fa-user-graduate" matTooltip="الطلبة"></li>
+        <span *ngIf="!isMinimized">الطلبة</span>
+      </a>
+    </li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <a [routerLink]="[AppRoutes.RING]">
+        <li *ngIf="isMinimized" class="fas fa-mosque" matTooltip="الحلقات"></li>
+        <span *ngIf="!isMinimized">الحلقات</span>
+      </a>
+    </li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <a [routerLink]="[AppRoutes.TEACHER]">
+        <i *ngIf="isMinimized" class="fas fa-chalkboard-teacher" matTooltip="المُعلِمون"></i>
+        <span *ngIf="!isMinimized">المُعلِمون</span>
+      </a>
+    </li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <a [routerLink]="[AppRoutes.ABSENCE]">
+        <i *ngIf="isMinimized" class="fas fa-user-check" matTooltip="الغياب"></i>
+        <span *ngIf="!isMinimized">الغياب</span>
+      </a>
+    </li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <a [routerLink]="[AppRoutes.QUESTIONNAIRE]">
+        <i *ngIf="isMinimized" class="fas fa-quran" matTooltip="أسئلة القرآن"></i>
+        <span *ngIf="!isMinimized">أسئلة القرآن</span>
+      </a>
+    </li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <a [routerLink]="[AppRoutes.STUDENT_QUESTIONNAIRE]">
+        <i *ngIf="isMinimized" class="fas fa-user-graduate" matTooltip="أسئلة الطلبة"></i>
+        <span *ngIf="!isMinimized">أسئلة الطلبة</span>
+      </a>
+    </li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    ><a
+      [routerLink]="[AppRoutes.TEACHER_RESULT]">
+      <i *ngIf="isMinimized" class="fas fa-chart-line" matTooltip="نتائج عمل المُعَلِمين"></i>
+      <span *ngIf="!isMinimized">نتائج عمل المُعَلِمين</span>
+    </a></li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    ><a
+      [routerLink]="[AppRoutes.GRADUATES]">
+      <i *ngIf="isMinimized" class="fas fa-graduation-cap" matTooltip="قائمة الخريجين (النور)"></i>
+      <span *ngIf="!isMinimized">قائمة الخريجين (النور)</span>
+    </a></li>
+    <li routerLinkActive="activeLink"
+        [routerLinkActiveOptions]="{ exact: true }"
+    ><a [routerLink]="[AppRoutes.TUITIONS]">
+      <i *ngIf="isMinimized" class="fas fa-money-bill-wave" matTooltip="الرسوم الشهرية"></i>
+      <span *ngIf="!isMinimized">الرسوم الشهرية</span>
+    </a></li>
+    <li
+      routerLinkActive="activeLink"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <a href="#">
+        <i *ngIf="isMinimized" class="fab fa-leanpub" matTooltip="مسابقات الأزهر"></i>
+        <span *ngIf="!isMinimized">مسابقات الأزهر</span>
+      </a>
+    </li>
+  </ul>
+  <div class="logout">
+    <a href="#" (click)="authService.logout()">
+      <i *ngIf="isMinimized" class="fas fa-sign-out-alt" matTooltip="تسجيل الخروج"></i>
+      <span *ngIf="!isMinimized">تسجيل الخروج</span>
+    </a>
+  </div>
+  <div class="toggle-btn" (click)="toggleSidebar()">
+    <i class="fas fa-chevron-right"></i>
+  </div>
+</div>

@@ -1,0 +1,121 @@
+@if(rowSelected){
+<div class="d-flex justify-content-between details-container">
+  <!-- User Details Section -->
+
+  <!-- user-details.component.html -->
+
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">بيانات الطالب</h3>
+      <p class="d-flex justify-content-between">
+        <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>الاسم رباعي:</strong> {{ rowSelected.fullName }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>الرقم القومي:</strong> {{ rowSelected.nationalId }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>الحالة:</strong>
+        <span
+          class="green-status"
+          [ngClass]="{
+            'green-status': rowSelected.status === 'connected',
+            'green-danger': rowSelected.status === 'stopped'
+          }"
+          >{{ rowSelected.status === "stopped" ? "منقطع" : "متصل" }}</span
+        >
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">بيانات التواصل</h3>
+      <p class="card-text d-flex justify-content-between">
+        <strong>تليفون الأب:</strong> {{ rowSelected.fatherPhoneNumber }}
+      </p>
+      <p class="card-text d-flex justify-content-between">
+        <strong>تليفون الأم:</strong> {{ rowSelected.motherPhoneNumber }}
+      </p>
+      <p class="card-text d-flex justify-content-between">
+        <strong>العنوان:</strong>{{ rowSelected.address }}
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">بيانات أخرى</h3>
+      <p class="card-text d-flex justify-content-between">
+        <strong>الحالة الاجتماعية:</strong> {{ rowSelected.maritalStatus }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>الفصل:</strong> {{ rowSelected.ring.teacherName }}
+      </p>
+      <p class="card-text d-flex justify-content-between">
+        <strong>تاريخ الالتحاق:</strong> {{ rowSelected.joiningDate }}
+      </p>
+      <p class="card-text d-flex justify-content-between">
+        <strong>تاريخ الميلاد:</strong>{{ rowSelected.birthDate }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>الفترة:</strong> {{ rowSelected.ring.period }}
+      </p>
+    </div>
+  </div>
+</div>
+}
+
+<div class="table-container">
+  <table class="custom-table" style="text-align: center">
+    <thead class="thead-dark">
+      <tr>
+        <th>رقم المسلسل</th>
+        <th>الاسم رباعي</th>
+        <th>الرقم القومي</th>
+        <th>الحالة</th>
+        <th>الفترة</th>
+        <th>الفصل</th>
+        <th>العمليات</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(row of data(); track row.id;){
+      <tr>
+        <td>{{ row.id }}</td>
+        <td>{{ row.fullName }}</td>
+        <td>{{ row.nationalId }}</td>
+        <td>
+          <span
+            class="badge"
+            [ngClass]="{
+              'green-status': row.status == 'connected',
+              'danger-status': row.status === 'stopped'
+            }"
+            >{{ row.status === "stopped" ? "منقطع" : "متصل" }}</span
+          >
+        </td>
+        <td>{{ row.ring.period }}</td>
+        <td>{{ row.ring.teacherName }}</td>
+        <td>
+          <div class="d-flex justify-content-between">
+            <button class="btn-sm details-button" (click)="selectRow(row)">
+              <i class="fa fa-eye"></i>
+              <span>البيانات</span>
+            </button>
+
+            <button
+              class="btn-sm edit-button"
+            >
+              <i class="fa fa-eye"></i>
+              <span>سؤال القرآن</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

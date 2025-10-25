@@ -1,0 +1,135 @@
+<!--
+  Login Component: Refactored to use Tailwind CSS and project's custom variables/classes
+  (like .card and .btn-primary) for visual consistency with the Quranic Theme (Green).
+-->
+<div class="flex flex-col items-center justify-center min-h-screen p-4 rtl">
+
+  <!-- Login Card Container - Using the global .card class -->
+  <div class="w-full max-w-sm card fade-in-up">
+
+    <div class="flex flex-col items-center mb-6">
+      <!-- Logo Container (Using the provided styles/colors) -->
+      <div class="w-16 h-16 mb-4 rounded-full overflow-hidden border-2 border-[var(--color-primary)] shadow-lg">
+        <!-- Replace with your logo path or use a placeholder icon -->
+        <img src="assets/imgs/logo.png" alt="شعار دار الرحمن" class="w-full h-full object-cover"/>
+      </div>
+
+      <!-- Title & Subtitle -->
+      <h1 class="text-2xl font-extrabold text-[var(--color-secondary)] mb-1">تسجيل الدخول</h1>
+      <p class="text-sm text-gray-500">يرجى إدخال اسم المستخدم وكلمة مرور للمتابعة</p>
+    </div>
+
+    <!-- Login Form -->
+    <form (ngSubmit)="onSubmit()" class="space-y-5">
+
+      <!-- Username / Email Group -->
+      <div>
+        <!-- Using the global label style from styles.scss -->
+        <label for="username">اسم المستخدم / البريد الإلكتروني</label>
+        <input
+          type="text"
+          id="username"
+          [(ngModel)]="credentials.email"
+          name="username"
+          required
+          placeholder="أدخل اسم المستخدم أو البريد"
+        />
+      </div>
+
+      <!-- Password Group -->
+      <div>
+        <label for="password">كلمة المرور</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="credentials.password"
+          name="password"
+          required
+          placeholder="أدخل كلمة المرور"
+        />
+      </div>
+
+      <!-- Submit Button - Using the global .btn-primary class (Green) -->
+      <button type="submit" class="btn btn-primary w-full py-3 text-lg mt-6 shadow-xl">
+        تسجيل الدخول
+      </button>
+    </form>
+
+    <!-- Footer Links -->
+    <div class="mt-6 flex flex-col items-center space-y-3 text-center">
+
+      <!-- Forgot Password -->
+      <p class="text-sm text-[var(--color-primary)] cursor-pointer hover:underline hover:text-[var(--color-hover)] transition duration-150 font-medium">
+        نسيت كلمة المرور؟
+      </p>
+
+      <!-- Registration Link -->
+      <p class="text-sm text-[var(--color-text)]">
+        ليس لديك حساب؟
+        <a [routerLink]="['/', AppRoutes.REGISTRATION]" class="text-[var(--color-primary)] font-semibold hover:text-[var(--color-primary)] hover:underline mr-1 transition duration-150">
+          قم بالتسجيل
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="login-container">
+  <div class="logo">
+    <img src="assets/imgs/logo.png" alt="Logo" class="logo"/>
+
+  </div>
+  <h1>تسجيل الدخول</h1>
+  <p class="subtitle">يرجى إدخال اسم المستخدم وكلمة مرور</p>
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">اسم المستخدم</label>
+      <input
+        type="text"
+        id="username"
+        [(ngModel)]="credentials.email"
+        name="username"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="password">كلمة المرور</label>
+      <input
+        type="password"
+        id="password"
+        [(ngModel)]="credentials.password"
+        name="password"
+        required
+      />
+    </div>
+    <button type="submit" class="submit-button">تسجيل الدخول</button>
+  </form>
+  <p class="forgot-password">نسيت كلمة المرور</p>
+  <p class="register"> ليس لديك حساب؟<a [routerLink]="['/', AppRoutes.REGISTRATION]" class="register-link"> قم بالتسجيل</a></p>
+</div> -->

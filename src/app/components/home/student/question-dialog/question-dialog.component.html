@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col-12 d-flex justify-content-between align-items-center title">
+    <button
+      class="close-btn d-flex justify-content-center align-items-center"
+      mat-button
+      mat-dialog-close
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <p class="fw-bold text-white m-0 p-2">سور القرآن</p>
+  </div>
+  <div class="col-12">
+    <h2 *ngIf="!studentSurahs || studentSurahs!.length == 0">لم يتم الأختبار فى أى سورة حتى الآن. </h2>
+    <mat-dialog-content *ngIf="studentSurahs">
+      <div class="row">
+        @for(completedSurah of studentSurahs; track completedSurah.surah){
+        <div class="col-3 mb-2">
+          <app-surah-date
+            [surah]="completedSurah.surah"
+            [successDate]="completedSurah.successDate"
+            [grade]="completedSurah.grade"
+          />
+        </div>
+        }
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions class="gap-3">
+      <button
+        class="close-btn fw-bold d-flex justify-content-center align-items-center py-2 px-4"
+        mat-button
+        mat-dialog-close
+      >
+        إغلاق
+      </button>
+    </mat-dialog-actions>
+  </div>
+</div>

@@ -1,0 +1,375 @@
+/* Global styles using TailwindCSS */
+/* Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom font */
+@import "./styles/fonts/cairo.scss";
+
+/* Color system */
+@import "./styles/colors/colors_mixin";
+@import "./styles/colors/color_variables";
+
+/* RTL utility */
+@layer utilities {
+  .rtl {
+    direction: rtl;
+  }
+}
+
+/* Body */
+body {
+  @apply rtl text-right font-cairo bg-background text-text m-0 p-0 leading-relaxed antialiased transition-colors duration-300;
+}
+
+/* Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in-up {
+  animation: fade-in-up 0.6s ease-out;
+}
+.fade-in-right {
+  animation: fade-in-right 0.6s ease-out;
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus:outline-none;
+}
+
+.btn-primary {
+  @apply bg-primary text-white hover:bg-hover shadow-md hover:shadow-lg px-6 py-2;
+}
+
+.btn-secondary {
+  @apply border border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white px-6 py-2;
+}
+
+/* Snackbar */
+.snackbar {
+  @apply text-white rounded-md px-4 py-3 shadow-md text-sm font-medium;
+}
+
+.snackbar-success {
+  @apply bg-success;
+}
+.snackbar-warning {
+  @apply bg-warning;
+}
+.snackbar-error {
+  @apply bg-error;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Utility components */
+.card {
+  @apply bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 mb-5 transition-colors duration-300;
+}
+
+.table {
+  @apply mt-5 w-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden;
+}
+
+.list-group-item {
+  @apply text-right border-b border-gray-200 dark:border-gray-700;
+}
+
+.pagination {
+  @apply mt-5 flex justify-center gap-2;
+}
+
+/* Form fields */
+input,
+select,
+textarea {
+  @apply w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-2 bg-white dark:bg-neutral-900 text-text focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200;
+}
+
+label {
+  @apply block mb-1 text-sm font-semibold text-secondary dark:text-success;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /*  Import Tailwind Layers */
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
+
+
+// /* Import Custom Font */
+// @import "./styles/fonts/cairo.scss";
+
+// /* Import Colors System */
+// @import "./styles/colors/colors_mixin";
+// @import "./styles/colors/color_variables";
+
+// /* 4️⃣ RTL Utility */
+// @layer utilities {
+//   .rtl {
+//     direction: rtl;
+//   }
+// }
+
+// /* ===========================
+//     Global Body
+//    =========================== */
+// body {
+//   @apply rtl text-right font-cairo bg-background text-text m-0 p-0 leading-relaxed antialiased transition-colors duration-300;
+// }
+
+// /* ===========================
+//    Animations
+//    =========================== */
+// @keyframes fade-in-up {
+//   from {
+//     opacity: 0;
+//     transform: translateY(20px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0);
+//   }
+// }
+
+// @keyframes fade-in-right {
+//   from {
+//     opacity: 0;
+//     transform: translateX(20px);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateX(0);
+//   }
+// }
+
+// .fade-in-up {
+//   animation: fade-in-up 0.6s ease-out;
+// }
+// .fade-in-right {
+//   animation: fade-in-right 0.6s ease-out;
+// }
+
+// /* ===========================
+//     Buttons
+//    =========================== */
+// .btn {
+//   @apply inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus:outline-none;
+// }
+
+// .btn-primary {
+//   @apply bg-primary text-white hover:bg-hover shadow-md hover:shadow-lg px-6 py-2;
+// }
+
+// .btn-secondary {
+//   @apply border border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white px-6 py-2;
+// }
+
+// /* ===========================
+//     Snackbar Variants
+//    =========================== */
+// .snackbar {
+//   @apply text-white rounded-md px-4 py-3 shadow-md text-sm font-medium;
+// }
+
+// .snackbar-success {
+//   @apply bg-success;
+// }
+// .snackbar-warning {
+//   @apply bg-warning;
+// }
+// .snackbar-error {
+//   @apply bg-error;
+// }
+
+// /* ===========================
+//     Scrollbar
+//    =========================== */
+// ::-webkit-scrollbar {
+//   width: 6px;
+// }
+// ::-webkit-scrollbar-track {
+//   background: transparent;
+// }
+// ::-webkit-scrollbar-thumb {
+//   background: #cbd5e1;
+//   border-radius: 3px;
+// }
+// ::-webkit-scrollbar-thumb:hover {
+//   background: #94a3b8;
+// }
+
+// /* 🌙 Dark Mode Scrollbar */
+// .dark ::-webkit-scrollbar-thumb {
+//   background: #475569;
+// }
+// .dark ::-webkit-scrollbar-thumb:hover {
+//   background: #64748b;
+// }
+
+// /* ===========================
+//     Utility Components
+//    =========================== */
+// .card {
+//   @apply bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 mb-5 transition-colors duration-300;
+// }
+
+// .table {
+//   @apply mt-5 w-full border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden;
+// }
+
+// .list-group-item {
+//   @apply text-right border-b border-gray-200 dark:border-gray-700;
+// }
+
+// .pagination {
+//   @apply mt-5 flex justify-center gap-2;
+// }
+
+// /* ===========================
+//    🪄 Form Fields
+//    =========================== */
+// input, select, textarea {
+//   @apply w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-2 bg-white dark:bg-neutral-900 text-text focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200;
+// }
+
+// label {
+//   @apply block mb-1 text-sm font-semibold text-secondary dark:text-success;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /* You can add global styles to this file, and also import other style files */
+// @import "bootstrap/dist/css/bootstrap.css";
+
+
+// //Colors
+// @import "styles/colors/color_variables";
+// @import "styles/colors/colors_mixin";
+
+// // Cairo Font
+// @import "styles/fonts/cairo.scss";
+
+// // Snackbars
+// @import "styles/snackbars/snackbar.scss";
+
+// :root {
+//   --font-family: Cairo;
+//   --mat-sys-surface-container-high: #f8f9fa;
+//   --mat-sys-surface-container: #f8f9fa;
+//   --mat-sys-on-surface: black;
+// }
+
+
+// body {
+//   direction: rtl;
+//   text-align: right;
+//   font-family: var(--font-family);
+//   background-color: #f8f9fa;
+// }
+
+// /* styles.css */
+// .card {
+//   margin-bottom: 20px;
+// }
+
+// .table {
+//   margin-top: 20px;
+// }
+
+// .list-group-item {
+//   text-align: right;
+// }
+
+// .pagination {
+//   margin-top: 20px;
+// }

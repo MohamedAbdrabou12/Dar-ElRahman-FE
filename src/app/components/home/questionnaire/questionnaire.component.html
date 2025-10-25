@@ -1,0 +1,242 @@
+@if (rowSelected) {
+  <div class="d-flex justify-content-between details-container">
+    <!-- Questionnaire Details Section -->
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات السؤال</h3>
+        <p class="d-flex justify-content-between">
+          <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>نوع
+            الحفظ:</strong> {{ rowSelected.questionnaireType === QuestionnaireType.memorization ? 'تسميع' : 'مراجعة' }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>نوع
+            السؤال:</strong> {{ rowSelected.questionType === QuestionType.first ? 'أول' : (rowSelected.questionType === QuestionType.second ? 'ثالث' : 'ثانى') }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>تاريخ السؤال:</strong> {{ rowSelected.questionDate | date: 'yyyy-MM-dd' }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>السورة الحالية:</strong> {{ rowSelected.currentSurah?.nameAr }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الحلقة:</strong> {{ rowSelected.ring?.name }}
+        </p>
+      </div>
+    </div>
+    <div class="card" *ngIf="rowSelected.questionnaireResult">
+      <div class="card-body">
+        <h3 class="card-title">نتيجة السؤال</h3>
+        <p class="d-flex justify-content-between">
+          <strong>عدد النقاط:</strong>
+          {{ rowSelected.questionnaireResult.questionPoints }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>عدد الناجحين:</strong>
+          {{ rowSelected.questionnaireResult.successCount }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>عدد الراسبين:</strong>
+          {{ rowSelected.questionnaireResult.failedCount }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>عدد الغائبين:</strong>
+          {{ rowSelected.questionnaireResult.absenceCount }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>نسبة النجاح:</strong>
+          {{ rowSelected.questionnaireType === QuestionnaireType.memorization ? rowSelected.questionnaireResult.successPercentage : rowSelected.questionnaireResult.revisionPercentage }} %
+        </p>
+      </div>
+    </div>
+  </div>
+}
+<!-- Button to trigger the modal -->
+<button
+  type="button"
+  class="details-button add-button btn"
+  data-bs-toggle="modal"
+  data-bs-target="#questionnaireModal"
+  (click)="handleAddClick()"
+>
+  اضافة سؤال جديد
+</button>
+
+<!-- Modal -->
+<div
+  #questionnaireModal
+  class="modal fade"
+  id="questionnaireModal"
+  tabindex="-1"
+  aria-labelledby="questionnaireModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error.error.errorDescription }}
+        </div>
+        <h5 class="modal-title" id="questionnaireModalLabel">بيانات السؤال</h5>
+      </div>
+      <div class="modal-body">
+        <form
+          *ngIf="questionnaireForm"
+          [formGroup]="questionnaireForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="questionnaireType">نوع الحفظ:</label>
+            <select
+              class="form-control"
+              id="questionnaireType"
+              formControlName="questionnaireType"
+            >
+              <option [ngValue]="QuestionnaireType.memorization">تسميع</option>
+              <option [ngValue]="QuestionnaireType.revision">مراجعة</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="questionType">نوع السؤال:</label>
+            <select
+              class="form-control"
+              id="questionType"
+              formControlName="questionType"
+            >
+              <option [ngValue]="QuestionType.first">أول</option>
+              <option [ngValue]="QuestionType.second">ثانى</option>
+              <option [ngValue]="QuestionType.third">ثالث</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="questionDate">تاريخ السؤال:</label>
+            <input
+              id="questionDate"
+              formControlName="questionDate"
+              class="form-control"
+              type="date"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="currentSurah">السورة الحالية:</label>
+            <select
+              class="form-control"
+              id="currentSurah"
+              formControlName="currentSurah"
+              [compareWith]="compareObjects"
+            >
+              <option *ngFor="let surah of surahs" [ngValue]="surah">{{ surah.nameAr }}</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="ring">الحلقة:</label>
+            <select
+              class="form-control"
+              id="ring"
+              formControlName="ring"
+              [compareWith]="compareObjects"
+            >
+              <option *ngFor="let ring of rings" [ngValue]="ring">{{ ring.name }}</option>
+            </select>
+          </div>
+
+          <div class="mb-3 modal-footer d-flex justify-content-end">
+            <div>
+              <button
+                *ngIf="buttonName === 'إضافة'"
+                type="submit"
+                [disabled]="questionnaireForm.invalid"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+              <button
+                *ngIf="buttonName === 'تعديل'"
+                type="submit"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="danger-button btn"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div *ngIf="deleteError" class="alert alert-danger">
+    {{ deleteError }}
+  </div>
+  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي أسئلة حتى الآن. </h2>
+  <table class="custom-table" *ngIf="data && data!.length > 0">
+    <thead class="thead-dark">
+    <tr>
+      <th>نوع الحفظ</th>
+      <th>نوع السؤال</th>
+      <th>تاريخ السؤال</th>
+      <th>السورة الحالية</th>
+      <th>الحلقة</th>
+      <th>العمليات</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (row of data; track row.id; ) {
+        <tr>
+          <td>{{ row.questionnaireType === QuestionnaireType.memorization ? 'تسميع' : 'مراجعة' }}</td>
+          <td>{{ row.questionType === QuestionType.first ? 'أول' : (row.questionType === QuestionType.second ? 'ثالث' : 'ثانى') }}</td>
+          <td>{{ row.questionDate | date: 'yyyy-MM-dd' }}</td>
+          <td>{{ row.currentSurah?.nameAr }}</td>
+          <td>{{ row.ring?.name }}</td>
+          <td>
+            <div class="d-flex justify-content-between">
+              <button class="btn-sm details-button" (click)="selectRow(row)">
+                <i class="fa fa-eye"></i>
+                <span>البيانات</span>
+              </button>
+
+              <button
+                class="btn-sm edit-button"
+                (click)="editQuestionnaire(row)"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#questionnaireModal"
+              >
+                <i class="fa fa-edit"></i>
+                <span>تعديل</span>
+              </button>
+
+              <button class="btn-sm mark-button" type="button" (click)="markStudentQuestionnaireAsDone(row)"
+                      [disabled]="row.done">
+                <i class="fa fa-check"></i>
+                <span>أخْتُبِر</span>
+              </button>
+
+              <button class="btn-sm danger-button" (click)="deleteQuestionnaire(row)">
+                <i class="fa fa-trash"></i>
+                <span>حذف</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

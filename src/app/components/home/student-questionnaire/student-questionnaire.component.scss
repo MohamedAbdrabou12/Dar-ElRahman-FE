@@ -1,0 +1,147 @@
+.details-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  padding: 1.25rem;
+  width: 32%; // Adjusted for three cards
+
+  .card-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.green-status {
+  color: green;
+  font-weight: bold;
+}
+
+.green-danger {
+  color: red;
+  font-weight: bold;
+}
+
+.btn {
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 5px;
+}
+
+.details-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.add-button {
+  margin-bottom: 20px;
+}
+
+.edit-button {
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+
+  &:hover {
+    background-color: #e0a800;
+  }
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #c82333;
+  }
+}
+
+.danger-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #5a6268;
+  }
+}
+
+.table-container {
+  margin-top: 20px;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  thead.thead-dark th {
+    background-color: #343a40;
+    color: white;
+    padding: 12px;
+    text-align: right;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #dee2e6;
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
+  }
+
+  td, th {
+    padding: 12px;
+    text-align: right;
+    vertical-align: middle;
+  }
+
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 14px;
+    margin: 0 2px;
+    display: inline-flex;
+    align-items: center;
+
+    i {
+      margin-left: 5px;
+    }
+  }
+}
+
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  .modal-title {
+    font-weight: 500;
+  }
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+.filter-form {
+  margin-bottom: 20px;
+}

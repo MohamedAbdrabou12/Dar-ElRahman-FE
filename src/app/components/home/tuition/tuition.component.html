@@ -1,0 +1,190 @@
+@if (rowSelected) {
+  <div class="d-flex justify-content-between details-container">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات الطالب</h3>
+        <p class="d-flex justify-content-between">
+          <strong>رقم المسلسل:</strong> {{ rowSelected?.student?.id }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الاسم رباعي:</strong> {{ rowSelected?.student?.fullName }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الرقم القومي:</strong> {{ rowSelected?.student?.nationalId }}
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات الدفع</h3>
+        <p class="d-flex justify-content-between">
+          <strong>المبلغ المدفوع:</strong>
+          {{ rowSelected.tuitionAmount }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>تاريخ الدفع:</strong>
+          {{ rowSelected.tuitionDate | date: 'yyyy-MM-dd' }}
+        </p>
+      </div>
+    </div>
+  </div>
+}
+<!-- Button to trigger the modal -->
+<button
+  type="button"
+  class="details-button add-button btn"
+  data-bs-toggle="modal"
+  data-bs-target="#tuitionModal"
+  (click)="handleAddClick()"
+>
+  اضافة رسوم جديد
+</button>
+
+<!-- Modal -->
+<div
+  #tuitionModal
+  class="modal fade"
+  id="tuitionModal"
+  tabindex="-1"
+  aria-labelledby="tuitionModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error.error.errorDescription }}
+        </div>
+        <h5 class="modal-title" id="tuitionModalLabel">بيانات الدفع</h5>
+      </div>
+      <div class="modal-body">
+        <form
+          *ngIf="tuitionForm"
+          [formGroup]="tuitionForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="studentId">الطالب:</label>
+            <select
+              class="form-control"
+              id="studentId"
+              formControlName="studentId"
+              [compareWith]="compareObjects">
+              <option *ngFor="let student of students" [ngValue]="student.id">{{ student.fullName }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="name">المبلغ المدفوع:</label>
+            <input
+              id="tuitionAmount"
+              formControlName="tuitionAmount"
+              class="form-control"
+              type="number"
+              step="0.01"
+              min="0"
+            />
+            <div
+              *ngIf="
+                tuitionForm.get('tuitionAmount')?.invalid &&
+                tuitionForm.get('tuitionAmount')?.touched
+              "
+              class="alert alert-danger"
+            >
+              <small *ngIf="tuitionForm.get('tuitionAmount')?.errors?.['required']"
+              >يجب ادخال المبلغ المدفوع</small
+              >
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="tuitionDate">تاريخ الدفع:</label>
+            <input
+              id="tuitionDate"
+              formControlName="tuitionDate"
+              class="form-control"
+              type="date"
+            />
+          </div>
+          <div class="mb-3 modal-footer d-flex justify-content-end">
+            <div>
+              <button
+                *ngIf="buttonName === 'إضافة'"
+                type="submit"
+                [disabled]="tuitionForm.invalid"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+              <button
+                *ngIf="buttonName === 'تعديل'"
+                type="submit"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="danger-button btn"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div *ngIf="deleteError" class="alert alert-danger">
+    {{ deleteError }}
+  </div>
+  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي رسوم حتى الآن. </h2>
+  <table class="custom-table" *ngIf="data && data!.length > 0">
+    <thead class="thead-dark">
+    <tr>
+      <th>أسم الطالب</th>
+      <th>الرقم القومى</th>
+      <th>المبلغ المدفوع</th>
+      <th>تاريخ الدفع</th>
+      <th>العمليات</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (row of data; track row.id; ) {
+        <tr>
+          <td>{{ row.student?.fullName }}</td>
+          <td>{{ row.student?.nationalId }}</td>
+          <td>{{ row.tuitionAmount }}</td>
+          <td>{{ row.tuitionDate | date: 'yyyy-MM-dd' }}</td>
+          <td>
+            <div class="d-flex justify-content-between">
+              <button class="btn-sm details-button" (click)="selectRow(row)">
+                <i class="fa fa-eye"></i>
+                <span>البيانات</span>
+              </button>
+              <button
+                class="btn-sm edit-button"
+                (click)="editTuition(row)"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#tuitionModal"
+              >
+                <i class="fa fa-edit"></i>
+                <span>تعديل</span>
+              </button>
+              <button class="btn-sm danger-button" (click)="deleteTuition(row)">
+                <i class="fa fa-trash"></i>
+                <span>حذف</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

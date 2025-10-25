@@ -1,0 +1,528 @@
+<div class="min-h-screen flex flex-col items-center justify-center py-10 px-4 bg-background dark:bg-black">
+  <!-- Registration Card Container -->
+  <div class="w-full max-w-4xl p-8 md:p-10 card animate-fade-in-up">
+
+    <!-- Logo and Title -->
+    <div class="flex flex-col items-center mb-8">
+      <!-- The logo class is kept to allow the SCSS file to define its fixed dimensions -->
+      <img src="assets/imgs/logo.png" alt="Logo" class="logo w-20 h-20 mb-4"/>
+      <h1 class="text-2xl md:text-3xl font-bold text-primary dark:text-secondary-light">تسجيل مستخدم جديد</h1>
+      <p class="mt-2 text-sm text-text dark:text-white/80">انضم إلى فريق عمل المدرسة وأنشئ حسابك الجديد.</p>
+    </div>
+
+    <!-- Registration Form -->
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <!-- Form Fields Grid (Responsive Layout) -->
+      <!-- 'grid-cols-1' for mobile, 'md:grid-cols-2' for tablet, 'lg:grid-cols-4' for desktop -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- First Name -->
+        <div class="form-field-container">
+          <label for="firstName">الاسم الأول</label>
+          <input
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            name="firstName"
+            required
+            class="form-input"
+          />
+          <div
+            *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched"
+            class="text-error text-xs mt-1"
+          >
+            <small *ngIf="userForm.get('firstName')?.errors?.['required']">يجب إدخال الاسم الأول</small>
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-field-container">
+          <label for="lastName">الاسم الأخير</label>
+          <input
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            name="lastName"
+            required
+            class="form-input"
+          />
+          <div
+            *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched"
+            class="text-error text-xs mt-1"
+          >
+            <small *ngIf="userForm.get('lastName')?.errors?.['required']">يجب إدخال الاسم الأخير</small>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-field-container">
+          <label for="email">البريد الإلكتروني</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            name="email"
+            required
+            class="form-input"
+          />
+          <div
+            *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+            class="text-error text-xs mt-1"
+          >
+            <small *ngIf="userForm.get('email')?.errors?.['required']">يجب إدخال البريد الإلكتروني</small>
+            <small *ngIf="userForm.get('email')?.errors?.['email']">صيغة البريد الإلكتروني غير صحيحة</small>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-field-container">
+          <label for="password">كلمة المرور</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            name="password"
+            required
+            class="form-input"
+          />
+          <div
+            *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+            class="text-error text-xs mt-1"
+          >
+            <small *ngIf="userForm.get('password')?.errors?.['required']">يجب إدخال كلمة المرور</small>
+          </div>
+        </div>
+
+        <!-- Roles (Full Width) -->
+        <div class="lg:col-span-4 form-field-container">
+          <label for="role">اختر دور الموظف</label>
+          <select multiple id="role" formControlName="roles" name="role" class="form-input h-32 appearance-none">
+            <option value="SUPERVISOR">مشرف</option>
+            <option value="ADMIN">إداري</option>
+            <option value="TECHNICAL">فني</option>
+          </select>
+          <div *ngIf="userForm.get('roles')?.errors?.['required'] && userForm.get('roles')?.touched" class="text-error text-xs mt-1">
+            <small>يجب اختيار دور المستخدم</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button (Full Width & Primary Color) -->
+      <button type="submit" class="btn btn-primary mt-8 w-full" [disabled]="userForm.invalid">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 ml-2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.75a7.5 7.5 0 1 0 10.828 6.472M12 21a9 9 0 0 0 8.288-5.323" />
+        </svg>
+        تسجيل مستخدم جديد
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <p class="mt-6 text-center text-sm text-text dark:text-white/80">
+        لديك حساب بالفعل؟
+        <a [routerLink]="['/', AppRoutes.LOGIN]" class="login-link text-primary hover:text-hover font-semibold transition-colors duration-200">
+            تسجيل الدخول
+        </a>
+    </p>
+  </div>
+</div>
+
+<div class="fixed top-2 left-2 text-xs text-secondary dark:text-white/50">
+    <!-- This assumes AppRoutes is imported in TS and available in the template -->
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div
+  class="min-h-screen flex items-center justify-center bg-[var(--color-background)] text-[var(--color-text)] px-4 fade-in-up"
+>
+  <div
+    class="w-full max-w-2xl bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700 transition-all duration-300"
+  >
+    <div class="flex flex-col items-center mb-6">
+      <img src="assets/imgs/logo.png" alt="Logo" class="w-20 h-20 mb-3" />
+      <h1 class="text-2xl font-semibold text-[var(--color-secondary)] dark:text-white">
+        تسجيل مستخدم جديد
+      </h1>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- First Name -->
+        <div class="relative">
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder=" "
+            class="peer input-field"
+          />
+          <label for="firstName" class="input-label">الاسم الأول</label>
+          <p *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" class="error-msg">
+            يجب إدخال الاسم الأول
+          </p>
+        </div>
+
+        <!-- Last Name -->
+        <div class="relative">
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder=" "
+            class="peer input-field"
+          />
+          <label for="lastName" class="input-label">الاسم الأخير</label>
+          <p *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched" class="error-msg">
+            يجب إدخال الاسم الأخير
+          </p>
+        </div>
+
+        <!-- Email -->
+        <div class="relative md:col-span-2">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder=" "
+            class="peer input-field"
+          />
+          <label for="email" class="input-label">البريد الإلكتروني</label>
+          <p *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="error-msg">
+            يجب إدخال البريد الإلكتروني
+          </p>
+        </div>
+
+        <!-- Password -->
+        <div class="relative md:col-span-2">
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder=" "
+            class="peer input-field"
+          />
+          <label for="password" class="input-label">كلمة المرور</label>
+          <p *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="error-msg">
+            يجب إدخال كلمة المرور
+          </p>
+        </div>
+
+        <!-- Roles -->
+        <div class="relative md:col-span-2">
+          <select
+            id="role"
+            formControlName="roles"
+            class="input-select"
+          >
+            <option value="" disabled selected>اختر دور الموظف</option>
+            <option value="SUPERVISOR">مشرف</option>
+            <option value="ADMIN">إداري</option>
+            <option value="TECHNICAL">فني</option>
+          </select>
+          <p *ngIf="userForm.get('roles')?.invalid && userForm.get('roles')?.touched" class="error-msg">
+            يجب اختيار دور المستخدم
+          </p>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full py-3 text-lg font-semibold rounded-lg shadow-md">
+        تسجيل
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
+      لديك حساب بالفعل؟
+      <a
+        [routerLink]="['/', AppRoutes.LOGIN]"
+        class="text-[var(--color-primary)] hover:underline font-medium"
+        >تسجيل الدخول</a
+      >
+    </p>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="min-h-screen flex items-center justify-center bg-background text-text transition-colors duration-300 dark:bg-[var(--color-background)] dark:text-[var(--color-text)]">
+  <div class="w-full max-w-3xl bg-white dark:bg-neutral-800 rounded-2xl shadow-lg p-8 fade-in-up">
+    <div class="flex flex-col items-center mb-6">
+      <img src="assets/imgs/logo.png" alt="Logo" class="w-20 h-20 mb-4" />
+      <h1 class="text-2xl font-semibold text-primary dark:text-secondary">تسجيل مستخدم جديد</h1>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        //First Name
+        <div>
+          <label for="firstName" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الاسم الأول</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-2 focus:ring-secondary outline-none bg-white dark:bg-neutral-700"
+            required
+          />
+          <small *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched"
+                 class="text-error text-xs">يجب إدخال الاسم الأول</small>
+        </div>
+
+        //Last Name
+        <div>
+          <label for="lastName" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الاسم الأخير</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-2 focus:ring-secondary outline-none bg-white dark:bg-neutral-700"
+            required
+          />
+          <small *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched"
+                 class="text-error text-xs">يجب إدخال الاسم الأخير</small>
+        </div>
+
+        //Email
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">البريد الإلكتروني</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-2 focus:ring-secondary outline-none bg-white dark:bg-neutral-700"
+            required
+          />
+          <small *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+                 class="text-error text-xs">يجب إدخال البريد الإلكتروني</small>
+        </div>
+
+        //Password
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">كلمة المرور</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm focus:ring-2 focus:ring-secondary outline-none bg-white dark:bg-neutral-700"
+            required
+          />
+          <small *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+                 class="text-error text-xs">يجب إدخال كلمة المرور</small>
+        </div>
+      </div>
+
+      //Roles
+      <div>
+        <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">اختر دور الموظف</label>
+        <select
+          id="role"
+          multiple
+          formControlName="roles"
+          class="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-neutral-700 focus:ring-2 focus:ring-secondary outline-none"
+          required
+        >
+          <option value="SUPERVISOR">مشرف</option>
+          <option value="ADMIN">إداري</option>
+          <option value="TECHNICAL">فني</option>
+        </select>
+        <small *ngIf="userForm.get('roles')?.invalid && userForm.get('roles')?.touched"
+               class="text-error text-xs">يجب اختيار دور المستخدم</small>
+      </div>
+
+      //Submit Button
+      <button
+        type="submit"
+        [disabled]="userForm.invalid"
+        class="w-full bg-primary hover:bg-hover text-white font-semibold py-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-secondary dark:hover:bg-green-600"
+      >
+        تسجيل
+      </button>
+    </form>
+
+    <p class="text-center text-sm mt-6">
+      لديك حساب؟
+      <a [routerLink]="['/', AppRoutes.LOGIN]" class="text-secondary hover:underline font-medium">تسجيل الدخول</a>
+    </p>
+  </div>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="registration-container">
+  <div class="logo">
+    <img src="assets/imgs/logo.png" alt="Logo" class="logo"/>
+
+  </div>
+  <h1>تسجيل مستخدم جديد</h1>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="firstName">الاسم الاول</label>
+          <input
+            class="form-control"
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            name="firstName"
+            required
+          />
+          <div
+            *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched"
+            class="alert alert-danger"
+          >
+            <small *ngIf="userForm.get('firstName')?.errors?.['required']">يجب ادخال الأسم الأول</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group">
+          <label for="lastName">الاسم الاخير</label>
+          <input
+            class="form-control"
+            type="text"
+            id="username"
+            formControlName="lastName"
+            name="lastName"
+            required
+          />
+          <div
+            *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched"
+            class="alert alert-danger"
+          >
+            <small *ngIf="userForm.get('lastName')?.errors?.['required']">يجب ادخال الأسم الأخير</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group">
+          <label for="email">البريد الالكترونى</label>
+          <input
+            class="form-control"
+            type="text"
+            id="email"
+            formControlName="email"
+            name="email"
+            required
+          />
+          <div
+            *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+            class="alert alert-danger"
+          >
+            <small *ngIf="userForm.get('email')?.errors?.['required']">يجب ادخال البريد الألكترونى</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group">
+          <label for="password">كلمة المرور</label>
+          <input
+            class="form-control"
+            type="password"
+            id="password"
+            formControlName="password"
+            name="password"
+            required
+          />
+          <div
+            *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+            class="alert alert-danger"
+          >
+            <small *ngIf="userForm.get('password')?.errors?.['required']">يجب ادخال كلمة المرور</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label for="role">اختر دور الموظف</label>
+          <select multiple id="role" formControlName="roles" name="role" class="form-control">
+            <option value="SUPERVISOR">مشرف</option>
+            <option value="ADMIN">ادارى</option>
+            <option value="TECHNICAL">فنى</option>
+          </select>
+          <small *ngIf="userForm.get('roles')?.errors?.['required']"
+          >يجب أختيار دور المستخدم</small>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="submit-button" [disabled]="userForm.invalid">تسجيل</button>
+  </form>
+  <p class="login my-3">لديك حساب؟<a [routerLink]="['/', AppRoutes.LOGIN]" class="login-link"> تسجيل الدخول</a></p>
+</div> -->

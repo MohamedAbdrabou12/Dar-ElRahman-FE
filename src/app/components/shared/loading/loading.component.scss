@@ -1,0 +1,25 @@
+:host {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 99;
+  .loader-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    .spinner{
+      font-size: x-large;
+      inline-size: 6rem;
+      block-size: 6rem;
+      color: #4f67f5;
+    }
+    // .logo-loader {
+    //   width: 125px;
+    // }
+  }
+}

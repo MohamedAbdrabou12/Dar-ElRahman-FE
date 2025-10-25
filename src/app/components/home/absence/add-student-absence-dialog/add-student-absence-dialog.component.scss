@@ -1,0 +1,32 @@
+
+
+mat-error {
+  color: #e53935;
+  font-size: 1rem;
+  margin-top: 2px;
+  text-align: right;
+  padding-right: 2px;
+}
+
+.dialog-actions {
+  padding-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-cancel {
+  background: #f7f8fa !important;
+  color: #222 !important;
+  border-radius: 8px;
+  min-width: 90px;
+  font-weight: 500;
+}
+
+.btn-save {
+  background: #2267d1 !important;
+  color: #fff !important;
+  border-radius: 8px;
+  min-width: 90px;
+  font-weight: 500;
+}

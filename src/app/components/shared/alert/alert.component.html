@@ -1,0 +1,15 @@
+<div class="alert p-0 m-0" [class]="'alert--' + type">
+  <div class="row">
+    <div class="col d-flex justify-content-end">
+      <button class="border-0 dismiss-btn" (click)="onDismiss()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  </div>
+  <div class="row container">
+    <div class="col px-3">
+      <p class="font-bold m-0">{{ type === 'error' ? 'خطأ' : 'تم بنجاح' }}</p>
+      <p class="text-shade-0">{{ message }}</p>
+    </div>
+  </div>
+</div>

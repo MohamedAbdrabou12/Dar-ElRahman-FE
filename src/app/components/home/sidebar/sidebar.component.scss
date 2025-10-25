@@ -1,0 +1,171 @@
+// .sidebar {
+//   width: 20%;
+//   background-color: #f4f4f4;
+//   padding: 10px;
+//   text-align: right;
+// }
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #ccc;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.sidebar.minimized {
+  width: 80px;
+}
+
+.sidebar.minimized .logo h2 {
+  opacity: 0;
+  display: none;
+}
+.sidebar.minimized .logo h2 {
+  opacity: 0;
+  display: none;
+}
+
+.sidebar.minimized .logo img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.logo h2 {
+  font-size: 18px;
+  color: #285aeb;
+
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.menu li {
+  margin-bottom: 10px;
+  border: 1px solid #E8E9ED;
+  border-radius: 10px;
+}
+
+.menu li a {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  text-decoration: none;
+  background: #fff;
+  border-radius: 10px;
+  color: #333;
+  font-weight: bold;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.menu li a i {
+  font-size: 1.2em;
+  margin-right: 15px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar.minimized .menu li a {
+  justify-content: center;
+}
+
+.sidebar.minimized .menu li a i {
+  margin-right: 0;
+}
+
+.menu li a:hover {
+  background: #4f67f5;
+  color: #FFF;
+}
+
+.menu li.activeLink a {
+  background: #4f67f5;
+  color: #fff !important;
+}
+
+.logout {
+  margin-top: auto;
+  padding-bottom: 20px;
+}
+
+.logout a {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  color: #333;
+  font-weight: bold;
+  transition: 0.3s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sidebar.minimized .logout a {
+  justify-content: center;
+}
+.sidebar.minimized .logout a span {
+  display: none;
+}
+
+.logout a:hover {
+  background: #4f67f5;
+  color: #fff !important;
+}
+
+.logout i {
+  margin-right: 15px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar.minimized .logout a i {
+  margin-right: 0;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 50%;
+  right:-15px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: #4f67f5;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #fff;
+  z-index: 100;
+  transition: tranform 0.3s ease;
+}
+
+.sidebar.minimized .toggle-btn {
+  transform: translateY(-50%) rotate(180deg);
+}

@@ -1,0 +1,310 @@
+@if (rowSelected) {
+  <div class="d-flex justify-content-between details-container">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات الطالب</h3>
+        <p class="d-flex justify-content-between">
+          <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الاسم رباعي:</strong> {{ rowSelected.fullName }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الرقم القومي:</strong> {{ rowSelected.nationalId }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الحالة:</strong>
+          <span
+            class="green-status"
+            [ngClass]="{
+            'green-status': rowSelected.status === 'connected',
+            'green-danger': rowSelected.status === 'stopped'
+          }"
+          >{{ rowSelected.status === "stopped" ? "منقطع" : "متصل" }}</span
+          >
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>سور القرآن</strong>
+          <button class="btn-sm details-button" (click)="openQuestionDialog(rowSelected.id)">
+            <i class="fa fa-eye"></i>
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات التواصل</h3>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تليفون الأب:</strong> {{ rowSelected.fatherPhoneNumber }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تليفون الأم:</strong> {{ rowSelected.motherPhoneNumber }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>العنوان:</strong>{{ rowSelected.address }}
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات أخرى</h3>
+        <p class="card-text d-flex justify-content-between">
+          <strong>الحالة الاجتماعية:</strong> {{ getArabicStatus(rowSelected.maritalStatus) }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الفصل:</strong> {{ rowSelected.ring.teacherName }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تاريخ الالتحاق:</strong> {{ rowSelected.joiningDate }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تاريخ الميلاد:</strong>{{ rowSelected.birthDate }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الفترة:</strong> {{ rowSelected.ring.period === Period.first ? 'أولى' : (rowSelected.ring.period === Period.second ? 'ثانية' : 'ممتدة') }}
+        </p>
+      </div>
+    </div>
+  </div>
+}
+
+<button
+  type="button"
+  class="details-button add-button"
+  (click)="openAddStudentDialog()"
+>
+  اضافة طالب جديد
+</button>
+
+<div class="table-container">
+  <h2 *ngIf="!data() || data()!.length == 0">لم يتم تسجيل أي طلبة حتى الآن. </h2>
+  <table class="custom-table" style="text-align: center" *ngIf="data() && data()!.length > 0">
+    <thead class="thead-dark">
+    <tr>
+      <th>رقم المسلسل</th>
+      <th>الاسم رباعي</th>
+      <th>الحالة</th>
+      <th>الفترة</th>
+      <th>الفصل</th>
+      <th>العمليات</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (row of data(); track row.id; ) {
+        <tr>
+          <td>{{ row.id }}</td>
+          <td>{{ row.fullName }}</td>
+          <td>
+          <span
+            class="badge"
+            [ngClass]="{
+              'green-status': row.status == 'connected',
+              'danger-status': row.status === 'stopped'
+            }"
+          >{{ row.status === "stopped" ? "منقطع" : "متصل" }}</span
+          >
+          </td>
+          <td>{{ row.ring.period === Period.first ? 'أولى' : (row.ring.period === Period.second ? 'ثانية' : 'ممتدة') }}</td>
+          <td>{{ row.ring.teacherName }}</td>
+          <td>
+            <div class="d-flex justify-content-between">
+              <button class="btn-sm details-button" (click)="selectRow(row)">
+                <i class="fa fa-eye"></i>
+                <span>البيانات</span>
+              </button>
+
+              <button
+                class="btn-sm edit-button"
+                (click)="handleEditClick(row)"
+                data-bs-toggle="modal"
+                data-bs-target="#studentModal"
+              >
+                <i class="fa fa-eye"></i>
+                <span>تعديل</span>
+              </button>
+
+              <button class="btn-sm delete-button" (click)="deleteStudent(row)">
+                <i class="fa fa-eye"></i>
+                <span>حذف</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div
+  #studentModal
+  class="modal fade"
+  id="studentModal"
+  tabindex="-1"
+  aria-labelledby="studentModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error.error.errorDescription }}
+        </div>
+        <h5 class="modal-title" id="studentModalLabel">بيانات الطالب</h5>
+      </div>
+      <div class="modal-body">
+        <form #studentForm="ngForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label class="form-label" for="fullName">الاسم رباعى:</label>
+            <input
+              id="fullName"
+              [(ngModel)]="student.fullName"
+              name="fullName"
+              class="form-control"
+              type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="nationalId">الرقم القومى:</label>
+            <input
+              class="form-control"
+              id="nationalId"
+              [(ngModel)]="student.nationalId"
+              name="nationalId"
+              type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="fatherPhoneNumber">رقم هاتف الاب</label>
+            <input
+              class="form-control"
+              id="fatherPhoneNumber"
+              [(ngModel)]="student.fatherPhoneNumber"
+              name="fatherPhoneNumber"
+              type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="motherPhoneNumber">رقم هاتف الام</label>
+            <input
+              class="form-control"
+              id="motherPhoneNumber"
+              [(ngModel)]="student.motherPhoneNumber"
+              name="motherPhoneNumber"
+              type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="address">العنوان:</label>
+            <input
+              class="form-control"
+              id="address"
+              [(ngModel)]="student.address"
+              name="address"
+              type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="birthDate">تاريخ الميلاد:</label>
+            <input
+              class="form-control"
+              id="birthDate"
+              [(ngModel)]="student.birthDate"
+              name="birthDate"
+              type="date"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="maritalStatus"
+            >الحالة الاجتماعية:</label
+            >
+            <select
+              class="form-control"
+              id="maritalStatus"
+              [(ngModel)]="student.maritalStatus"
+              name="maritalStatus"
+            >
+              <option value="orphan">يتيم</option>
+              <option value="single_parents">لديه والد</option>
+              <option value="living_parents">لديه والدان</option>
+              <option value="not_defined">غير معروف</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="joiningDate">تاريخ الانضمام:</label>
+            <input
+              class="form-control"
+              id="joiningDate"
+              [(ngModel)]="student.joiningDate"
+              name="joiningDate"
+              type="date"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="ringId">الحلقة:</label>
+            <select
+              class="form-control"
+              id="ringId"
+              [(ngModel)]="student.ringId"
+              name="ringId"
+            >
+              <option *ngFor="let ring of rings()" [value]="ring.id">{{ ring.name }}</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="status">الحالة:</label>
+            <select
+              class="form-control"
+              id="status"
+              [(ngModel)]="student.status"
+              name="status"
+            >
+              <option value="connected">متصل</option>
+              <option value="stopped">منقطع</option>
+            </select>
+          </div>
+
+          <div class="mb-3 modal-footer d-flex justify-content-end">
+            <div>
+              <button
+                *ngIf="buttonName === 'إضافة'"
+                type="submit"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+              <button
+                *ngIf="buttonName === 'تعديل'"
+                type="submit"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="danger-button btn"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

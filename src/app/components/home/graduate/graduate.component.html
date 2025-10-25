@@ -1,0 +1,180 @@
+@if (rowSelected) {
+  <div class="d-flex justify-content-between details-container">
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات الطالب</h3>
+        <p class="d-flex justify-content-between">
+          <strong>رقم المسلسل:</strong> {{ rowSelected?.student?.id }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الاسم رباعي:</strong> {{ rowSelected?.student?.fullName }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الرقم القومي:</strong> {{ rowSelected?.student?.nationalId }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>السن عند الختم:</strong>
+          {{ getAgeAtCompletion(rowSelected?.student?.birthDate, rowSelected.completionDate) }} سنة
+        </p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات التخرج</h3>
+        <p class="d-flex justify-content-between">
+          <strong>الدرجة النهائية:</strong>
+          {{ getArabicGrade(rowSelected.finalGrade) }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>عدد الناجحين:</strong>
+          {{ rowSelected.completionDate | date: 'yyyy-MM-dd' }}
+        </p>
+      </div>
+    </div>
+  </div>
+}
+<!-- Button to trigger the modal -->
+<button
+  type="button"
+  class="details-button add-button btn"
+  data-bs-toggle="modal"
+  data-bs-target="#graduateModal"
+  (click)="handleAddClick()"
+>
+  اضافة خريج جديد
+</button>
+
+<!-- Modal -->
+<div
+  #graduateModal
+  class="modal fade"
+  id="graduateModal"
+  tabindex="-1"
+  aria-labelledby="graduateModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error.error.errorDescription }}
+        </div>
+        <h5 class="modal-title" id="graduateModalLabel">بيانات الخريج</h5>
+      </div>
+      <div class="modal-body">
+        <form
+          *ngIf="graduateForm"
+          [formGroup]="graduateForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="studentId">الطالب:</label>
+            <select
+              class="form-control"
+              id="studentId"
+              formControlName="studentId"
+              [compareWith]="compareObjects">
+              <option *ngFor="let student of students" [ngValue]="student.id">{{ student.fullName }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="finalGrade">التقدير النهائي</label>
+            <select id="finalGrade" formControlName="finalGrade" class="form-control">
+              <option *ngFor="let grade of grades" [value]="grade">{{ getArabicGrade(grade) }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="completionDate">تاريخ التخرج:</label>
+            <input
+              id="completionDate"
+              formControlName="completionDate"
+              class="form-control"
+              type="date"
+            />
+          </div>
+          <div class="mb-3 modal-footer d-flex justify-content-end">
+            <div>
+              <button
+                *ngIf="buttonName === 'إضافة'"
+                type="submit"
+                [disabled]="graduateForm.invalid"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+              <button
+                *ngIf="buttonName === 'تعديل'"
+                type="submit"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="danger-button btn"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div *ngIf="deleteError" class="alert alert-danger">
+    {{ deleteError }}
+  </div>
+  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي خريجين حتى الآن. </h2>
+  <table class="custom-table" *ngIf="data && data!.length > 0">
+    <thead class="thead-dark">
+    <tr>
+      <th>أسم الطالب</th>
+      <th>الرقم القومى</th>
+      <th>السن عند الختم</th>
+      <th>التقدير النهائى</th>
+      <th>تاريخ الختم</th>
+      <th>العمليات</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (row of data; track row.id; ) {
+        <tr>
+          <td>{{ row.student?.fullName }}</td>
+          <td>{{ row.student?.nationalId }}</td>
+          <td>{{ getAgeAtCompletion(row.student?.birthDate, row.completionDate) }} سنة</td>
+          <td>{{ getArabicGrade(row.finalGrade) }}</td>
+          <td>{{ row.completionDate | date: 'yyyy-MM-dd' }}</td>
+          <td>
+            <div class="d-flex justify-content-between">
+              <button class="btn-sm details-button" (click)="selectRow(row)">
+                <i class="fa fa-eye"></i>
+                <span>البيانات</span>
+              </button>
+              <button
+                class="btn-sm edit-button"
+                (click)="editGraduate(row)"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#graduateModal"
+              >
+                <i class="fa fa-edit"></i>
+                <span>تعديل</span>
+              </button>
+              <button class="btn-sm danger-button" (click)="deleteGraduate(row)">
+                <i class="fa fa-trash"></i>
+                <span>حذف</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

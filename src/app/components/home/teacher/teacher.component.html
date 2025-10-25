@@ -1,0 +1,396 @@
+@if (rowSelected) {
+  <div class="d-flex justify-content-between details-container">
+    <!-- User Details Section -->
+
+    <!-- user-details.component.html -->
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">بيانات المُعلم</h3>
+        <p class="d-flex justify-content-between">
+          <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الاسم رباعي:</strong> {{ rowSelected.fullName }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>الرقم القومي:</strong> {{ rowSelected.nationalId }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>رقم الهاتف:</strong> {{ rowSelected.phoneNumber }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>البريد الالكترونى:</strong> {{ rowSelected.emailAddress }}
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">البيانات الشخصية</h3>
+        <p class="card-text d-flex justify-content-between">
+          <strong>العنوان:</strong> {{ rowSelected.address }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تاريخ الميلاد:</strong> {{ rowSelected.birthDate }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>الحالة الاجتماعية:</strong> {{ getArabicStatus(rowSelected.maritalStatus) }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تاريخ بداية العمل:</strong> {{ rowSelected.joiningDate }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تاريخ نهاية العمل:</strong> {{ rowSelected.exitDate }}
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title">البيانات المهنية</h3>
+        <p class="card-text d-flex justify-content-between">
+          <strong>المهنة:</strong> {{ rowSelected.profession }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>المؤهل الدراسى:</strong>
+          {{ rowSelected.educationalQualification }}
+        </p>
+        <p class="card-text d-flex justify-content-between">
+          <strong>تاريخ المؤهل:</strong> {{ rowSelected.qualificationDate }}
+        </p>
+        <p class="d-flex justify-content-between">
+          <strong>خارج العمل:</strong>
+          <span
+            class="green-status"
+            [ngClass]="{
+            'green-status': rowSelected.outOfWork == false,
+            'danger-status': rowSelected.outOfWork === true
+          }"
+          >{{ rowSelected.outOfWork === false ? "لا" : "نعم" }}</span
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+}
+<!-- Button to trigger the modal -->
+<button
+  type="button"
+  class="details-button add-button butn"
+  data-bs-toggle="modal"
+  data-bs-target="#teachertModal"
+  (click)="handleAddClick()"
+>
+  اضافة مُعَلِم جديد
+</button>
+
+<!-- Modal -->
+<div
+  #teachertModal
+  class="modal fade"
+  id="teachertModal"
+  tabindex="-1"
+  aria-labelledby="teachertModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error.error.errorDescription }}
+        </div>
+        <h5 class="modal-title" id="teachertModalLabel">بيانات المُعلم</h5>
+      </div>
+      <div class="modal-body">
+        <form
+          *ngIf="teacherForm"
+          [formGroup]="teacherForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="fullName">الاسم رباعى:</label>
+            <input
+              id="fullName"
+              formControlName="fullName"
+              class="form-control"
+              type="text"
+            />
+            <div
+              *ngIf="
+                teacherForm.get('fullName')?.invalid &&
+                teacherForm.get('fullName')?.touched
+              "
+              class="alert alert-danger"
+            >
+              <small *ngIf="teacherForm.get('fullName')?.errors?.['required']"
+              >يجب ادخال اسم الدرس</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="nationalId">الرقم القومى:</label>
+            <input
+              class="form-control"
+              id="nationalId"
+              formControlName="nationalId"
+              type="text"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                teacherForm.get('nationalId')?.invalid &&
+                teacherForm.get('nationalId')?.touched
+              "
+            >
+              <small *ngIf="teacherForm.get('nationalId')?.errors?.['pattern']"
+              >يجب ادخال رقم قومى صحيح</small
+              >
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="phoneNumber">رقم الهاتف</label>
+            <input
+              class="form-control"
+              id="phoneNumber"
+              formControlName="phoneNumber"
+              type="text"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                teacherForm.get('phoneNumber')?.invalid &&
+                teacherForm.get('phoneNumber')?.touched
+              "
+            >
+              <small *ngIf="teacherForm.get('phoneNumber')?.errors?.['pattern']"
+              >يجب ادخال رقم هاتف صحيح</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="emailAddress"
+            >البريد الالكترونى:</label
+            >
+            <input
+              class="form-control"
+              id="emailAddress"
+              formControlName="emailAddress"
+              type="email"
+            />
+            <div
+              class="alert alert-danger"
+              *ngIf="
+                teacherForm.get('emailAddress')?.invalid &&
+                teacherForm.get('emailAddress')?.touched
+              "
+            >
+              <small
+                *ngIf="teacherForm.get('emailAddress')?.errors?.['pattern']"
+              >الأيميل يجب أن يكون صحيحاً</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="address">العنوان:</label>
+            <input
+              class="form-control"
+              id="address"
+              formControlName="address"
+              type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="birthDate">تاريخ الميلاد:</label>
+            <input
+              class="form-control"
+              id="birthDate"
+              formControlName="birthDate"
+              type="date"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="maritalStatus"
+            >الحالة الاجتماعية:</label
+            >
+            <select
+              class="form-control"
+              id="maritalStatus"
+              formControlName="maritalStatus"
+            >
+              <option value="single">أعزب</option>
+              <option value="married">متزوج</option>
+              <option value="divorced">مُطلّق</option>
+              <option value="not_defined">غير معروف</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="profession">المهنة:</label>
+            <input
+              class="form-control"
+              id="profession"
+              formControlName="profession"
+              type="text"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="educationalQualification"
+            >المؤهل الدراسى:</label
+            >
+            <input
+              id="educationalQualification"
+              formControlName="educationalQualification"
+              type="text"
+              class="form-control"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="qualificationDate"
+            >تاريخ المؤهل:</label
+            >
+            <input
+              class="form-control"
+              id="qualificationDate"
+              formControlName="qualificationDate"
+              type="month"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="joiningDate">تاريخ الانضمام:</label>
+            <input
+              class="form-control"
+              id="joiningDate"
+              formControlName="joiningDate"
+              type="date"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="outOfWork">خارج العمل:</label>
+            <input
+              class="form-check-input mx-4"
+              id="outOfWork"
+              formControlName="outOfWork"
+              type="checkbox"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="exitDate">تاريخ الانتهاء:</label>
+            <input
+              class="form-control"
+              id="exitDate"
+              formControlName="exitDate"
+              type="date"
+            />
+          </div>
+
+          <div class="mb-3" class="modal-footer d-flex justify-content-end">
+            <div>
+              <button
+                *ngIf="buttonName === 'إضافة'"
+                type="submit"
+                [disabled]="teacherForm.invalid"
+                class="details-button butn"
+              >
+                {{ buttonName }}
+              </button>
+              <button
+                *ngIf="buttonName === 'تعديل'"
+                type="submit"
+                type="submit"
+                class="details-button butn"
+              >
+                {{ buttonName }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="danger-button butn"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div *ngIf="deleteError" class="alert alert-danger">
+    {{ deleteError }}
+  </div>
+  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي معلمين\معلمات حتى الآن. </h2>
+  <table class="custom-table" *ngIf="data && data!.length > 0">
+    <thead class="thead-dark">
+    <tr>
+      <th>رقم المسلسل</th>
+      <th>الاسم رباعي</th>
+      <th>الرقم القومي</th>
+      <th>خارج العمل</th>
+      <th>المهنة</th>
+      <th>الحالة الاجتماعية</th>
+      <th>العمليات</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (row of data; track row.id; ) {
+        <tr>
+          <td>{{ row.id }}</td>
+          <td>{{ row.fullName }}</td>
+          <td>{{ row.nationalId }}</td>
+          <td>
+          <span
+            class="badge"
+            [ngClass]="{
+              'green-status': row.outOfWork == false,
+              'danger-status': row.outOfWork === true
+            }"
+          >{{ row.outOfWork === false ? "نعم" : "لا" }}</span
+          >
+          </td>
+          <td>{{ row.profession }}</td>
+          <td>{{ getArabicStatus(row.maritalStatus) }}</td>
+          <td>
+            <div class="d-flex justify-content-between">
+              <button class="btn-sm details-button" (click)="selectRow(row)">
+                <i class="fa fa-eye"></i>
+                <span>البيانات</span>
+              </button>
+
+              <button
+                class="btn-sm edit-button"
+                (click)="editTeacher(row)"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#teachertModal"
+              >
+                <i class="fa fa-eye"></i>
+                <span>تعديل</span>
+              </button>
+
+              <button class="btn-sm delete-button" (click)="deleteTeacher(row)">
+                <i class="fa fa-eye"></i>
+                <span>حذف</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

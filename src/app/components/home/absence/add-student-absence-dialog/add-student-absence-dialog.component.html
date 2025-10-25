@@ -1,0 +1,40 @@
+<main class="d-flex flex-column p-2">
+  <h3 class="fs-4 text-primary" mat-dialog-title>
+    {{ this.data?.mode == 'edit' ? 'تعديل الغياب' : 'إضافة غياب جديد'}}
+  </h3>
+  <hr/>
+  <mat-dialog-content>
+    <form [formGroup]="absenceForm">
+      <section class="d-flex flex-column gap-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>الطالب</mat-label>
+          <mat-select formControlName="studentId" required>
+            @for(student of students; track student.id) {
+              <mat-option [value]="student.id">{{ student.fullName }}</mat-option>
+            }
+          </mat-select>
+          @if(absenceForm.controls['studentId'].touched && absenceForm.controls['studentId'].hasError('required')) {
+            <mat-error>الرجاء اختيار الطالب</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>تاريخ الغياب</mat-label>
+          <input matInput [matDatepicker]="datePicker" [max]="today" formControlName="absenceDate" />
+          <mat-datepicker-toggle matSuffix [for]="datePicker" ></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+          @if(absenceForm.controls['absenceDate'].touched && absenceForm.controls['absenceDate'].hasError('required')) {
+            <mat-error>الرجاء اختيار التاريخ</mat-error>
+          }
+        </mat-form-field>
+      </section>
+    </form>
+  </mat-dialog-content>
+
+  <footer class="mt-2 position-absolute align-self-center" style="bottom: 20px">
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close class="btn-cancel">إلغاء</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" class="btn-save">حفظ</button>
+    </mat-dialog-actions>
+  </footer>
+</main>

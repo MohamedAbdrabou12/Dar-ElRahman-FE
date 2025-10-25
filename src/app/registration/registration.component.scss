@@ -1,0 +1,216 @@
+// /* =============================
+//    Tailwind CSS Component Overrides
+//    =============================
+//    Most styles are now handled via Tailwind Utility classes in the HTML.
+//    This file is mainly kept for logo dimensions and custom component classes (if any).
+// */
+
+// .logo {
+//   /* Enforce specific dimensions for the logo image */
+//   width: 5rem; /* 80px */
+//   height: 5rem; /* 80px */
+// }
+
+// /* Re-using global component styles defined in src/styles.scss:
+//   The global styles already define:
+//   - input, select, textarea { @apply ... }
+//   - label { @apply ... }
+//   We create a custom utility class here to combine them for convenience.
+// */
+
+// .form-field-container {
+//   /* A simple container for the label and input to manage spacing */
+//   margin-bottom: 1.5rem; /* Equivalent to mb-6 in Tailwind, used for consistent vertical spacing */
+// }
+
+// .form-input {
+//   /* Using the global styles defined in src/styles.scss for form fields */
+//   /* This ensures all inputs across the app look identical and professional */
+//   @apply w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-2 bg-white dark:bg-neutral-900
+//          text-text focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200;
+// }
+
+// /* Link styling is also defined using Tailwind in HTML for better control:
+//   .login-link { @apply text-primary hover:text-hover font-semibold; }
+// */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /* ✅ Custom field styling with Tailwind and CSS vars */
+
+// .input-field {
+//   @apply w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 pt-5 pb-2 text-sm bg-transparent
+//          text-[var(--color-text)] focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]
+//          transition duration-200 ease-in-out placeholder-transparent;
+// }
+
+// .input-label {
+//   @apply absolute right-3 top-3 text-gray-500 dark:text-gray-400 text-sm transition-all duration-200 ease-in-out
+//          pointer-events-none bg-[var(--color-background)] px-1;
+
+//   .peer-placeholder-shown+& {
+//     @apply top-3.5 text-gray-400 text-sm;
+//   }
+
+//   .peer:focus+& {
+//     @apply -translate-y-4 text-xs text-[var(--color-primary)];
+//   }
+// }
+
+// .input-select {
+//   @apply w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-3 bg-transparent
+//          text-[var(--color-text)] text-sm focus:outline-none focus:border-[var(--color-primary)]
+//          focus:ring-1 focus:ring-[var(--color-primary)] transition;
+// }
+
+// .error-msg {
+//   @apply text-[var(--color-error)] text-xs mt-1;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// :host {
+//   display: block;
+//   direction: rtl;
+//   font-family: var(--font-family);
+// }
+
+// .fade-in-up {
+//   animation: fade-in-up 0.6s ease-out;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// .logo{
+//   width: 70px !important;
+//   height: 70px !important;
+// }
+
+// .registration-container {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     height: 100vh;
+//     background-color: #f5f5f5;
+
+//     .logo {
+//       margin-bottom: 20px;
+
+//       img {
+//         width: 150px; // Adjust the size of the logo as needed
+//         height: auto;
+//       }
+//     }
+
+//     h1 {
+//       font-size: 24px;
+//       color: #333;
+//       margin-bottom: 20px;
+//     }
+
+//     form {
+//       padding: 20px;
+//       border-radius: 8px;
+//       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+//       width: 100%;
+//       max-width: 900px;
+
+//       .form-group {
+//         margin-bottom: 15px;
+
+//         label {
+//           display: block;
+//           font-size: 14px;
+//           color: #555;
+//           margin-bottom: 5px;
+//         }
+
+//         input, select {
+//           width: 100%;
+//           padding: 10px;
+//           font-size: 14px;
+//           border: 1px solid #ddd;
+//           border-radius: 4px;
+//           outline: none;
+
+//           &:focus {
+//             border-color: #007bff;
+//           }
+//         }
+//       }
+
+//       .submit-button {
+//         width: 100%;
+//         padding: 10px;
+//         font-size: 16px;
+//         color: #fff;
+//         background-color: #007bff;
+//         border: none;
+//         border-radius: 4px;
+//         cursor: pointer;
+
+//         &:hover {
+//           background-color: #0056b3;
+//         }
+//       }
+//     }
+//   }
+
+
+// .login{
+//   font-family: var(--font-family);
+// }
+
+// .login-link{
+//   font-family: var(--font-family);
+//   text-decoration: none;
+// }
+
+// .login-link:hover{
+//   font-weight: bold;
+//   cursor: pointer;
+// }

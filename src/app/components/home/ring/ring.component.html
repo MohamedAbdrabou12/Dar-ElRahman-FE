@@ -1,0 +1,237 @@
+@if(rowSelected){
+<div class="d-flex justify-content-between details-container">
+  <!-- Ring Details Section -->
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">بيانات الحلقة</h3>
+      <p class="d-flex justify-content-between">
+        <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>اسم الحلقة:</strong> {{ rowSelected.name }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>عدد الطلاب:</strong> {{ rowSelected.studentCount }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>الفترة:</strong> {{ rowSelected.period === Period.first ? 'أولى' : (rowSelected.period === Period.second ? 'ثانية' : 'ممتدة') }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>جزء الحفظ:</strong> {{ rowSelected.memorizationPart }}
+      </p>
+      <p class="d-flex justify-content-between">
+        <strong>اسم المعلم:</strong> {{ rowSelected.teacherName }}
+      </p>
+    </div>
+  </div>
+</div>
+}
+<!-- Button to trigger the modal -->
+<button
+  type="button"
+  class="details-button add-button btn"
+  data-bs-toggle="modal"
+  data-bs-target="#ringModal"
+  (click)="handleAddClick()"
+>
+  اضافة حلقة جديدة
+</button>
+
+<!-- Modal -->
+<div
+  #ringModal
+  class="modal fade"
+  id="ringModal"
+  tabindex="-1"
+  aria-labelledby="ringModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error.error.errorDescription }}
+        </div>
+        <h5 class="modal-title" id="ringModalLabel">بيانات الحلقة</h5>
+      </div>
+      <div class="modal-body">
+        <form
+          *ngIf="ringForm"
+          [formGroup]="ringForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <div class="mb-3">
+            <label class="form-label" for="name">اسم الحلقة:</label>
+            <input
+              id="name"
+              formControlName="name"
+              class="form-control"
+              type="text"
+            />
+            <div
+              *ngIf="
+                ringForm.get('name')?.invalid &&
+                ringForm.get('name')?.touched
+              "
+              class="alert alert-danger"
+            >
+              <small *ngIf="ringForm.get('name')?.errors?.['required']"
+                >يجب ادخال اسم الحلقة</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="period">الفترة:</label>
+            <select
+              class="form-control"
+              id="period"
+              formControlName="period"
+            >
+              <option [ngValue]="Period.first">أولى</option>
+              <option [ngValue]="Period.second">ثانية</option>
+              <option [ngValue]="Period.extended">ممتدة</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="memorizationPart">جزء الحفظ:</label>
+            <select
+              class="form-control"
+              id="memorizationPart"
+              formControlName="memorizationPart"
+            >
+              <option [ngValue]="MemorizationPart.juz">جزء</option>
+              <option [ngValue]="MemorizationPart.half_juz">نصف جزء</option>
+              <option [ngValue]="MemorizationPart.half_hizb">نصف حزب</option>
+              <option [ngValue]="MemorizationPart.quarter_hizb">ربع حزب</option>
+              <option [ngValue]="MemorizationPart.two_pages">وجهين</option>
+              <option [ngValue]="MemorizationPart.page">وجه</option>
+              <option [ngValue]="MemorizationPart.half_page">نصف وجه</option>
+              <option [ngValue]="MemorizationPart.five_lines">خمسة أسطر</option>
+              <option [ngValue]="MemorizationPart.three_lines">ثلاثة أسطر</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="name">عدد الطلاب:</label>
+            <input
+              id="studentCount"
+              formControlName="studentCount"
+              class="form-control"
+              type="number"
+            />
+            <div
+              *ngIf="
+                ringForm.get('studentCount')?.invalid &&
+                ringForm.get('studentCount')?.touched
+              "
+              class="alert alert-danger"
+            >
+              <small *ngIf="ringForm.get('studentCount')?.errors?.['required']"
+              >يجب ادخال عدد طلاب الحلقة</small
+              >
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="teacherId">المعلم:</label>
+            <select
+              class="form-control"
+              id="teacherId"
+              formControlName="teacherId"
+            >
+              <option *ngFor="let teacher of teachers" [value]="teacher.id">{{ teacher.fullName }}</option>
+            </select>
+          </div>
+
+          <div class="mb-3 modal-footer d-flex justify-content-end">
+            <div>
+              <button
+                *ngIf="buttonName === 'إضافة'"
+                type="submit"
+                [disabled]="ringForm.invalid"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+              <button
+                *ngIf="buttonName === 'تعديل'"
+                type="submit"
+                class="details-button btn"
+              >
+                {{ buttonName }}
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="danger-button btn"
+                (click)="reset()"
+                data-bs-dismiss="modal"
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-container">
+  <div *ngIf="deleteError" class="alert alert-danger">
+    {{ deleteError }}
+  </div>
+
+  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي حلقات حتى الآن. </h2>
+  <table class="custom-table" *ngIf="data && data!.length > 0">
+    <thead class="thead-dark">
+      <tr>
+        <th>رقم المسلسل</th>
+        <th>اسم الحلقة</th>
+        <th>عدد الطلاب</th>
+        <th>الفترة</th>
+        <th>جزء الحفظ</th>
+        <th>اسم المُعلم</th>
+        <th>العمليات</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(row of data; track row.id;){
+      <tr>
+        <td>{{ row.id }}</td>
+        <td>{{ row.name }}</td>
+        <td>{{ row.studentCount }}</td>
+        <td>{{ row.period === Period.first ? 'أولى' : (row.period === Period.second ? 'ثانية' : 'ممتدة') }}</td>
+        <td>{{ getArabicMemorizationPart(row.memorizationPart) }}</td>
+        <td>{{ row.teacherName }}</td>
+        <td>
+          <div class="d-flex justify-content-between">
+            <button class="btn-sm details-button" (click)="selectRow(row)">
+              <i class="fa fa-eye"></i>
+              <span>البيانات</span>
+            </button>
+
+            <button
+              class="btn-sm edit-button"
+              (click)="editRing(row)"
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#ringModal"
+            >
+              <i class="fa fa-edit"></i>
+              <span>تعديل</span>
+            </button>
+
+            <button class="btn-sm delete-button" (click)="deleteRing(row)">
+              <i class="fa fa-trash"></i>
+              <span>حذف</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

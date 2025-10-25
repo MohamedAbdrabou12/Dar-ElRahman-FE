@@ -1,0 +1,21 @@
+.alert {
+  border-radius: 4px;
+  font-family: var(--font-family);
+
+  &--success {
+    border: 1px solid green;
+    color: #3cf53c !important;
+    background: #c5f6c5 !important;
+  }
+  &--error {
+    border: 1px solid red;
+    color: red !important;
+    background-color: #fff3f3 !important;
+  }
+
+  border-top-width: 6px !important;
+}
+
+.dismiss-btn {
+  background-color: transparent;
+}
