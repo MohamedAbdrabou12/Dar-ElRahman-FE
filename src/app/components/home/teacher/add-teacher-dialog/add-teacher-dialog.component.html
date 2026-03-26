@@ -1,0 +1,329 @@
+<div class="bg-white dark:bg-neutral-800 rounded-lg max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-xl font-bold text-primary dark:text-success flex items-center gap-2">
+      <i class="fas fa-chalkboard-teacher"></i>
+      {{ data.isEdit ? 'تعديل' : 'إضافة' }} مُعلِم
+    </h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+    >
+      <i class="fas fa-times text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Content - Scrollable -->
+  <div class="p-6 overflow-y-auto flex-1">
+    <form [formGroup]="teacherForm" class="space-y-8">
+
+      <!-- Personal Information Section -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b-2 border-primary flex items-center gap-2">
+          <i class="fas fa-user"></i>
+          المعلومات الشخصية
+        </h3>
+        <div class="space-y-5">
+          <!-- Full Name -->
+          <div>
+            <label for="fullName" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الاسم الكامل <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            <div *ngIf="teacherForm.get('fullName')?.invalid && teacherForm.get('fullName')?.touched"
+                 class="text-red-500 text-sm mt-1 flex items-center gap-1">
+              <i class="fas fa-exclamation-circle"></i>
+              <span *ngIf="teacherForm.get('fullName')?.errors?.['required']">يجب إدخال الاسم</span>
+              <span *ngIf="teacherForm.get('fullName')?.errors?.['minlength']">يجب أن يكون الاسم 5 أحرف على الأقل</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- National ID -->
+            <div>
+              <label for="nationalId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                الرقم القومي <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="nationalId"
+                type="text"
+                formControlName="nationalId"
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              />
+              <div *ngIf="teacherForm.get('nationalId')?.invalid && teacherForm.get('nationalId')?.touched"
+                   class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>رقم قومي غير صحيح</span>
+              </div>
+            </div>
+
+            <!-- Birth Date -->
+            <div>
+              <mat-form-field class="w-full" appearance="outline">
+                <mat-label>تاريخ الميلاد <span class="text-red-500">*</span></mat-label>
+                <input
+                  matInput
+                  [matDatepicker]="teacherBirthDatePicker"
+                  formControlName="birthDate"
+                  placeholder="اختر التاريخ"
+                />
+                <mat-datepicker-toggle matIconSuffix [for]="teacherBirthDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #teacherBirthDatePicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+            <!-- Gender -->
+            <div>
+              <label for="gender" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                النوع <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="gender"
+                formControlName="gender"
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              >
+                <option value="">اختر النوع</option>
+                <option value="MALE">ذكر</option>
+                <option value="FEMALE">أنثى</option>
+              </select>
+              <div *ngIf="teacherForm.get('gender')?.invalid && teacherForm.get('gender')?.touched"
+                   class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إختيار النوع</span>
+              </div>
+            </div>
+
+            <!-- Marital Status -->
+            <div>
+              <label for="maritalStatus" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                الحالة الاجتماعية <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="maritalStatus"
+                formControlName="maritalStatus"
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              >
+                <option *ngFor="let status of maritalStatuses" [value]="status">
+                  {{ getArabicMaritalStatus(status) }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Profile Picture -->
+            <div>
+              <label class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                الصورة الشخصية
+              </label>
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-full bg-gray-200 dark:bg-neutral-700 flex items-center justify-center overflow-hidden border-2 border-gray-300 dark:border-gray-600">
+                  <img *ngIf="profilePicPreview" [src]="profilePicPreview" class="w-full h-full object-cover" />
+                  <i *ngIf="!profilePicPreview" class="fas fa-user text-gray-400 text-2xl"></i>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer hover:bg-hover transition-colors text-sm font-semibold text-center">
+                    <i class="fas fa-upload ml-1"></i> رفع صورة
+                    <input type="file" accept="image/*" class="hidden" (change)="onProfilePicSelected($event)" />
+                  </label>
+                  <button *ngIf="profilePicPreview" type="button" (click)="removeProfilePic()" class="text-red-500 text-sm hover:underline">
+                    <i class="fas fa-trash-alt ml-1"></i> إزالة
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="md:col-span-2 lg:col-span-3">
+              <label for="address" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                العنوان <span class="text-red-500">*</span>
+              </label>
+              <input
+                id="address"
+                type="text"
+                formControlName="address"
+                class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              />
+              <div *ngIf="teacherForm.get('address')?.invalid && teacherForm.get('address')?.touched"
+                   class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>يجب إدخال العنوان</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information Section -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b-2 border-primary flex items-center gap-2">
+          <i class="fas fa-address-book"></i>
+          معلومات الاتصال
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Phone Number -->
+          <div>
+            <label for="phoneNumber" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              رقم الهاتف <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="phoneNumber"
+              type="text"
+              formControlName="phoneNumber"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            <div *ngIf="teacherForm.get('phoneNumber')?.invalid && teacherForm.get('phoneNumber')?.touched"
+                 class="text-red-500 text-sm mt-1 flex items-center gap-1">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>رقم هاتف غير صحيح</span>
+            </div>
+          </div>
+
+          <!-- Email Address -->
+          <div>
+            <label for="emailAddress" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              البريد الإلكتروني
+            </label>
+            <input
+              id="emailAddress"
+              type="email"
+              formControlName="emailAddress"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            <div *ngIf="teacherForm.get('emailAddress')?.invalid && teacherForm.get('emailAddress')?.touched"
+                 class="text-red-500 text-sm mt-1 flex items-center gap-1">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>بريد إلكتروني غير صحيح</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Professional Information Section -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b-2 border-primary flex items-center gap-2">
+          <i class="fas fa-graduation-cap"></i>
+          المعلومات المهنية والتعليمية
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Profession -->
+          <div>
+            <label for="profession" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              المهنة
+            </label>
+            <input
+              id="profession"
+              type="text"
+              formControlName="profession"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+          </div>
+
+          <!-- Educational Qualification -->
+          <div>
+            <label for="educationalQualification" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              المؤهل الدراسي
+            </label>
+            <input
+              id="educationalQualification"
+              type="text"
+              formControlName="educationalQualification"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+          </div>
+
+          <!-- Qualification Date -->
+          <div>
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>تاريخ المؤهل</mat-label>
+              <input
+                matInput
+                [matDatepicker]="qualificationDatePicker"
+                formControlName="qualificationDate"
+                placeholder="اختر التاريخ"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="qualificationDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #qualificationDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Employment Status Section -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b-2 border-primary flex items-center gap-2">
+          <i class="fas fa-briefcase"></i>
+          حالة التوظيف
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Joining Date -->
+          <div>
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>تاريخ الالتحاق <span class="text-red-500">*</span></mat-label>
+              <input
+                matInput
+                [matDatepicker]="teacherJoiningDatePicker"
+                formControlName="joiningDate"
+                placeholder="اختر التاريخ"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="teacherJoiningDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #teacherJoiningDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- Exit Date -->
+          <div>
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>تاريخ الخروج</mat-label>
+              <input
+                matInput
+                [matDatepicker]="exitDatePicker"
+                formControlName="exitDate"
+                placeholder="اختر التاريخ"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="exitDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #exitDatePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- Out of Work -->
+          <div>
+            <label for="outOfWork" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              خارج العمل
+            </label>
+            <input
+              id="outOfWork"
+              type="checkbox"
+              formControlName="outOfWork"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors font-semibold"
+    >
+      إلغاء
+    </button>
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="teacherForm.invalid"
+      class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold shadow-md hover:shadow-lg"
+    >
+      {{ data.isEdit ? 'تحديث' : 'إضافة' }}
+    </button>
+  </div>
+</div>

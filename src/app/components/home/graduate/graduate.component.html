@@ -1,180 +1,195 @@
 @if (rowSelected) {
-  <div class="d-flex justify-content-between details-container">
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات الطالب</h3>
-        <p class="d-flex justify-content-between">
-          <strong>رقم المسلسل:</strong> {{ rowSelected?.student?.id }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الاسم رباعي:</strong> {{ rowSelected?.student?.fullName }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الرقم القومي:</strong> {{ rowSelected?.student?.nationalId }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>السن عند الختم:</strong>
-          {{ getAgeAtCompletion(rowSelected?.student?.birthDate, rowSelected.completionDate) }} سنة
-        </p>
+  <div class="flex justify-end mb-4 no-print">
+    <button
+      type="button"
+      class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
+      (click)="printEntity()"
+    >
+      <i class="fas fa-print"></i>
+      طباعة بيانات الخريج
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 animate-fade-in-up max-w-4xl">
+    <!-- بيانات الطالب -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-graduation-cap"></i>
+        بيانات الطالب
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">رقم المسلسل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.id }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الاسم رباعي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.fullName }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الرقم القومي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.nationalId }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">السن عند الختم:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ getAgeAtCompletion(rowSelected?.student?.birthDate, rowSelected.completionDate) }} سنة</span>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات التخرج</h3>
-        <p class="d-flex justify-content-between">
-          <strong>الدرجة النهائية:</strong>
-          {{ getArabicGrade(rowSelected.finalGrade) }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>عدد الناجحين:</strong>
-          {{ rowSelected.completionDate | date: 'yyyy-MM-dd' }}
-        </p>
+
+    <!-- بيانات التخرج -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-award"></i>
+        بيانات التخرج
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الدرجة النهائية:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ getArabicGrade(rowSelected.finalGrade) }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الختم:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.completionDate | date: 'yyyy-MM-dd' }}</span>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Print-only area -->
+  <div class="print-area hidden">
+    <div class="print-header">
+      <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+      <h2>بيانات الخريج: {{ rowSelected?.student?.fullName }}</h2>
+      <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
+    </div>
+    <div class="print-cards-grid">
+      <div class="print-card">
+        <h3><i class="fas fa-graduation-cap"></i> بيانات الطالب</h3>
+        <div class="print-row"><span class="print-label">رقم المسلسل:</span><span class="print-value">{{ rowSelected?.student?.id }}</span></div>
+        <div class="print-row"><span class="print-label">الاسم رباعي:</span><span class="print-value">{{ rowSelected?.student?.fullName }}</span></div>
+        <div class="print-row"><span class="print-label">الرقم القومي:</span><span class="print-value">{{ rowSelected?.student?.nationalId }}</span></div>
+        <div class="print-row"><span class="print-label">السن عند الختم:</span><span class="print-value">{{ getAgeAtCompletion(rowSelected?.student?.birthDate, rowSelected.completionDate) }} سنة</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-award"></i> بيانات التخرج</h3>
+        <div class="print-row"><span class="print-label">الدرجة النهائية:</span><span class="print-value">{{ getArabicGrade(rowSelected.finalGrade) }}</span></div>
+        <div class="print-row"><span class="print-label">تاريخ الختم:</span><span class="print-value">{{ rowSelected.completionDate | date: 'yyyy-MM-dd' }}</span></div>
+      </div>
+    </div>
+    <div class="print-footer">
+      <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+      <span>{{ today | date: 'yyyy-MM-dd' }}</span>
     </div>
   </div>
 }
-<!-- Button to trigger the modal -->
 <button
   type="button"
-  class="details-button add-button btn"
-  data-bs-toggle="modal"
-  data-bs-target="#graduateModal"
+  class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
   (click)="handleAddClick()"
 >
+  <i class="fas fa-plus-circle"></i>
   اضافة خريج جديد
 </button>
 
-<!-- Modal -->
-<div
-  #graduateModal
-  class="modal fade"
-  id="graduateModal"
-  tabindex="-1"
-  aria-labelledby="graduateModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error.error.errorDescription }}
-        </div>
-        <h5 class="modal-title" id="graduateModalLabel">بيانات الخريج</h5>
-      </div>
-      <div class="modal-body">
-        <form
-          *ngIf="graduateForm"
-          [formGroup]="graduateForm"
-          (ngSubmit)="onSubmit()"
-        >
-          <div class="mb-3">
-            <label class="form-label" for="studentId">الطالب:</label>
-            <select
-              class="form-control"
-              id="studentId"
-              formControlName="studentId"
-              [compareWith]="compareObjects">
-              <option *ngFor="let student of students" [ngValue]="student.id">{{ student.fullName }}</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="finalGrade">التقدير النهائي</label>
-            <select id="finalGrade" formControlName="finalGrade" class="form-control">
-              <option *ngFor="let grade of grades" [value]="grade">{{ getArabicGrade(grade) }}</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="completionDate">تاريخ التخرج:</label>
-            <input
-              id="completionDate"
-              formControlName="completionDate"
-              class="form-control"
-              type="date"
-            />
-          </div>
-          <div class="mb-3 modal-footer d-flex justify-content-end">
-            <div>
-              <button
-                *ngIf="buttonName === 'إضافة'"
-                type="submit"
-                [disabled]="graduateForm.invalid"
-                class="details-button btn"
-              >
-                {{ buttonName }}
-              </button>
-              <button
-                *ngIf="buttonName === 'تعديل'"
-                type="submit"
-                class="details-button btn"
-              >
-                {{ buttonName }}
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                class="danger-button btn"
-                (click)="reset()"
-                data-bs-dismiss="modal"
-              >
-                الغاء
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+<div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
+  <!-- Search Bar -->
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="بحث باسم الطالب، الرقم القومي..."
+        class="w-full pr-10 pl-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
+      />
     </div>
   </div>
-</div>
 
-<div class="table-container">
-  <div *ngIf="deleteError" class="alert alert-danger">
-    {{ deleteError }}
+  <!-- Error Message -->
+  <div *ngIf="deleteError" class="m-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <p class="text-red-700 dark:text-red-400 text-sm">{{ deleteError }}</p>
   </div>
-  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي خريجين حتى الآن. </h2>
-  <table class="custom-table" *ngIf="data && data!.length > 0">
-    <thead class="thead-dark">
-    <tr>
-      <th>أسم الطالب</th>
-      <th>الرقم القومى</th>
-      <th>السن عند الختم</th>
-      <th>التقدير النهائى</th>
-      <th>تاريخ الختم</th>
-      <th>العمليات</th>
-    </tr>
-    </thead>
-    <tbody>
-      @for (row of data; track row.id; ) {
+
+  <!-- Empty State -->
+  <div *ngIf="!filteredData || filteredData!.length == 0" class="p-12 text-center">
+    <i class="fas fa-graduation-cap text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لم يتم تسجيل أي خريجين حتى الآن</h2>
+  </div>
+
+  <!-- Graduates Table -->
+  <div *ngIf="filteredData && filteredData!.length > 0" class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
         <tr>
-          <td>{{ row.student?.fullName }}</td>
-          <td>{{ row.student?.nationalId }}</td>
-          <td>{{ getAgeAtCompletion(row.student?.birthDate, row.completionDate) }} سنة</td>
-          <td>{{ getArabicGrade(row.finalGrade) }}</td>
-          <td>{{ row.completionDate | date: 'yyyy-MM-dd' }}</td>
-          <td>
-            <div class="d-flex justify-content-between">
-              <button class="btn-sm details-button" (click)="selectRow(row)">
-                <i class="fa fa-eye"></i>
-                <span>البيانات</span>
-              </button>
-              <button
-                class="btn-sm edit-button"
-                (click)="editGraduate(row)"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#graduateModal"
-              >
-                <i class="fa fa-edit"></i>
-                <span>تعديل</span>
-              </button>
-              <button class="btn-sm danger-button" (click)="deleteGraduate(row)">
-                <i class="fa fa-trash"></i>
-                <span>حذف</span>
-              </button>
-            </div>
-          </td>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">أسم الطالب</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الرقم القومى</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">السن عند الختم</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">التقدير النهائى</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">تاريخ الختم</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        @for (row of filteredData; track row.id; ) {
+          <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+            <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row.student?.fullName }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.student?.nationalId }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ getAgeAtCompletion(row.student?.birthDate, row.completionDate) }} سنة</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ getArabicGrade(row.finalGrade) }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.completionDate | date: 'yyyy-MM-dd' }}</td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2">
+                <button
+                  class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="selectRow(row)"
+                >
+                  <i class="fa fa-eye"></i>
+                  <span>عرض</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="editGraduate(row)"
+                >
+                  <i class="fa fa-edit"></i>
+                  <span>تعديل</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="deleteGraduate(row)"
+                >
+                  <i class="fa fa-trash"></i>
+                  <span>حذف</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-900">
+    <div class="text-sm text-gray-600 dark:text-gray-400">
+      صفحة {{ pageNo + 1 }} من {{ totalPages }} ({{ totalRecords }} سجل)
+    </div>
+    <div class="flex items-center gap-1">
+      <button (click)="goToPage(0)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo - 1)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo + 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-left"></i>
+      </button>
+      <button (click)="goToPage(totalPages - 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-left"></i>
+      </button>
+    </div>
+  </div>
 </div>

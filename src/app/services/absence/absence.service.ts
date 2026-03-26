@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {BackendEndpoints} from "../../constants/backend-endpoints";
@@ -13,9 +13,12 @@ export class StudentAbsenceService {
   constructor(private http: HttpClient) {}
 
   // Get all student absences
-  getAllStudentAbsences(): Observable<any> {
+  getAllStudentAbsences(pageNo: number = 0, pageSize: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('pageNo', pageNo.toString())
+      .set('pageSize', pageSize.toString());
     return this.http.get<any>(
-      `${environment.memoApiUrl}${BackendEndpoints.absence}`
+      `${environment.memoApiUrl}${BackendEndpoints.absence}`, { params }
     );
   }
 

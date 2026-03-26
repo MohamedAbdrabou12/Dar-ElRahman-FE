@@ -1,0 +1,130 @@
+<div class="bg-white dark:bg-neutral-800 rounded-lg max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-xl font-bold text-primary dark:text-success flex items-center gap-2">
+      <i class="fas fa-user-graduate"></i>
+      {{ data.isEdit ? 'تعديل' : 'إضافة' }} نتيجة طالب
+    </h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+    >
+      <i class="fas fa-times text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6 overflow-y-auto flex-1">
+    <form [formGroup]="studentQuestionnaireForm" class="space-y-5">
+      <!-- Ring Selection -->
+      <div>
+        <label for="ringId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          الحلقة <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="ringId"
+          formControlName="ringId"
+          (change)="onRingChange($event)"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option value="">اختر الحلقة</option>
+          <option *ngFor="let ring of rings" [value]="ring.id">
+            {{ ring.name }}
+          </option>
+        </select>
+        <div *ngIf="studentQuestionnaireForm.get('ringId')?.invalid && studentQuestionnaireForm.get('ringId')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار الحلقة</span>
+        </div>
+      </div>
+
+      <!-- Questionnaire Selection -->
+      <div>
+        <label for="questionnaireId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          السؤال <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="questionnaireId"
+          formControlName="questionnaireId"
+          (change)="onQuestionnaireChange($event)"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option value="">اختر السؤال</option>
+          <option *ngFor="let questionnaire of questionnaires" [value]="questionnaire.id">
+            {{ questionnaire.ring?.name }} - {{ questionnaire.currentSurah?.nameAr }} - {{ questionnaire.questionDate | date: 'yyyy-MM-dd' }}
+          </option>
+        </select>
+        <div *ngIf="studentQuestionnaireForm.get('questionnaireId')?.invalid && studentQuestionnaireForm.get('questionnaireId')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار السؤال</span>
+        </div>
+      </div>
+
+      <!-- Student Selection -->
+      <div>
+        <label for="studentId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          الطالب <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="studentId"
+          formControlName="studentId"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option value="">اختر الطالب</option>
+          <option *ngFor="let student of students" [value]="student.id">
+            {{ student.fullName }}
+          </option>
+        </select>
+        <div *ngIf="studentQuestionnaireForm.get('studentId')?.invalid && studentQuestionnaireForm.get('studentId')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار الطالب</span>
+        </div>
+      </div>
+
+      <!-- Grade Selection -->
+      <div>
+        <label for="grade" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          الدرجة <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="grade"
+          formControlName="grade"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option value="">اختر الدرجة</option>
+          <option *ngFor="let grade of grades" [value]="grade">
+            {{ getArabicGrade(grade) }}
+          </option>
+        </select>
+        <div *ngIf="studentQuestionnaireForm.get('grade')?.invalid && studentQuestionnaireForm.get('grade')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار الدرجة</span>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors font-semibold"
+    >
+      إلغاء
+    </button>
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="studentQuestionnaireForm.invalid"
+      class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold shadow-md hover:shadow-lg"
+    >
+      {{ data.isEdit ? 'تحديث' : 'إضافة' }}
+    </button>
+  </div>
+</div>

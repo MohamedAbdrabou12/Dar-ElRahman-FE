@@ -1,12 +1,13 @@
 import {CommonModule} from '@angular/common';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Modal} from 'bootstrap';
 import {GraduateService} from 'src/app/services/graduate/graduate.service';
 import {Graduate} from "../../../models/Graduate.model";
 import {Grade} from "../../../models/enums/Grade.enum";
 import {StudentService} from "../../../services/student/student.service";
 import {Student} from "../../../models/Student.model";
+import {MatDialog} from "@angular/material/dialog";
+import {AddGraduateDialogComponent} from "./add-graduate-dialog/add-graduate-dialog.component";
 
 @Component({
   selector: 'app-graduate',
@@ -16,12 +17,18 @@ import {Student} from "../../../models/Student.model";
   standalone: true,
 })
 export class GraduateComponent implements OnInit {
-  @ViewChild('graduateModal') graduateModal!: ElementRef;
-  private modalInstance: Modal | null = null;
+  private dialog = inject(MatDialog);
 
   data: Graduate[] = [];
+  filteredData: Graduate[] = [];
   rowSelected: Graduate | undefined;
   students: Student[] = [];
+
+  searchTerm = '';
+  pageNo = 0;
+  pageSize = 10;
+  totalRecords = 0;
+  totalPages = 0;
   grades: string[] = Object.values(Grade);
   buttonName = 'إضافة';
   graduate: Graduate = {
@@ -48,15 +55,43 @@ export class GraduateComponent implements OnInit {
   }
 
   private getAllGraduates() {
-    this.graduateService.getAllGraduates().subscribe(
+    this.graduateService.getAllGraduates(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.rowSelected = this.data[0];
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.applySearch();
+        if (!this.rowSelected) {
+          this.rowSelected = this.filteredData[0];
+        }
       },
       (error) => {
         console.error('Graduates fetch failed', error);
       }
     );
+  }
+
+  applySearch() {
+    if (!this.searchTerm.trim()) {
+      this.filteredData = this.data;
+      return;
+    }
+    const term = this.searchTerm.toLowerCase();
+    this.filteredData = this.data.filter((row: any) =>
+      row.student?.fullName?.toLowerCase().includes(term) ||
+      row.student?.nationalId?.toLowerCase().includes(term) ||
+      row.id?.toString().includes(term)
+    );
+  }
+
+  onSearchChange() {
+    this.applySearch();
+  }
+
+  goToPage(page: number) {
+    if (page < 0 || page >= this.totalPages) return;
+    this.pageNo = page;
+    this.getAllGraduates();
   }
 
   private getNonGraduateStudents() {
@@ -83,53 +118,57 @@ export class GraduateComponent implements OnInit {
     this.rowSelected = row;
   }
 
-  onSubmit() {
-    if (this.buttonName === 'إضافة') {
-      this.graduateService.addGraduate(this.graduateForm?.value).subscribe(
-        (response) => {
-          this.getAllGraduates();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    } else {
-      this.graduateService.updateGraduate(this.graduateForm?.value).subscribe(
-        (response) => {
-          this.getAllGraduates();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    }
-  }
-
-  reset() {
-    this.graduate = {
-      finalGrade: Grade.excellent,
-      completionDate: new Date(),
-      studentId: undefined
-    };
-    this.buttonName = 'إضافة';
-  }
 
   handleAddClick() {
-    this.reset();
-    this.buildGraduateForm();
+    const dialogRef = this.dialog.open(AddGraduateDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: false,
+        students: this.students
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.graduateService.addGraduate(result).subscribe({
+          next: () => {
+            this.getAllGraduates();
+            this.getNonGraduateStudents();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   editGraduate(graduate: Graduate) {
-    this.graduate = {...graduate};
-    this.graduateForm?.patchValue({
-      id: this.graduate.id,
-      finalGrade: this.graduate.finalGrade,
-      completionDate: this.graduate.completionDate,
-      studentId: this.graduate.student?.id,
+    const dialogRef = this.dialog.open(AddGraduateDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: true,
+        graduate: graduate,
+        students: this.students
+      }
     });
-    this.buttonName = 'تعديل';
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.graduateService.updateGraduate(result).subscribe({
+          next: () => {
+            this.getAllGraduates();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   deleteGraduate(graduate: Graduate) {
@@ -147,23 +186,6 @@ export class GraduateComponent implements OnInit {
     );
   }
 
-  ngAfterViewInit() {
-    if (this.graduateModal) {
-      this.modalInstance = new Modal(this.graduateModal.nativeElement);
-    }
-  }
-
-  closeModal() {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-    }
-  }
 
   getAgeAtCompletion(birthDateInput: string | Date | undefined, completionDateInput: string | Date | undefined): number {
     if (!birthDateInput || !completionDateInput) {
@@ -208,8 +230,9 @@ export class GraduateComponent implements OnInit {
     return this.gradeMap[grade] || grade;
   }
 
-  compareObjects(o1: any, o2: any): boolean {
-    return o1 && o2 ? o1.id === o2.id : o1 === o2;
+
+  printEntity() {
+    window.print();
   }
 
   protected readonly Grade = Grade;

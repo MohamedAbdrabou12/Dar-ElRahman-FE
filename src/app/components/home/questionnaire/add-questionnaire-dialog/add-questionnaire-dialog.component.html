@@ -1,0 +1,129 @@
+<div class="bg-white dark:bg-neutral-800 rounded-lg max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-xl font-bold text-primary dark:text-success flex items-center gap-2">
+      <i class="fas fa-question-circle"></i>
+      {{ data.isEdit ? 'تعديل' : 'إضافة' }} سؤال
+    </h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+    >
+      <i class="fas fa-times text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6 overflow-y-auto flex-1">
+    <form [formGroup]="questionnaireForm" class="space-y-5">
+      <!-- Questionnaire Type -->
+      <div>
+        <label for="questionnaireType" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          نوع السؤال <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="questionnaireType"
+          formControlName="questionnaireType"
+          (change)="onRingOrTypeChange()"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option *ngFor="let type of questionnaireTypes" [value]="type">
+            {{ getArabicQuestionnaireType(type) }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Ring Selection -->
+      <div>
+        <label for="ring" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          الحلقة <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="ring"
+          formControlName="ring"
+          (change)="onRingOrTypeChange()"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option [ngValue]="null">اختر الحلقة</option>
+          <option *ngFor="let ring of rings" [ngValue]="ring">
+            {{ ring.name }}
+          </option>
+        </select>
+        <div *ngIf="questionnaireForm.get('ring')?.invalid && questionnaireForm.get('ring')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار الحلقة</span>
+        </div>
+      </div>
+
+      <!-- Surah Selection -->
+      <div>
+        <label for="currentSurah" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          السورة الحالية <span class="text-red-500">*</span>
+        </label>
+        <div class="relative">
+          <select
+            id="currentSurah"
+            formControlName="currentSurah"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <option [ngValue]="null">اختر السورة</option>
+            <option *ngFor="let surah of surahs" [ngValue]="surah">
+              {{ surah.nameAr }}
+            </option>
+          </select>
+          <div *ngIf="surahLoading" class="absolute left-3 top-1/2 -translate-y-1/2">
+            <i class="fas fa-spinner fa-spin text-primary"></i>
+          </div>
+        </div>
+        <div *ngIf="surahAutoPopulated" class="text-blue-600 dark:text-blue-400 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-info-circle"></i>
+          <span>تم تحديد السورة تلقائياً بناءً على آخر سؤال ناجح</span>
+        </div>
+        <div *ngIf="questionnaireForm.get('currentSurah')?.invalid && questionnaireForm.get('currentSurah')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار السورة</span>
+        </div>
+      </div>
+
+      <!-- Question Date -->
+      <div>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>تاريخ السؤال <span class="text-red-500">*</span></mat-label>
+          <input
+            matInput
+            [matDatepicker]="questionDatePicker"
+            formControlName="questionDate"
+            placeholder="اختر التاريخ"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="questionDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #questionDatePicker></mat-datepicker>
+          <mat-error *ngIf="questionnaireForm.get('questionDate')?.hasError('required')">
+            يجب إدخال تاريخ السؤال
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors font-semibold"
+    >
+      إلغاء
+    </button>
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="questionnaireForm.invalid"
+      class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold shadow-md hover:shadow-lg"
+    >
+      {{ data.isEdit ? 'تحديث' : 'إضافة' }}
+    </button>
+  </div>
+</div>

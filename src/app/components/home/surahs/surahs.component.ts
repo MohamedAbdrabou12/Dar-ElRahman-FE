@@ -30,8 +30,7 @@ export class SurahsComponent implements OnInit {
   periods: any[] = [
     { name: 'First', nameAR: 'الأولى' },
     { name: 'Second', nameAR: 'الثانية' },
-    { name: 'Extended', nameAR: 'ممتدة' },
-    { name: 'NOT_DEFINED', nameAR: 'غير معروف' },
+    { name: 'Extended', nameAR: 'ممتدة' }
   ];
   data = signal<any[] | undefined>(undefined);
   teachers = signal<any[] | undefined>(undefined);

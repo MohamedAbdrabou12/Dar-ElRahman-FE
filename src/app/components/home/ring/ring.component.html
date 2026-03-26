@@ -1,237 +1,197 @@
 @if(rowSelected){
-<div class="d-flex justify-content-between details-container">
-  <!-- Ring Details Section -->
-  <div class="card">
-    <div class="card-body">
-      <h3 class="card-title">بيانات الحلقة</h3>
-      <p class="d-flex justify-content-between">
-        <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>اسم الحلقة:</strong> {{ rowSelected.name }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>عدد الطلاب:</strong> {{ rowSelected.studentCount }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>الفترة:</strong> {{ rowSelected.period === Period.first ? 'أولى' : (rowSelected.period === Period.second ? 'ثانية' : 'ممتدة') }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>جزء الحفظ:</strong> {{ rowSelected.memorizationPart }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>اسم المعلم:</strong> {{ rowSelected.teacherName }}
-      </p>
+<div class="flex justify-end mb-4 no-print">
+  <button
+    type="button"
+    class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
+    (click)="printEntity()"
+  >
+    <i class="fas fa-print"></i>
+    طباعة بيانات الحلقة
+  </button>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 animate-fade-in-up">
+  <!-- بيانات الحلقة -->
+  <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+    <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+      <i class="fas fa-mosque"></i>
+      بيانات الحلقة
+    </h3>
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">رقم المسلسل:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.id }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">اسم الحلقة:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.name }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">عدد الطلاب:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.studentCount }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">جزء الحفظ:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ getArabicMemorizationPart(rowSelected.memorizationPart) }}</span>
+      </div>
     </div>
+  </div>
+
+  <!-- تفاصيل إضافية -->
+  <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+    <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+      <i class="fas fa-info-circle"></i>
+      تفاصيل إضافية
+    </h3>
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">الفترة:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.periodName || 'غير محدد' }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">اسم المعلم:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.teacherName }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Print-only area -->
+<div class="print-area hidden">
+  <div class="print-header">
+    <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+    <h2>بيانات الحلقة: {{ rowSelected.name }}</h2>
+    <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
+  </div>
+  <div class="print-cards-grid">
+    <div class="print-card">
+      <h3><i class="fas fa-mosque"></i> بيانات الحلقة</h3>
+      <div class="print-row"><span class="print-label">رقم المسلسل:</span><span class="print-value">{{ rowSelected.id }}</span></div>
+      <div class="print-row"><span class="print-label">اسم الحلقة:</span><span class="print-value">{{ rowSelected.name }}</span></div>
+      <div class="print-row"><span class="print-label">عدد الطلاب:</span><span class="print-value">{{ rowSelected.studentCount }}</span></div>
+      <div class="print-row"><span class="print-label">جزء الحفظ:</span><span class="print-value">{{ getArabicMemorizationPart(rowSelected.memorizationPart) }}</span></div>
+    </div>
+    <div class="print-card">
+      <h3><i class="fas fa-info-circle"></i> تفاصيل إضافية</h3>
+      <div class="print-row"><span class="print-label">الفترة:</span><span class="print-value">{{ rowSelected.periodName || 'غير محدد' }}</span></div>
+      <div class="print-row"><span class="print-label">اسم المعلم:</span><span class="print-value">{{ rowSelected.teacherName }}</span></div>
+    </div>
+  </div>
+  <div class="print-footer">
+    <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+    <span>{{ today | date: 'yyyy-MM-dd' }}</span>
   </div>
 </div>
 }
-<!-- Button to trigger the modal -->
 <button
   type="button"
-  class="details-button add-button btn"
-  data-bs-toggle="modal"
-  data-bs-target="#ringModal"
+  class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
   (click)="handleAddClick()"
 >
+  <i class="fas fa-plus-circle"></i>
   اضافة حلقة جديدة
 </button>
 
-<!-- Modal -->
-<div
-  #ringModal
-  class="modal fade"
-  id="ringModal"
-  tabindex="-1"
-  aria-labelledby="ringModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error.error.errorDescription }}
-        </div>
-        <h5 class="modal-title" id="ringModalLabel">بيانات الحلقة</h5>
-      </div>
-      <div class="modal-body">
-        <form
-          *ngIf="ringForm"
-          [formGroup]="ringForm"
-          (ngSubmit)="onSubmit()"
-        >
-          <div class="mb-3">
-            <label class="form-label" for="name">اسم الحلقة:</label>
-            <input
-              id="name"
-              formControlName="name"
-              class="form-control"
-              type="text"
-            />
-            <div
-              *ngIf="
-                ringForm.get('name')?.invalid &&
-                ringForm.get('name')?.touched
-              "
-              class="alert alert-danger"
-            >
-              <small *ngIf="ringForm.get('name')?.errors?.['required']"
-                >يجب ادخال اسم الحلقة</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="period">الفترة:</label>
-            <select
-              class="form-control"
-              id="period"
-              formControlName="period"
-            >
-              <option [ngValue]="Period.first">أولى</option>
-              <option [ngValue]="Period.second">ثانية</option>
-              <option [ngValue]="Period.extended">ممتدة</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="memorizationPart">جزء الحفظ:</label>
-            <select
-              class="form-control"
-              id="memorizationPart"
-              formControlName="memorizationPart"
-            >
-              <option [ngValue]="MemorizationPart.juz">جزء</option>
-              <option [ngValue]="MemorizationPart.half_juz">نصف جزء</option>
-              <option [ngValue]="MemorizationPart.half_hizb">نصف حزب</option>
-              <option [ngValue]="MemorizationPart.quarter_hizb">ربع حزب</option>
-              <option [ngValue]="MemorizationPart.two_pages">وجهين</option>
-              <option [ngValue]="MemorizationPart.page">وجه</option>
-              <option [ngValue]="MemorizationPart.half_page">نصف وجه</option>
-              <option [ngValue]="MemorizationPart.five_lines">خمسة أسطر</option>
-              <option [ngValue]="MemorizationPart.three_lines">ثلاثة أسطر</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="name">عدد الطلاب:</label>
-            <input
-              id="studentCount"
-              formControlName="studentCount"
-              class="form-control"
-              type="number"
-            />
-            <div
-              *ngIf="
-                ringForm.get('studentCount')?.invalid &&
-                ringForm.get('studentCount')?.touched
-              "
-              class="alert alert-danger"
-            >
-              <small *ngIf="ringForm.get('studentCount')?.errors?.['required']"
-              >يجب ادخال عدد طلاب الحلقة</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="teacherId">المعلم:</label>
-            <select
-              class="form-control"
-              id="teacherId"
-              formControlName="teacherId"
-            >
-              <option *ngFor="let teacher of teachers" [value]="teacher.id">{{ teacher.fullName }}</option>
-            </select>
-          </div>
-
-          <div class="mb-3 modal-footer d-flex justify-content-end">
-            <div>
-              <button
-                *ngIf="buttonName === 'إضافة'"
-                type="submit"
-                [disabled]="ringForm.invalid"
-                class="details-button btn"
-              >
-                {{ buttonName }}
-              </button>
-              <button
-                *ngIf="buttonName === 'تعديل'"
-                type="submit"
-                class="details-button btn"
-              >
-                {{ buttonName }}
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                class="danger-button btn"
-                (click)="reset()"
-                data-bs-dismiss="modal"
-              >
-                الغاء
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+<div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
+  <!-- Search Bar -->
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="بحث باسم الحلقة، المعلم، رقم المسلسل..."
+        class="w-full pr-10 pl-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
+      />
     </div>
   </div>
-</div>
 
-<div class="table-container">
-  <div *ngIf="deleteError" class="alert alert-danger">
-    {{ deleteError }}
+  <!-- Error Message -->
+  <div *ngIf="deleteError" class="m-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <p class="text-red-700 dark:text-red-400 text-sm">{{ deleteError }}</p>
   </div>
 
-  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي حلقات حتى الآن. </h2>
-  <table class="custom-table" *ngIf="data && data!.length > 0">
-    <thead class="thead-dark">
-      <tr>
-        <th>رقم المسلسل</th>
-        <th>اسم الحلقة</th>
-        <th>عدد الطلاب</th>
-        <th>الفترة</th>
-        <th>جزء الحفظ</th>
-        <th>اسم المُعلم</th>
-        <th>العمليات</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for(row of data; track row.id;){
-      <tr>
-        <td>{{ row.id }}</td>
-        <td>{{ row.name }}</td>
-        <td>{{ row.studentCount }}</td>
-        <td>{{ row.period === Period.first ? 'أولى' : (row.period === Period.second ? 'ثانية' : 'ممتدة') }}</td>
-        <td>{{ getArabicMemorizationPart(row.memorizationPart) }}</td>
-        <td>{{ row.teacherName }}</td>
-        <td>
-          <div class="d-flex justify-content-between">
-            <button class="btn-sm details-button" (click)="selectRow(row)">
-              <i class="fa fa-eye"></i>
-              <span>البيانات</span>
-            </button>
+  <!-- Empty State -->
+  <div *ngIf="!filteredData || filteredData!.length == 0" class="p-12 text-center">
+    <i class="fas fa-mosque text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لم يتم تسجيل أي حلقات حتى الآن</h2>
+  </div>
 
-            <button
-              class="btn-sm edit-button"
-              (click)="editRing(row)"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#ringModal"
-            >
-              <i class="fa fa-edit"></i>
-              <span>تعديل</span>
-            </button>
+  <!-- Rings Table -->
+  <div *ngIf="filteredData && filteredData!.length > 0" class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
+        <tr>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">رقم المسلسل</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">اسم الحلقة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">عدد الطلاب</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفترة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">جزء الحفظ</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">اسم المُعلم</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        @for(row of filteredData; track row.id;){
+          <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.id }}</td>
+            <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row.name }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.studentCount }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.periodName || 'غير محدد' }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ getArabicMemorizationPart(row.memorizationPart) }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.teacherName }}</td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2">
+                <button
+                  class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="selectRow(row)"
+                >
+                  <i class="fa fa-eye"></i>
+                  <span>عرض</span>
+                </button>
 
-            <button class="btn-sm delete-button" (click)="deleteRing(row)">
-              <i class="fa fa-trash"></i>
-              <span>حذف</span>
-            </button>
-          </div>
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
+                <button
+                  class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="editRing(row)"
+                >
+                  <i class="fa fa-edit"></i>
+                  <span>تعديل</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="deleteRing(row)"
+                >
+                  <i class="fa fa-trash"></i>
+                  <span>حذف</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-900">
+    <div class="text-sm text-gray-600 dark:text-gray-400">
+      صفحة {{ pageNo + 1 }} من {{ totalPages }} ({{ totalRecords }} سجل)
+    </div>
+    <div class="flex items-center gap-1">
+      <button (click)="goToPage(0)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo - 1)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo + 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-left"></i>
+      </button>
+      <button (click)="goToPage(totalPages - 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-left"></i>
+      </button>
+    </div>
+  </div>
 </div>

@@ -1,0 +1,101 @@
+<div class="bg-white dark:bg-neutral-800 rounded-lg max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-xl font-bold text-primary dark:text-success flex items-center gap-2">
+      <i class="fas fa-money-bill-wave"></i>
+      {{ data.isEdit ? 'تعديل' : 'إضافة' }} رسوم شهرية
+    </h2>
+    <button 
+      type="button"
+      (click)="onCancel()"
+      class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+    >
+      <i class="fas fa-times text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6 overflow-y-auto flex-1">
+    <form [formGroup]="tuitionForm" class="space-y-5">
+      <!-- Student Selection -->
+      <div>
+        <label for="studentId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          الطالب <span class="text-red-500">*</span>
+        </label>
+        <select 
+          id="studentId"
+          formControlName="studentId"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option value="">اختر الطالب</option>
+          <option *ngFor="let student of students" [value]="student.id">
+            {{ student.fullName }}
+          </option>
+        </select>
+        <div *ngIf="tuitionForm.get('studentId')?.invalid && tuitionForm.get('studentId')?.touched" 
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار الطالب</span>
+        </div>
+      </div>
+
+      <!-- Amount -->
+      <div>
+        <label for="tuitionAmount" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          المبلغ المدفوع <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="tuitionAmount"
+          type="number"
+          formControlName="tuitionAmount"
+          step="0.01"
+          min="0"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          placeholder="0.00"
+        />
+        <div *ngIf="tuitionForm.get('tuitionAmount')?.invalid && tuitionForm.get('tuitionAmount')?.touched" 
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب إدخال المبلغ المدفوع</span>
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div>
+        <mat-form-field class="w-full" appearance="outline">
+          <mat-label>تاريخ الدفع <span class="text-red-500">*</span></mat-label>
+          <input 
+            matInput 
+            [matDatepicker]="tuitionDatePicker"
+            formControlName="tuitionDate"
+            placeholder="اختر التاريخ"
+          />
+          <mat-datepicker-toggle matIconSuffix [for]="tuitionDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #tuitionDatePicker></mat-datepicker>
+          <mat-error *ngIf="tuitionForm.get('tuitionDate')?.hasError('required')">
+            يجب إدخال تاريخ الدفع
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors font-semibold"
+    >
+      إلغاء
+    </button>
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="tuitionForm.invalid"
+      class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold shadow-md hover:shadow-lg"
+    >
+      {{ data.isEdit ? 'تحديث' : 'إضافة' }}
+    </button>
+  </div>
+</div>

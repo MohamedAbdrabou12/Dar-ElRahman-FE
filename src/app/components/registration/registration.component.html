@@ -41,48 +41,24 @@
         class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up delay-200"
         novalidate
       >
-        <!-- First Name -->
-        <div class="flex flex-col">
+        <!-- Full Name -->
+        <div class="flex flex-col md:col-span-2">
           <label
-            for="firstName"
+            for="fullName"
             class="mb-1 text-sm font-semibold text-secondary dark:text-success flex items-center gap-2"
           >
             <i class="fa-solid fa-user w-5 h-5 text-primary dark:text-hover"></i>
-            الاسم الأول
+            الاسم الكامل
           </label>
           <input
-            #firstNameInput
+            #fullNameInput
             type="text"
-            id="firstName"
-            [(ngModel)]="user.firstName"
-            name="firstName"
+            id="fullName"
+            [(ngModel)]="user.fullName"
+            name="fullName"
             required
-            placeholder="ادخل الاسم الأول"
-            #firstName="ngModel"
-            class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700
-                   bg-white dark:bg-neutral-900 text-text dark:text-dark-text
-                   focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300"
-          />
-        </div>
-
-        <!-- Last Name -->
-        <div class="flex flex-col">
-          <label
-            for="lastName"
-            class="mb-1 text-sm font-semibold text-secondary dark:text-success flex items-center gap-2"
-          >
-            <i class="fa-solid fa-user w-5 h-5 text-primary dark:text-hover"></i>
-            الاسم الأخير
-          </label>
-          <input
-            #lastNameInput
-            type="text"
-            id="lastName"
-            [(ngModel)]="user.lastName"
-            name="lastName"
-            required
-            placeholder="ادخل الاسم الأخير"
-            #lastName="ngModel"
+            placeholder="ادخل الاسم الكامل"
+            #fullName="ngModel"
             class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700
                    bg-white dark:bg-neutral-900 text-text dark:text-dark-text
                    focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-300"

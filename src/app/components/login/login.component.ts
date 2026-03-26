@@ -98,10 +98,13 @@ export class LoginComponent {
         console.error('Login failed', error);
         this.loadingService.stopLoading();
 
-        if (error?.error?.message?.includes('email')) {
+        const msg = error?.error?.message || error?.message || '';
+        if (msg.includes('not activated') || msg.includes('not active')) {
+          this.showToast('لم يتم تفعيل حسابك بعد. يرجى مراجعة بريدك الإلكتروني.', 'warning');
+        } else if (msg.includes('email')) {
           this.showToast('هذا البريد غير مسجل 🚫', 'error');
           this.highlightField(this.usernameInput);
-        } else if (error?.error?.message?.includes('password')) {
+        } else if (msg.includes('password')) {
           this.showToast('كلمة المرور غير صحيحة 🔑', 'error');
           this.highlightField(this.passwordInput);
         } else {

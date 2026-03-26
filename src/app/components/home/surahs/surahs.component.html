@@ -1,121 +1,150 @@
 @if(rowSelected){
-<div class="d-flex justify-content-between details-container">
-  <!-- User Details Section -->
-
-  <!-- user-details.component.html -->
-
-  <div class="card">
-    <div class="card-body">
-      <h3 class="card-title">بيانات الطالب</h3>
-      <p class="d-flex justify-content-between">
-        <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>الاسم رباعي:</strong> {{ rowSelected.fullName }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>الرقم القومي:</strong> {{ rowSelected.nationalId }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>الحالة:</strong>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 animate-fade-in-up">
+  <!-- بيانات الطالب -->
+  <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+    <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+      <i class="fas fa-user-graduate"></i>
+      بيانات الطالب
+    </h3>
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">رقم المسلسل:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.id }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">الاسم رباعي:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.fullName }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">الرقم القومي:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.nationalId }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">الحالة:</span>
         <span
-          class="green-status"
+          class="px-3 py-1 rounded-full text-xs font-semibold"
           [ngClass]="{
-            'green-status': rowSelected.status === 'connected',
-            'green-danger': rowSelected.status === 'stopped'
+            'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': rowSelected.status === 'connected',
+            'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': rowSelected.status === 'stopped'
           }"
-          >{{ rowSelected.status === "stopped" ? "منقطع" : "متصل" }}</span
-        >
-      </p>
+        >{{ rowSelected.status === "stopped" ? "منقطع" : "متصل" }}</span>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-body">
-      <h3 class="card-title">بيانات التواصل</h3>
-      <p class="card-text d-flex justify-content-between">
-        <strong>تليفون الأب:</strong> {{ rowSelected.fatherPhoneNumber }}
-      </p>
-      <p class="card-text d-flex justify-content-between">
-        <strong>تليفون الأم:</strong> {{ rowSelected.motherPhoneNumber }}
-      </p>
-      <p class="card-text d-flex justify-content-between">
-        <strong>العنوان:</strong>{{ rowSelected.address }}
-      </p>
+  <!-- بيانات التواصل -->
+  <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+    <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+      <i class="fas fa-phone"></i>
+      بيانات التواصل
+    </h3>
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">تليفون الأب:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.fatherPhoneNumber }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">تليفون الأم:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.motherPhoneNumber }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">العنوان:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.address }}</span>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-body">
-      <h3 class="card-title">بيانات أخرى</h3>
-      <p class="card-text d-flex justify-content-between">
-        <strong>الحالة الاجتماعية:</strong> {{ rowSelected.maritalStatus }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>الفصل:</strong> {{ rowSelected.ring.teacherName }}
-      </p>
-      <p class="card-text d-flex justify-content-between">
-        <strong>تاريخ الالتحاق:</strong> {{ rowSelected.joiningDate }}
-      </p>
-      <p class="card-text d-flex justify-content-between">
-        <strong>تاريخ الميلاد:</strong>{{ rowSelected.birthDate }}
-      </p>
-      <p class="d-flex justify-content-between">
-        <strong>الفترة:</strong> {{ rowSelected.ring.period }}
-      </p>
+  <!-- بيانات أخرى -->
+  <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+    <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+      <i class="fas fa-info-circle"></i>
+      بيانات أخرى
+    </h3>
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">الحالة الاجتماعية:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.maritalStatus }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">الفصل:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.ring.teacherName }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الالتحاق:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.joiningDate }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الميلاد:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.birthDate }}</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">الفترة:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.ring.periodName }}</span>
+      </div>
     </div>
   </div>
 </div>
 }
 
-<div class="table-container">
-  <table class="custom-table" style="text-align: center">
-    <thead class="thead-dark">
-      <tr>
-        <th>رقم المسلسل</th>
-        <th>الاسم رباعي</th>
-        <th>الرقم القومي</th>
-        <th>الحالة</th>
-        <th>الفترة</th>
-        <th>الفصل</th>
-        <th>العمليات</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for(row of data(); track row.id;){
-      <tr>
-        <td>{{ row.id }}</td>
-        <td>{{ row.fullName }}</td>
-        <td>{{ row.nationalId }}</td>
-        <td>
-          <span
-            class="badge"
-            [ngClass]="{
-              'green-status': row.status == 'connected',
-              'danger-status': row.status === 'stopped'
-            }"
-            >{{ row.status === "stopped" ? "منقطع" : "متصل" }}</span
-          >
-        </td>
-        <td>{{ row.ring.period }}</td>
-        <td>{{ row.ring.teacherName }}</td>
-        <td>
-          <div class="d-flex justify-content-between">
-            <button class="btn-sm details-button" (click)="selectRow(row)">
-              <i class="fa fa-eye"></i>
-              <span>البيانات</span>
-            </button>
+<div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
+  <!-- Empty State (if needed) -->
+  <div *ngIf="!data() || data()!.length == 0" class="p-12 text-center">
+    <i class="fas fa-book-quran text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لم يتم تسجيل أي سور حتى الآن</h2>
+  </div>
 
-            <button
-              class="btn-sm edit-button"
-            >
-              <i class="fa fa-eye"></i>
-              <span>سؤال القرآن</span>
-            </button>
-          </div>
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
+  <!-- Students Table -->
+  <div *ngIf="data() && data()!.length > 0" class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
+        <tr>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">رقم المسلسل</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الاسم رباعي</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الرقم القومي</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحالة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفترة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفصل</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        @for(row of data(); track row.id;){
+          <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.id }}</td>
+            <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row.fullName }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.nationalId }}</td>
+            <td class="px-6 py-4 text-center">
+              <span
+                class="inline-flex px-3 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': row.status == 'connected',
+                  'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': row.status === 'stopped'
+                }"
+              >{{ row.status === "stopped" ? "منقطع" : "متصل" }}</span>
+            </td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.ring.periodName }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.ring.teacherName }}</td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2">
+                <button
+                  class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="selectRow(row)"
+                >
+                  <i class="fa fa-eye"></i>
+                  <span>عرض</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                >
+                  <i class="fas fa-quran"></i>
+                  <span>سؤال القرآن</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>

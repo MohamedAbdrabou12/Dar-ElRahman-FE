@@ -1,11 +1,12 @@
 import {CommonModule} from '@angular/common';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule,} from '@angular/forms';
-import {Modal} from 'bootstrap';
 import {TeacherResultService} from "../../../services/teacher-result/teacher-result.service";
 import {TeacherResult} from "../../../models/TeacherResult.model";
 import {Teacher} from "../../../models/Teacher.model";
 import {TeacherService} from "../../../services/teacher/teacher.service";
+import {MatDialog} from "@angular/material/dialog";
+import {AddTeacherResultDialogComponent} from "./add-teacher-result-dialog/add-teacher-result-dialog.component";
 
 @Component({
   selector: 'app-teacher',
@@ -14,12 +15,19 @@ import {TeacherService} from "../../../services/teacher/teacher.service";
   styleUrl: './teacher-result.component.scss',
 })
 export class TeacherResultComponent implements OnInit {
-  @ViewChild('teacherResultModal') teacherResultModal!: ElementRef; // Reference to the modal
-  private modalInstance: Modal | null = null;
+  private dialog = inject(MatDialog);
 
   data: TeacherResult[] = [];
+  filteredData: TeacherResult[] = [];
   rowSelected?: TeacherResult;
   teachers: Teacher[] = [];
+  today = new Date();
+
+  searchTerm = '';
+  pageNo = 0;
+  pageSize = 10;
+  totalRecords = 0;
+  totalPages = 0;
   buttonName = 'إضافة';
   teacherResult = {
     id: null,
@@ -71,16 +79,43 @@ export class TeacherResultComponent implements OnInit {
   }
 
   private getAllTeacherResults() {
-    this.teacherResultService.getAllTeacherResults().subscribe(
+    this.teacherResultService.getAllTeacherResults(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
-        console.log('Teacher result response', response);
         this.data = response.data;
-        this.rowSelected = this.data[0];
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.applySearch();
+        if (!this.rowSelected) {
+          this.rowSelected = this.filteredData[0];
+        }
       },
       (error) => {
         console.error('Teacher result failed', error);
       }
     );
+  }
+
+  applySearch() {
+    if (!this.searchTerm.trim()) {
+      this.filteredData = this.data;
+      return;
+    }
+    const term = this.searchTerm.toLowerCase();
+    this.filteredData = this.data.filter((row: any) =>
+      row.teacher?.fullName?.toLowerCase().includes(term) ||
+      row.teacher?.nationalId?.toLowerCase().includes(term) ||
+      row.id?.toString().includes(term)
+    );
+  }
+
+  onSearchChange() {
+    this.applySearch();
+  }
+
+  goToPage(page: number) {
+    if (page < 0 || page >= this.totalPages) return;
+    this.pageNo = page;
+    this.getAllTeacherResults();
   }
 
   buildTeacherResultForm() {
@@ -109,59 +144,61 @@ export class TeacherResultComponent implements OnInit {
     this.rowSelected = row;
   }
 
-  onSubmit() {
-    if (this.buttonName === 'إضافة') {
-      this.teacherResultService.addTeacherResult(this.teacherResultForm?.value).subscribe(
-        (response) => {
-          this.getAllTeacherResults();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    } else {
-      console.log('Edit Request', this.teacherResultForm?.value);
-
-      this.teacherResultService.updateTeacherResult(this.teacherResultForm?.value).subscribe(
-        (response) => {
-          this.getAllTeacherResults();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    }
-  }
-
-  reset() {
-    this.teacherResult = {
-      id: null,
-      resultDate: '',
-      resultCalculationDate: '',
-      memorizationCount: '',
-      memorizationSuccessCount: '',
-      memorizationStudentCount: '',
-      revisionCount: '',
-      revisionSuccessCount: '',
-      revisionStudentCount: '',
-      firstQuestionSuccessCount: '',
-      secondQuestionSuccessCount: '',
-      thirdQuestionSuccessCount: '',
-      memorizationPercentage: '',
-      revisionPercentage: '',
-      adjustmentValue: '',
-      successPercentage: '',
-      teacher: ''
-    };
-  }
 
   handleAddClick() {
-    this.buildTeacherResultForm();
+    const dialogRef = this.dialog.open(AddTeacherResultDialogComponent, {
+      width: '1100px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: false,
+        teachers: this.teachers
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.teacherResultService.addTeacherResult(result).subscribe({
+          next: () => {
+            this.getAllTeacherResults();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
-  editTeacherResult(teacherResult1: TeacherResult) {
+  editTeacherResult(teacherResult: TeacherResult) {
+    const dialogRef = this.dialog.open(AddTeacherResultDialogComponent, {
+      width: '1100px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: true,
+        teacherResult: teacherResult,
+        teachers: this.teachers
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.teacherResultService.updateTeacherResult(result).subscribe({
+          next: () => {
+            this.getAllTeacherResults();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
+  }
+
+  editTeacherResultOLD(teacherResult1: TeacherResult) {
     this.teacherResult = this.cloneTeacherResult(teacherResult1);
     this.teacherResultForm?.patchValue({
       id: this.teacherResult.id,
@@ -199,22 +236,6 @@ export class TeacherResultComponent implements OnInit {
     );
   }
 
-  ngAfterViewInit() {
-    this.modalInstance = new Modal(this.teacherResultModal.nativeElement);
-  }
-
-  closeModal() {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-      // Manually remove the backdrop
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-    } else {
-      console.error('Modal instance is not initialized.');
-    }
-  }
 
   cloneTeacherResult(teacherResult: any): any {
     return {
@@ -236,6 +257,10 @@ export class TeacherResultComponent implements OnInit {
       successPercentage: teacherResult.successPercentage,
       teacher: teacherResult.teacher,
     };
+  }
+
+  printEntity() {
+    window.print();
   }
 
   compareObjects(o1: any, o2: any): boolean {

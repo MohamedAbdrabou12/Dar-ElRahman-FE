@@ -1,14 +1,26 @@
-<div class="main-container">
-  <p class="d-flex justify-content-center gap-2 m-0">
-    <span class="fw-bold">السورة:</span>
-    <span>{{ surah()?.nameAr }}</span>
-  </p>
-  <p class="d-flex justify-content-center gap-2 m-0">
-    <span class="fw-bold">تاريخ التسميع:</span>
-    <span>{{ successDate() }}</span>
-  </p>
-  <p class="d-flex justify-content-center gap-2 m-0">
-    <span class="fw-bold">التقييم:</span>
-    <span>{{ getArabicGrade(grade()) }}</span>
-  </p>
+<div
+  class="group bg-white dark:bg-neutral-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden"
+>
+  <div class="absolute top-0 right-0 left-0 h-1 rounded-t-xl" [ngClass]="gradeColorClass()"></div>
+
+  <div class="flex items-center gap-3 mb-3 pt-1">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" [ngClass]="gradeIconBgClass()">
+      <i class="fas fa-book-quran text-sm" [ngClass]="gradeIconTextClass()"></i>
+    </div>
+    <span class="font-bold text-text dark:text-dark-text text-sm leading-tight">{{ surah()?.nameAr }}</span>
+  </div>
+
+  <div class="space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-gray-500 dark:text-gray-400">تاريخ التسميع</span>
+      <span class="text-xs font-semibold text-text dark:text-dark-text">{{ successDate() }}</span>
+    </div>
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-gray-500 dark:text-gray-400">التقييم</span>
+      <span
+        class="px-2.5 py-0.5 rounded-full text-xs font-semibold"
+        [ngClass]="gradeBadgeClass()"
+      >{{ getArabicGrade(grade()) }}</span>
+    </div>
+  </div>
 </div>

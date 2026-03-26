@@ -1,5 +1,6 @@
 import {Routes} from '@angular/router';
 import {AppRoutes} from "../../constants/app-routes";
+import {roleGuard} from "../../core/guards/role-guard";
 
 export const HOME_CHILDREN_ROUTES: Routes = [
   {
@@ -8,6 +9,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./student/student.component').then(
         (c) => c.StudentComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.TEACHER,
@@ -15,6 +18,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./teacher/teacher.component').then(
         (c) => c.TeacherComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.SURAHS,
@@ -22,6 +27,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./surahs/surahs.component').then(
         (c) => c.SurahsComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.ABSENCE,
@@ -29,6 +36,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./absence/absence.component').then(
         (c) => c.AbsenceComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'TEACHER']},
   },
   {
     path: AppRoutes.RING,
@@ -36,6 +45,17 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./ring/ring.component').then(
         (c) => c.RingComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
+  },
+  {
+    path: AppRoutes.PERIOD,
+    loadComponent: () =>
+      import('./period/period.component').then(
+        (c) => c.PeriodComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.QUESTIONNAIRE,
@@ -43,6 +63,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./questionnaire/questionnaire.component').then(
         (c) => c.QuestionnaireComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.STUDENT_QUESTIONNAIRE,
@@ -50,6 +72,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./student-questionnaire/student-questionnaire.component').then(
         (c) => c.StudentQuestionnaireComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'TEACHER']},
   },
   {
     path: AppRoutes.TEACHER_RESULT,
@@ -57,6 +81,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./teacher-result/teacher-result.component').then(
         (c) => c.TeacherResultComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.GRADUATES,
@@ -64,6 +90,8 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./graduate/graduate.component').then(
         (c) => c.GraduateComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.TUITIONS,
@@ -71,6 +99,44 @@ export const HOME_CHILDREN_ROUTES: Routes = [
       import('./tuition/tuition.component').then(
         (c) => c.TuitionComponent,
       ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN']},
+  },
+  {
+    path: AppRoutes.STAFF,
+    loadComponent: () =>
+      import('./staff/staff.component').then(
+        (c) => c.StaffComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN']},
+  },
+  {
+    path: AppRoutes.EXAM_DISTRIBUTION,
+    loadComponent: () =>
+      import('./exam-distribution/exam-distribution.component').then(
+        (c) => c.ExamDistributionComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'TEACHER']},
+  },
+  {
+    path: AppRoutes.EXAM_SCHEDULE,
+    loadComponent: () =>
+      import('./exam-schedule/exam-schedule.component').then(
+        (c) => c.ExamScheduleComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
+  },
+  {
+    path: AppRoutes.SALARY_CONFIG,
+    loadComponent: () =>
+      import('./salary-config/salary-config.component').then(
+        (c) => c.SalaryConfigComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN']},
   },
   {
     path: '',

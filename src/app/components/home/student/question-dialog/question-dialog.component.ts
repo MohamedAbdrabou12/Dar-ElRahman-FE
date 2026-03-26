@@ -7,11 +7,10 @@ import {
 import {SurahDateComponent} from '../surah-date/surah-date.component';
 import {StudentService} from "../../../../services/student/student.service";
 import {StudentSurah} from "../../../../models/StudentSurah.model";
-import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-question-dialog',
-  imports: [MatDialogModule, SurahDateComponent, NgIf],
+  imports: [MatDialogModule, SurahDateComponent],
   templateUrl: './question-dialog.component.html',
   styleUrl: './question-dialog.component.scss',
 })

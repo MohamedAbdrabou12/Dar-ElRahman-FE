@@ -20,8 +20,7 @@ export class RegistrationComponent {
 
   /** User data model */
   user = {
-    firstName: '',
-    lastName: '',
+    fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -38,8 +37,7 @@ export class RegistrationComponent {
   toast: { message: string; type: 'success' | 'error' | 'warning' | 'info' } | null = null;
 
   /** References to form fields for focus control */
-  @ViewChild('firstNameInput') firstNameInput!: ElementRef;
-  @ViewChild('lastNameInput') lastNameInput!: ElementRef;
+  @ViewChild('fullNameInput') fullNameInput!: ElementRef;
   @ViewChild('emailInput') emailInput!: ElementRef;
   @ViewChild('passwordInput') passwordInput!: ElementRef;
   @ViewChild('confirmPasswordInput') confirmPasswordInput!: ElementRef;
@@ -95,15 +93,9 @@ export class RegistrationComponent {
 
   /** Validate form fields before submitting */
   private validateForm(form: NgForm): boolean {
-    if (!this.user.firstName.trim()) {
-      this.showToast('يرجى إدخال الاسم الأول 🧾', 'warning');
-      this.highlightField(this.firstNameInput);
-      return false;
-    }
-
-    if (!this.user.lastName.trim()) {
-      this.showToast('يرجى إدخال الاسم الأخير 🧾', 'warning');
-      this.highlightField(this.lastNameInput);
+    if (!this.user.fullName.trim()) {
+      this.showToast('يرجى إدخال الاسم الكامل 🧾', 'warning');
+      this.highlightField(this.fullNameInput);
       return false;
     }
 

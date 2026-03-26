@@ -1,359 +1,273 @@
 @if (rowSelected) {
-  <div class="d-flex justify-content-between details-container">
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات المُعلم</h3>
-        <p class="d-flex justify-content-between">
-          <strong>رقم المسلسل:</strong> {{ rowSelected?.teacher?.id }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الاسم رباعي:</strong> {{ rowSelected?.teacher?.fullName }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الرقم القومي:</strong> {{ rowSelected?.teacher?.nationalId }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>رقم الهاتف:</strong> {{ rowSelected?.teacher?.phoneNumber }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>البريد الالكترونى:</strong> {{ rowSelected?.teacher?.emailAddress }}
-        </p>
+  <div class="flex justify-end mb-4 no-print">
+    <button
+      type="button"
+      class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
+      (click)="printEntity()"
+    >
+      <i class="fas fa-print"></i>
+      طباعة نتيجة المُعلم
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 animate-fade-in-up">
+    <!-- بيانات المُعلم -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-chalkboard-teacher"></i>
+        بيانات المُعلم
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">رقم المسلسل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.teacher?.id }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الاسم رباعي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.teacher?.fullName }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الرقم القومي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.teacher?.nationalId }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">رقم الهاتف:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.teacher?.phoneNumber }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">البريد الالكترونى:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.teacher?.emailAddress }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات التسميع والمراجعه</h3>
-        <p class="card-text d-flex justify-content-between">
-          <strong>طلاب التسميع:</strong> {{ rowSelected.memorizationCount }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>الناجحين فى التسميع:</strong> {{ rowSelected.memorizationSuccessCount }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>إجمالى طلاب التسميع:</strong> {{ rowSelected.memorizationStudentCount }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>طلاب المراجعة:</strong> {{ rowSelected.revisionCount }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>الناجحين فى المراجعة:</strong> {{ rowSelected.revisionSuccessCount }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>إجمالى طلاب المراجعة:</strong> {{ rowSelected.revisionStudentCount }}
-        </p>
+    <!-- بيانات التسميع والمراجعة -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-book-reader"></i>
+        بيانات التسميع والمراجعه
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">طلاب التسميع:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.memorizationCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الناجحين فى التسميع:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.memorizationSuccessCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">إجمالى طلاب التسميع:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.memorizationStudentCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">طلاب المراجعة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.revisionCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الناجحين فى المراجعة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.revisionSuccessCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">إجمالى طلاب المراجعة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.revisionStudentCount }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات النجاح</h3>
-        <p class="card-text d-flex justify-content-between">
-          <strong>الناجحين فى السؤال الأول:</strong> {{ rowSelected.firstQuestionSuccessCount }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الناجحين فى السؤال الثانى:</strong>
-          {{ rowSelected.secondQuestionSuccessCount }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>الناجحين فى السؤال الثالث:</strong>
-          {{ rowSelected.thirdQuestionSuccessCount }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>نسبة النجاح فى التسميع:</strong>
-          {{ rowSelected.memorizationPercentage }}%
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>نسبة النجاح فى المراجعة:</strong>
-          {{ rowSelected.revisionPercentage }}%
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>إجمالى نسبة النجاح:</strong>
-          {{ rowSelected.successPercentage }}%
-        </p>
+    <!-- بيانات النجاح -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-chart-line"></i>
+        بيانات النجاح
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الناجحين فى السؤال الأول:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.firstQuestionSuccessCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الناجحين فى السؤال الثانى:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.secondQuestionSuccessCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الناجحين فى السؤال الثالث:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.thirdQuestionSuccessCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">نسبة النجاح فى التسميع:</span>
+          <span class="px-2 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded text-sm font-semibold">{{ rowSelected.memorizationPercentage }}%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">نسبة النجاح فى المراجعة:</span>
+          <span class="px-2 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 rounded text-sm font-semibold">{{ rowSelected.revisionPercentage }}%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">إجمالى نسبة النجاح:</span>
+          <span class="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-sm font-semibold">{{ rowSelected.successPercentage }}%</span>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Print-only area -->
+  <div class="print-area hidden">
+    <div class="print-header">
+      <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+      <h2>نتيجة المُعلم: {{ rowSelected?.teacher?.fullName }}</h2>
+      <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
+    </div>
+    <div class="print-cards-grid print-cols-3">
+      <div class="print-card">
+        <h3><i class="fas fa-chalkboard-teacher"></i> بيانات المُعلم</h3>
+        <div class="print-row"><span class="print-label">رقم المسلسل:</span><span class="print-value">{{ rowSelected?.teacher?.id }}</span></div>
+        <div class="print-row"><span class="print-label">الاسم رباعي:</span><span class="print-value">{{ rowSelected?.teacher?.fullName }}</span></div>
+        <div class="print-row"><span class="print-label">الرقم القومي:</span><span class="print-value">{{ rowSelected?.teacher?.nationalId }}</span></div>
+        <div class="print-row"><span class="print-label">رقم الهاتف:</span><span class="print-value">{{ rowSelected?.teacher?.phoneNumber }}</span></div>
+        <div class="print-row"><span class="print-label">البريد الالكترونى:</span><span class="print-value">{{ rowSelected?.teacher?.emailAddress }}</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-book-reader"></i> بيانات التسميع والمراجعه</h3>
+        <div class="print-row"><span class="print-label">طلاب التسميع:</span><span class="print-value">{{ rowSelected.memorizationCount }}</span></div>
+        <div class="print-row"><span class="print-label">الناجحين فى التسميع:</span><span class="print-value">{{ rowSelected.memorizationSuccessCount }}</span></div>
+        <div class="print-row"><span class="print-label">إجمالى طلاب التسميع:</span><span class="print-value">{{ rowSelected.memorizationStudentCount }}</span></div>
+        <div class="print-row"><span class="print-label">طلاب المراجعة:</span><span class="print-value">{{ rowSelected.revisionCount }}</span></div>
+        <div class="print-row"><span class="print-label">الناجحين فى المراجعة:</span><span class="print-value">{{ rowSelected.revisionSuccessCount }}</span></div>
+        <div class="print-row"><span class="print-label">إجمالى طلاب المراجعة:</span><span class="print-value">{{ rowSelected.revisionStudentCount }}</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-chart-line"></i> بيانات النجاح</h3>
+        <div class="print-row"><span class="print-label">الناجحين فى السؤال الأول:</span><span class="print-value">{{ rowSelected.firstQuestionSuccessCount }}</span></div>
+        <div class="print-row"><span class="print-label">الناجحين فى السؤال الثانى:</span><span class="print-value">{{ rowSelected.secondQuestionSuccessCount }}</span></div>
+        <div class="print-row"><span class="print-label">الناجحين فى السؤال الثالث:</span><span class="print-value">{{ rowSelected.thirdQuestionSuccessCount }}</span></div>
+        <div class="print-row"><span class="print-label">نسبة النجاح فى التسميع:</span><span class="print-badge">{{ rowSelected.memorizationPercentage }}%</span></div>
+        <div class="print-row"><span class="print-label">نسبة النجاح فى المراجعة:</span><span class="print-badge">{{ rowSelected.revisionPercentage }}%</span></div>
+        <div class="print-row"><span class="print-label">إجمالى نسبة النجاح:</span><span class="print-badge">{{ rowSelected.successPercentage }}%</span></div>
+      </div>
+    </div>
+    <div class="print-footer">
+      <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+      <span>{{ today | date: 'yyyy-MM-dd' }}</span>
     </div>
   </div>
 }
-<!-- Button to trigger the modal -->
 <button
   type="button"
-  class="details-button add-button butn"
-  data-bs-toggle="modal"
-  data-bs-target="#teacherResultModal"
+  class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
   (click)="handleAddClick()"
 >
+  <i class="fas fa-plus-circle"></i>
   اضافة نتيجة مُعَلِم جديد
 </button>
 
-<!-- Modal -->
-<div
-  #teacherResultModal
-  class="modal fade"
-  id="teacherResultModal"
-  tabindex="-1"
-  aria-labelledby="teacherResultModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error.error.errorDescription }}
-        </div>
-        <h5 class="modal-title" id="teacherResultModalLabel">بيانات المُعلم</h5>
-      </div>
-      <div class="modal-body">
-        <form
-          *ngIf="teacherResultForm"
-          [formGroup]="teacherResultForm"
-          (ngSubmit)="onSubmit()"
-        >
-          <div class="mb-3">
-            <label class="form-label" for="currentSurah">المُعلم:</label>
-            <select
-              class="form-control"
-              id="teacher"
-              formControlName="teacher"
-              [compareWith]="compareObjects"
-            >
-              <option *ngFor="let teacher of teachers" [ngValue]="teacher">{{ teacher.fullName }}</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="resultDate">تاريخ السؤال:</label>
-            <input
-              id="resultDate"
-              formControlName="resultDate"
-              class="form-control"
-              type="date"
-            />
-            <div
-              *ngIf="
-                teacherResultForm.get('resultDate')?.invalid &&
-                teacherResultForm.get('resultDate')?.touched
-              "
-              class="alert alert-danger"
-            >
-              <small *ngIf="teacherResultForm.get('resultDate')?.errors?.['required']"
-              >يجب تاريخ النتيجة</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="memorizationCount">عدد طلاب التسميع:</label>
-            <input
-              class="form-control"
-              id="memorizationCount"
-              formControlName="memorizationCount"
-              type="number"
-            />
-            <div
-              class="alert alert-danger"
-              *ngIf="
-                teacherResultForm.get('memorizationCount')?.invalid &&
-                teacherResultForm.get('memorizationCount')?.touched
-              "
-            >
-              <small *ngIf="teacherResultForm.get('memorizationCount')?.errors?.['pattern']"
-              >يجب عدد طلاب التسميع</small
-              >
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="memorizationSuccessCount">عدد الناجحين فى التسميع</label>
-            <input
-              class="form-control"
-              id="memorizationSuccessCount"
-              formControlName="memorizationSuccessCount"
-              type="number"
-            />
-            <div
-              class="alert alert-danger"
-              *ngIf="
-                teacherResultForm.get('memorizationSuccessCount')?.invalid &&
-                teacherResultForm.get('memorizationSuccessCount')?.touched
-              "
-            >
-              <small *ngIf="teacherResultForm.get('memorizationSuccessCount')?.errors?.['pattern']"
-              >يجب ادخال عدد الناجحين فى التسيمع</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="memorizationStudentCount"
-            >إجمالى طلاب التسميع:</label
-            >
-            <input
-              class="form-control"
-              id="memorizationStudentCount"
-              formControlName="memorizationStudentCount"
-              type="number"
-            />
-            <div
-              class="alert alert-danger"
-              *ngIf="
-                teacherResultForm.get('memorizationStudentCount')?.invalid &&
-                teacherResultForm.get('memorizationStudentCount')?.touched
-              "
-            >
-              <small
-                *ngIf="teacherResultForm.get('memorizationStudentCount')?.errors?.['pattern']"
-              >يجب أدخال عدد طلاب التسميع</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="revisionCount">عدد طلاب المراجعة</label>
-            <input
-              class="form-control"
-              id="revisionCount"
-              formControlName="revisionCount"
-              type="number"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="revisionSuccessCount">عدد الناجحين فى المراجعة:</label>
-            <input
-              class="form-control"
-              id="revisionSuccessCount"
-              formControlName="revisionSuccessCount"
-              type="number"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="revisionStudentCount">إجمالى طلاب المراجعة:</label>
-            <input
-              class="form-control"
-              id="revisionStudentCount"
-              formControlName="revisionStudentCount"
-              type="number"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="firstQuestionSuccessCount">عدد الناجحين فى السؤال الأول:</label>
-            <input
-              class="form-control"
-              id="firstQuestionSuccessCount"
-              formControlName="firstQuestionSuccessCount"
-              type="number"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="secondQuestionSuccessCount">عدد الناجحين فى السؤال الثانى:</label>
-            <input
-              id="secondQuestionSuccessCount"
-              formControlName="secondQuestionSuccessCount"
-              class="form-control"
-              type="number"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="thirdQuestionSuccessCount">عدد الناجحين فى السؤال الثالث:</label>
-            <input
-              class="form-control"
-              id="thirdQuestionSuccessCount"
-              formControlName="thirdQuestionSuccessCount"
-              type="number"
-            />
-          </div>
-
-          <div class="mb-3" class="modal-footer d-flex justify-content-end">
-            <div>
-              <button
-                *ngIf="buttonName === 'إضافة'"
-                type="submit"
-                [disabled]="teacherResultForm.invalid"
-                class="details-button butn"
-              >
-                {{ buttonName }}
-              </button>
-              <button
-                *ngIf="buttonName === 'تعديل'"
-                type="submit"
-                type="submit"
-                class="details-button butn"
-              >
-                {{ buttonName }}
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                class="danger-button butn"
-                (click)="reset()"
-                data-bs-dismiss="modal"
-              >
-                الغاء
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+<div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
+  <!-- Search Bar -->
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="بحث باسم المعلم، الرقم القومي..."
+        class="w-full pr-10 pl-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
+      />
     </div>
   </div>
-</div>
 
-<div class="table-container">
-  <div *ngIf="deleteError" class="alert alert-danger">
-    {{ deleteError }}
+  <!-- Error Message -->
+  <div *ngIf="deleteError" class="m-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <p class="text-red-700 dark:text-red-400 text-sm">{{ deleteError }}</p>
   </div>
-  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي نتائج للمعلمين\للمعلمات حتى الآن. </h2>
-  <table class="custom-table" *ngIf="data && data!.length > 0">
-    <thead class="thead-dark">
-    <tr>
-      <th>إسم المُعلم رباعي</th>
-      <th>الناجحين فى التسميع</th>
-      <th>الناجحين فى المراجعة</th>
-      <th>نسبة النجاح فى التسميع</th>
-      <th>نسبة النجاح فى المراجعة</th>
-      <th>إجمالى نسبة النجاح</th>
-      <th>العمليات</th>
-    </tr>
-    </thead>
-    <tbody>
-      @for (row of data; track row.id; ) {
+
+  <!-- Empty State -->
+  <div *ngIf="!filteredData || filteredData!.length == 0" class="p-12 text-center">
+    <i class="fas fa-chart-line text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لم يتم تسجيل أي نتائج للمعلمين\للمعلمات حتى الآن</h2>
+  </div>
+
+  <!-- Teacher Results Table -->
+  <div *ngIf="filteredData && filteredData!.length > 0" class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
         <tr>
-          <td>{{ row?.teacher?.fullName }}</td>
-          <td>{{ row.memorizationSuccessCount }}</td>
-          <td>{{ row.revisionSuccessCount }}</td>
-          <td>{{ row.memorizationPercentage }}%</td>
-          <td>{{ row.revisionPercentage }}%</td>
-          <td>{{ row.successPercentage }}%</td>
-          <td>
-            <div class="d-flex justify-content-between">
-              <button class="btn-sm details-button" (click)="selectRow(row)">
-                <i class="fa fa-eye"></i>
-                <span>البيانات</span>
-              </button>
-
-              <button
-                class="btn-sm edit-button"
-                (click)="editTeacherResult(row)"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#teacherResultModal"
-              >
-                <i class="fa fa-eye"></i>
-                <span>تعديل</span>
-              </button>
-
-              <button class="btn-sm delete-button" (click)="deleteTeacherResult(row)">
-                <i class="fa fa-eye"></i>
-                <span>حذف</span>
-              </button>
-            </div>
-          </td>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">إسم المُعلم رباعي</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الناجحين فى التسميع</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الناجحين فى المراجعة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نسبة النجاح فى التسميع</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نسبة النجاح فى المراجعة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">إجمالى نسبة النجاح</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        @for (row of filteredData; track row.id; ) {
+          <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+            <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row?.teacher?.fullName }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.memorizationSuccessCount }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.revisionSuccessCount }}</td>
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">{{ row.memorizationPercentage }}%</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400">{{ row.revisionPercentage }}%</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">{{ row.successPercentage }}%</span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2">
+                <button
+                  class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="selectRow(row)"
+                >
+                  <i class="fa fa-eye"></i>
+                  <span>عرض</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  data-bs-toggle="modal"
+                  data-bs-target="#teacherResultModal"
+                  (click)="editTeacherResult(row)"
+                >
+                  <i class="fa fa-edit"></i>
+                  <span>تعديل</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="deleteTeacherResult(row)"
+                >
+                  <i class="fa fa-trash"></i>
+                  <span>حذف</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-900">
+    <div class="text-sm text-gray-600 dark:text-gray-400">
+      صفحة {{ pageNo + 1 }} من {{ totalPages }} ({{ totalRecords }} سجل)
+    </div>
+    <div class="flex items-center gap-1">
+      <button (click)="goToPage(0)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo - 1)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo + 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-left"></i>
+      </button>
+      <button (click)="goToPage(totalPages - 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-left"></i>
+      </button>
+    </div>
+  </div>
 </div>

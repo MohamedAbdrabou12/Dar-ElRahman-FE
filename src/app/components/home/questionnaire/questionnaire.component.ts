@@ -1,7 +1,6 @@
 import {CommonModule} from '@angular/common';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Modal} from 'bootstrap';
 import {Questionnaire} from 'src/app/models/Questionnaire.model';
 import {Ring} from 'src/app/models/Ring.model';
 import {Surah} from 'src/app/models/Surah.model';
@@ -9,7 +8,8 @@ import {QuestionnaireService} from 'src/app/services/questionnaire/questionnaire
 import {RingService} from 'src/app/services/ring/ring.service';
 import {SurahsService} from 'src/app/services/surahs/surahs.service';
 import {QuestionnaireType} from "../../../models/enums/QuestionnaireType.enum";
-import {QuestionType} from "../../../models/enums/QuestionType.enum.js";
+import {MatDialog} from "@angular/material/dialog";
+import {AddQuestionnaireDialogComponent} from "./add-questionnaire-dialog/add-questionnaire-dialog.component";
 
 @Component({
   selector: 'app-questionnaire',
@@ -19,17 +19,22 @@ import {QuestionType} from "../../../models/enums/QuestionType.enum.js";
   standalone: true,
 })
 export class QuestionnaireComponent implements OnInit {
-  @ViewChild('questionnaireModal') questionnaireModal!: ElementRef;
-  private modalInstance: Modal | null = null;
+  private dialog = inject(MatDialog);
 
   data: Questionnaire[] = [];
+  filteredData: Questionnaire[] = [];
   rings: Ring[] = [];
   surahs: Surah[] = [];
   rowSelected: Questionnaire | undefined;
+
+  searchTerm = '';
+  pageNo = 0;
+  pageSize = 10;
+  totalRecords = 0;
+  totalPages = 0;
   buttonName = 'إضافة';
   questionnaire: Questionnaire = {
     questionnaireType: QuestionnaireType.memorization,
-    questionType: QuestionType.first,
     questionDate: new Date(),
     currentSurah: undefined,
     ring: undefined
@@ -55,15 +60,43 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   private getAllQuestionnaires() {
-    this.questionnaireService.getAllQuestionnaires().subscribe(
+    this.questionnaireService.getAllQuestionnaires(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.rowSelected = this.data[0];
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.applySearch();
+        if (!this.rowSelected) {
+          this.rowSelected = this.filteredData[0];
+        }
       },
       (error) => {
         console.error('Questionnaires fetch failed', error);
       }
     );
+  }
+
+  applySearch() {
+    if (!this.searchTerm.trim()) {
+      this.filteredData = this.data;
+      return;
+    }
+    const term = this.searchTerm.toLowerCase();
+    this.filteredData = this.data.filter((row: any) =>
+      row.ring?.name?.toLowerCase().includes(term) ||
+      row.currentSurah?.nameAr?.toLowerCase().includes(term) ||
+      row.id?.toString().includes(term)
+    );
+  }
+
+  onSearchChange() {
+    this.applySearch();
+  }
+
+  goToPage(page: number) {
+    if (page < 0 || page >= this.totalPages) return;
+    this.pageNo = page;
+    this.getAllQuestionnaires();
   }
 
   private getAllRings() {
@@ -92,7 +125,6 @@ export class QuestionnaireComponent implements OnInit {
     this.questionnaireForm = this.fb.group({
       id: [null],
       questionnaireType: [QuestionnaireType.memorization, Validators.required],
-      questionType: [QuestionType.first, Validators.required],
       questionDate: [new Date(), Validators.required],
       currentSurah: [null, Validators.required],
       ring: [null, Validators.required],
@@ -103,57 +135,58 @@ export class QuestionnaireComponent implements OnInit {
     this.rowSelected = row;
   }
 
-  onSubmit() {
-    if (this.buttonName === 'إضافة') {
-      this.questionnaireService.addQuestionnaire(this.questionnaireForm?.value).subscribe(
-        (response) => {
-          this.getAllQuestionnaires();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    } else {
-      this.questionnaireService.updateQuestionnaire(this.questionnaireForm?.value).subscribe(
-        (response) => {
-          this.getAllQuestionnaires();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    }
-  }
-
-  reset() {
-    this.questionnaire = {
-      questionnaireType: QuestionnaireType.memorization,
-      questionType: QuestionType.first,
-      questionDate: new Date(),
-      currentSurah: undefined,
-      ring: undefined
-    };
-    this.buttonName = 'إضافة';
-  }
 
   handleAddClick() {
-    this.reset();
-    this.buildQuestionnaireForm();
+    const dialogRef = this.dialog.open(AddQuestionnaireDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: false,
+        rings: this.rings,
+        surahs: this.surahs
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.questionnaireService.addQuestionnaire(result).subscribe({
+          next: () => {
+            this.getAllQuestionnaires();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   editQuestionnaire(questionnaire: Questionnaire) {
-    this.questionnaire = {...questionnaire};
-    this.questionnaireForm?.patchValue({
-      id: this.questionnaire.id,
-      questionnaireType: this.questionnaire.questionnaireType,
-      questionType: this.questionnaire.questionType,
-      questionDate: this.questionnaire.questionDate,
-      currentSurah: this.questionnaire.currentSurah,
-      ring: this.questionnaire.ring,
+    const dialogRef = this.dialog.open(AddQuestionnaireDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: true,
+        questionnaire: questionnaire,
+        rings: this.rings,
+        surahs: this.surahs
+      }
     });
-    this.buttonName = 'تعديل';
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.questionnaireService.updateQuestionnaire(result).subscribe({
+          next: () => {
+            this.getAllQuestionnaires();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   deleteQuestionnaire(questionnaire: Questionnaire) {
@@ -184,28 +217,5 @@ export class QuestionnaireComponent implements OnInit {
     }
   }
 
-  ngAfterViewInit() {
-    if (this.questionnaireModal) {
-      this.modalInstance = new Modal(this.questionnaireModal.nativeElement);
-    }
-  }
-
-  closeModal() {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-    }
-  }
-
   protected readonly QuestionnaireType = QuestionnaireType;
-  protected readonly QuestionType = QuestionType;
-
-  compareObjects(o1: any, o2: any): boolean {
-    return o1 && o2 ? o1.id === o2.id : o1 === o2;
-  }
 }

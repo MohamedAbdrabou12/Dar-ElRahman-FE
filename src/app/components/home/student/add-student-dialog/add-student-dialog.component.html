@@ -1,171 +1,374 @@
-<div class="row">
-  <div class="col-12 d-flex justify-content-between align-items-center title">
+<div class="bg-white dark:bg-neutral-800 rounded-lg max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-xl font-bold text-primary dark:text-success flex items-center gap-2">
+      <i class="fas fa-user-graduate"></i>
+      {{ data.student ? 'تعديل بيانات الطالب' : 'إضافة طالب جديد' }}
+    </h2>
     <button
-      class="close-btn d-flex justify-content-center align-items-center"
-      mat-button
+      type="button"
       mat-dialog-close
+      class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
     >
-      <span class="material-symbols-outlined">close</span>
+      <i class="fas fa-times text-xl"></i>
     </button>
-    <p class="fw-bold text-white m-0 p-2">إضافة طالب</p>
   </div>
-  <div class="col-12">
-    <mat-dialog-content>
-      <form class="row" [formGroup]="studentForm">
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>الاسم رباعى</mat-label>
-            <input matInput formControlName="fullName" id="fullName" type="text">
-            @if (studentForm.controls['fullName'].touched && studentForm.controls['fullName'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إدخال الإسم</mat-error>
+
+  <!-- Content -->
+  <div class="p-6 overflow-y-auto flex-1">
+    <form [formGroup]="studentForm" class="space-y-8">
+
+      <!-- Personal Information Section -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b-2 border-primary flex items-center gap-2">
+          <i class="fas fa-user"></i>
+          المعلومات الشخصية
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Full Name -->
+          <div>
+            <label for="fullName" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الاسم رباعى <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            @if(studentForm.controls['fullName'].touched && studentForm.controls['fullName'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إدخال الإسم</span>
+              </div>
             }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>الرقم القومي</mat-label>
-            <input matInput formControlName="nationalId" id="nationalId" type="text">
-            @if (studentForm.controls['nationalId'].touched && studentForm.controls['nationalId'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إدخال الرقم القومي</mat-error>
+          </div>
+
+          <!-- National ID -->
+          <div>
+            <label for="nationalId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الرقم القومي <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="nationalId"
+              type="text"
+              formControlName="nationalId"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            @if(studentForm.controls['nationalId'].touched && studentForm.controls['nationalId'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إدخال الرقم القومي</span>
+              </div>
             }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>إسم الأم</mat-label>
-            <input matInput formControlName="motherName" id="motherName" type="text">
-            @if (studentForm.controls['motherName'].touched && studentForm.controls['motherName'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إدخال إسم الأم</mat-error>
+          </div>
+
+          <!-- Birth Date -->
+          <div>
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>تاريخ الميلاد <span class="text-red-500">*</span></mat-label>
+              <input
+                matInput
+                [matDatepicker]="birthDatePicker"
+                formControlName="birthDate"
+                placeholder="اختر التاريخ"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="birthDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #birthDatePicker></mat-datepicker>
+              <mat-error *ngIf="studentForm.controls['birthDate'].hasError('required')">
+                الرجاء إختيار التاريخ
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Address -->
+          <div class="md:col-span-2">
+            <label for="address" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              العنوان <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="address"
+              type="text"
+              formControlName="address"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            @if(studentForm.controls['address'].touched && studentForm.controls['address'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إدخال العنوان</span>
+              </div>
             }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>تليفون الأم</mat-label>
-            <input matInput formControlName="motherPhoneNumber" id="motherPhoneNumber" type="text">
-            @if (studentForm.controls['motherPhoneNumber'].touched && studentForm.controls['motherPhoneNumber'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إدخال تليفون الأم</mat-error>
+          </div>
+
+          <!-- Gender -->
+          <div>
+            <label for="gender" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              النوع <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="gender"
+              formControlName="gender"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            >
+              <option value="">اختر النوع</option>
+              <option value="MALE">ذكر</option>
+              <option value="FEMALE">أنثى</option>
+            </select>
+            @if(studentForm.controls['gender'].touched && studentForm.controls['gender'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إختيار النوع</span>
+              </div>
             }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>العنوان</mat-label>
-            <input matInput formControlName="address" id="address" type="text">
-            @if (studentForm.controls['address'].touched && studentForm.controls['address'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إدخال العنوان</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>الحالة الإجتماعية</mat-label>
-            <mat-select formControlName="maritalStatus" required>
-              <mat-option value="orphan">يتيم</mat-option>
-              <mat-option value="single_parents">لديه والد</mat-option>
-              <mat-option value="living_parents">لديه والدان</mat-option>
-              <mat-option value="not_defined">غير معروف</mat-option>
-            </mat-select>
-            @if (studentForm.controls['maritalStatus'].touched && studentForm.controls['maritalStatus'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إختيار الحالة الإجتماعية</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>الحالة</mat-label>
-            <mat-select formControlName="status" required>
-              <mat-option value="connected">متصل</mat-option>
-              <mat-option value="stopped">منقطع</mat-option>
-            </mat-select>
-            @if (studentForm.controls['status'].touched && studentForm.controls['status'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إختيار الحالة</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>الفترة</mat-label>
-            <mat-select formControlName="periodName" required>
-              @for (period of data.periods; track period.name) {
-                <mat-option [value]="period.name">{{ period.nameAR }}</mat-option>
+          </div>
+
+          <!-- Marital Status -->
+          <div>
+            <label for="maritalStatus" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الحالة الإجتماعية <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="maritalStatus"
+              formControlName="maritalStatus"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            >
+              <option value="">اختر الحالة الإجتماعية</option>
+              @for (status of maritalStatuses; track status) {
+                <option [value]="status">{{ getArabicMaritalStatus(status) }}</option>
               }
-            </mat-select>
-            @if (studentForm.controls['periodName'].touched && studentForm.controls['periodName'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إختيار الفترة</mat-error>
+            </select>
+            @if(studentForm.controls['maritalStatus'].touched && studentForm.controls['maritalStatus'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إختيار الحالة الإجتماعية</span>
+              </div>
             }
-          </mat-form-field>
+          </div>
+
+          <!-- Profile Picture -->
+          <div>
+            <label class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الصورة الشخصية
+            </label>
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-full bg-gray-200 dark:bg-neutral-700 flex items-center justify-center overflow-hidden border-2 border-gray-300 dark:border-gray-600">
+                <img *ngIf="profilePicPreview" [src]="profilePicPreview" class="w-full h-full object-cover" />
+                <i *ngIf="!profilePicPreview" class="fas fa-user text-gray-400 text-2xl"></i>
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="px-4 py-2 bg-primary text-white rounded-lg cursor-pointer hover:bg-hover transition-colors text-sm font-semibold text-center">
+                  <i class="fas fa-upload ml-1"></i> رفع صورة
+                  <input type="file" accept="image/*" class="hidden" (change)="onProfilePicSelected($event)" />
+                </label>
+                <button *ngIf="profilePicPreview" type="button" (click)="removeProfilePic()" class="text-red-500 text-sm hover:underline">
+                  <i class="fas fa-trash-alt ml-1"></i> إزالة
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>الحلقة</mat-label>
-            <mat-select formControlName="ringId" required>
-              @for (ring of data.rings; track ring.id) {
-                <mat-option [value]="ring.id">{{ ring.name }}</mat-option>
+      </div>
+
+      <!-- Family Contact Information Section -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b-2 border-primary flex items-center gap-2">
+          <i class="fas fa-users"></i>
+          بيانات الأسرة
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Mother Name -->
+          <div>
+            <label for="motherName" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              إسم الأم <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="motherName"
+              type="text"
+              formControlName="motherName"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            @if(studentForm.controls['motherName'].touched && studentForm.controls['motherName'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إدخال إسم الأم</span>
+              </div>
+            }
+          </div>
+
+          <!-- Mother Phone -->
+          <div>
+            <label for="motherPhoneNumber" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              تليفون الأم <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="motherPhoneNumber"
+              type="text"
+              formControlName="motherPhoneNumber"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            @if(studentForm.controls['motherPhoneNumber'].touched && studentForm.controls['motherPhoneNumber'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إدخال تليفون الأم</span>
+              </div>
+            }
+          </div>
+
+          <!-- Father Phone -->
+          <div>
+            <label for="fatherPhoneNumber" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              تليفون الأب <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="fatherPhoneNumber"
+              type="text"
+              formControlName="fatherPhoneNumber"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            @if(studentForm.controls['fatherPhoneNumber'].touched && studentForm.controls['fatherPhoneNumber'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إدخال تليفون الأب</span>
+              </div>
+            }
+          </div>
+
+          <!-- Father Email -->
+          <div class="md:col-span-2 lg:col-span-3">
+            <label for="fatherEmailAddress" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              البريد الإلكتروني للأب <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="fatherEmailAddress"
+              type="email"
+              formControlName="fatherEmailAddress"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            />
+            @if(studentForm.controls['fatherEmailAddress'].touched && studentForm.controls['fatherEmailAddress'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إدخال البريد الإلكتروني للأب</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Academic Information Section -->
+      <div>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 pb-2 border-b-2 border-primary flex items-center gap-2">
+          <i class="fas fa-book-quran"></i>
+          البيانات الدراسية
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Period -->
+          <div>
+            <label for="periodId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الفترة <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="periodId"
+              formControlName="periodId"
+              (change)="onPeriodChange()"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            >
+              <option value="">اختر الفترة</option>
+              @for(period of data.periods; track period.id) {
+                <option [value]="period.id">{{ period.name }}</option>
               }
-            </mat-select>
-            @if (studentForm.controls['ringId'].touched && studentForm.controls['ringId'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إختيار الحلقة</mat-error>
+            </select>
+            @if(studentForm.controls['periodId'].touched && studentForm.controls['periodId'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إختيار الفترة</span>
+              </div>
             }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>تاريخ الإلتحاق بالدار</mat-label>
-            <input matInput formControlName="joiningDate" [matDatepicker]="joiningPicker" readonly>
-            <mat-datepicker-toggle matIconSuffix [for]="joiningPicker"></mat-datepicker-toggle>
-            <mat-datepicker #joiningPicker></mat-datepicker>
-            @if (studentForm.controls['joiningDate'].touched && studentForm.controls['joiningDate'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إختيار التاريخ</mat-error>
+          </div>
+
+          <!-- Ring -->
+          <div>
+            <label for="ringId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الحلقة <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="ringId"
+              formControlName="ringId"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            >
+              <option value="">اختر الحلقة</option>
+              @for(ring of filteredRings; track ring.id) {
+                <option [value]="ring.id">{{ ring.name }}</option>
+              }
+            </select>
+            @if(studentForm.controls['ringId'].touched && studentForm.controls['ringId'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إختيار الحلقة</span>
+              </div>
             }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>تاريخ الميلاد</mat-label>
-            <input matInput formControlName="birthDate" [matDatepicker]="dobPicker" readonly>
-            <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
-            <mat-datepicker #dobPicker></mat-datepicker>
-            @if (studentForm.controls['birthDate'].touched && studentForm.controls['birthDate'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إختيار التاريخ</mat-error>
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label for="status" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الحالة <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="status"
+              formControlName="status"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            >
+              <option value="">اختر الحالة</option>
+              <option value="connected">متصل</option>
+              <option value="stopped">منقطع</option>
+            </select>
+            @if(studentForm.controls['status'].touched && studentForm.controls['status'].hasError('required')) {
+              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>الرجاء إختيار الحالة</span>
+              </div>
             }
-          </mat-form-field>
+          </div>
+
+          <!-- Joining Date -->
+          <div class="md:col-span-2 lg:col-span-3">
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>تاريخ الإلتحاق بالدار <span class="text-red-500">*</span></mat-label>
+              <input
+                matInput
+                [matDatepicker]="joiningDatePicker"
+                formControlName="joiningDate"
+                placeholder="اختر التاريخ"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="joiningDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #joiningDatePicker></mat-datepicker>
+              <mat-error *ngIf="studentForm.controls['joiningDate'].hasError('required')">
+                الرجاء إختيار التاريخ
+              </mat-error>
+            </mat-form-field>
+          </div>
         </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>تليفون الأب</mat-label>
-            <input matInput formControlName="fatherPhoneNumber" id="fatherPhoneNumber" type="text">
-            @if (studentForm.controls['fatherPhoneNumber'].touched && studentForm.controls['fatherPhoneNumber'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إدخال تليفون الأب</mat-error>
-            }
-          </mat-form-field>
-        </div>
-        <div class="col-12 col-lg-4 mb-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>البريد الإلكتروني للأب</mat-label>
-            <input matInput formControlName="fatherEmailAddress" id="fatherEmailAddress" type="text">
-            @if (studentForm.controls['fatherEmailAddress'].touched && studentForm.controls['fatherEmailAddress'].hasError('required')) {
-              <mat-error class="small text-danger">الرجاء إدخال البريد الإلكتروني للأب</mat-error>
-            }
-          </mat-form-field>
-        </div>
-      </form>
-    </mat-dialog-content>
-    <mat-dialog-actions class="gap-3">
-      <button
-        class="close-btn fw-bold d-flex justify-content-center align-items-center py-2 px-4"
-        mat-button
-        mat-dialog-close
-      >
-        إغلاق
-      </button>
-      <button
-        class="add-btn fw-bold d-flex justify-content-center align-items-center py-2 px-4"
-        (click)="onSubmit()"
-        mat-button
-      >
-        {{ student ? 'تعديل' : 'إضافة' }}
-      </button>
-    </mat-dialog-actions>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+    <button
+      type="button"
+      mat-dialog-close
+      class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors font-semibold"
+    >
+      إلغاء
+    </button>
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="studentForm.invalid"
+      class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold shadow-md hover:shadow-lg"
+    >
+      {{ data.student ? 'تحديث' : 'إضافة' }}
+    </button>
   </div>
 </div>

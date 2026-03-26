@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BackendEndpoints } from 'src/app/constants/backend-endpoints';
 import { environment } from 'src/environments/environment';
@@ -11,9 +11,12 @@ import {TeacherResult} from "../../models/TeacherResult.model";
 export class TeacherResultService {
   constructor(private http: HttpClient) {}
 
-  getAllTeacherResults(): Observable<any> {
+  getAllTeacherResults(pageNo: number = 0, pageSize: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('pageNo', pageNo.toString())
+      .set('pageSize', pageSize.toString());
     return this.http.get<any>(
-      `${environment.memoApiUrl}${BackendEndpoints.teacher_result}`
+      `${environment.memoApiUrl}${BackendEndpoints.teacher_result}`, { params }
     );
   }
 

@@ -1,0 +1,149 @@
+<div class="space-y-6 animate-fade-in-up">
+  <!-- Header -->
+  <div class="flex items-center justify-between flex-wrap gap-3">
+    <h2 class="text-2xl font-bold text-primary dark:text-success flex items-center gap-2">
+      <i class="fas fa-calendar-day"></i>
+      جدول الاختبارات اليومي
+    </h2>
+  </div>
+
+  <!-- Date Navigation -->
+  <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-center gap-4 flex-wrap">
+      <button
+        class="px-4 py-2 bg-gray-200 dark:bg-neutral-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-neutral-600 transition-all duration-300 font-semibold text-sm"
+        (click)="goToPreviousDay()"
+      >
+        <i class="fas fa-chevron-right"></i>
+        اليوم السابق
+      </button>
+
+      <div class="flex items-center gap-3">
+        <input
+          type="date"
+          [(ngModel)]="selectedDate"
+          (ngModelChange)="onDateChange()"
+          class="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm font-semibold text-center"
+        />
+        <button
+          *ngIf="!isToday()"
+          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 font-semibold text-sm"
+          (click)="goToToday()"
+        >
+          اليوم
+        </button>
+      </div>
+
+      <button
+        class="px-4 py-2 bg-gray-200 dark:bg-neutral-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-neutral-600 transition-all duration-300 font-semibold text-sm"
+        (click)="goToNextDay()"
+      >
+        اليوم التالي
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="grid grid-cols-3 gap-4 mt-4">
+      <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 text-center border border-yellow-200 dark:border-yellow-800">
+        <div class="text-2xl font-bold text-yellow-700 dark:text-yellow-400">{{ getPendingCount() }}</div>
+        <div class="text-sm text-yellow-600 dark:text-yellow-500">قيد الانتظار</div>
+      </div>
+      <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 text-center border border-green-200 dark:border-green-800">
+        <div class="text-2xl font-bold text-green-700 dark:text-green-400">{{ getExaminedCount() }}</div>
+        <div class="text-sm text-green-600 dark:text-green-500">تم الاختبار</div>
+      </div>
+      <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 text-center border border-red-200 dark:border-red-800">
+        <div class="text-2xl font-bold text-red-700 dark:text-red-400">{{ getCancelledCount() }}</div>
+        <div class="text-sm text-red-600 dark:text-red-500">ملغى</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="error" class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <p class="text-red-700 dark:text-red-400 text-sm flex items-center gap-2">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ error }}
+    </p>
+  </div>
+  <div *ngIf="success" class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+    <p class="text-green-700 dark:text-green-400 text-sm flex items-center gap-2">
+      <i class="fas fa-check-circle"></i>
+      {{ success }}
+    </p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+    <i class="fas fa-spinner fa-spin text-4xl text-primary dark:text-success mb-4"></i>
+    <p class="text-gray-600 dark:text-gray-400">جاري تحميل الجدول...</p>
+  </div>
+
+  <!-- Grouped Schedules by Ring -->
+  <ng-container *ngIf="!loading">
+    <div *ngFor="let ringName of getGroupedKeys()" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-900">
+        <h3 class="text-lg font-bold text-primary dark:text-success flex items-center gap-2">
+          <i class="fas fa-mosque"></i>
+          {{ ringName }}
+          <span class="text-sm font-normal text-gray-500 dark:text-gray-400">({{ groupedSchedules.get(ringName)?.length }} طالب)</span>
+        </h3>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
+            <tr>
+              <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">اسم الطالب</th>
+              <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">السورة</th>
+              <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نوع الاختبار</th>
+              <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحالة</th>
+              <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tr *ngFor="let schedule of groupedSchedules.get(ringName)" class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+              <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ schedule.student?.fullName }}</td>
+              <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ schedule.questionnaire?.currentSurah?.nameAr }}</td>
+              <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">
+                {{ schedule.questionnaire?.questionnaireType === 'memorization' ? 'تسميع' : 'مراجعة' }}
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span class="px-2 py-1 rounded text-xs font-semibold" [ngClass]="getStatusClass(schedule.status)">
+                  {{ getStatusLabel(schedule.status) }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex justify-center items-center gap-2 flex-wrap">
+                  <button
+                    *ngIf="schedule.status === ExamStatus.PENDING"
+                    class="px-3 py-2 bg-green text-white rounded-lg hover:bg-green-600 transition-all duration-300 text-xs font-semibold flex items-center gap-1"
+                    (click)="markAsExamined(schedule.id!)"
+                  >
+                    <i class="fa fa-check"></i>
+                    <span>تم الاختبار</span>
+                  </button>
+                  <button
+                    *ngIf="schedule.status === ExamStatus.PENDING"
+                    class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 text-xs font-semibold flex items-center gap-1"
+                    (click)="cancelSchedule(schedule.id!)"
+                  >
+                    <i class="fa fa-times"></i>
+                    <span>إلغاء</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && schedules.length === 0" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+    <i class="fas fa-calendar-times text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لا توجد اختبارات مجدولة لهذا اليوم</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">{{ selectedDate }}</p>
+  </div>
+</div>

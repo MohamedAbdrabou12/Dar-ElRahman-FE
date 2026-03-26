@@ -1,0 +1,140 @@
+<div class="bg-white dark:bg-neutral-800 rounded-lg max-h-[90vh] flex flex-col">
+  <!-- Header -->
+  <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+    <h2 class="text-xl font-bold text-primary dark:text-success flex items-center gap-2">
+      <i class="fas fa-mosque"></i>
+      {{ data.isEdit ? 'تعديل' : 'إضافة' }} حلقة
+    </h2>
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+    >
+      <i class="fas fa-times text-xl"></i>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6 overflow-y-auto flex-1">
+    <form [formGroup]="ringForm" class="space-y-5">
+      <!-- Ring Name -->
+      <div>
+        <label for="name" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          اسم الحلقة <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          placeholder="أدخل اسم الحلقة"
+        />
+        <div *ngIf="ringForm.get('name')?.invalid && ringForm.get('name')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span *ngIf="ringForm.get('name')?.errors?.['required']">يجب إدخال اسم الحلقة</span>
+          <span *ngIf="ringForm.get('name')?.errors?.['minlength']">يجب أن يكون الاسم 5 أحرف على الأقل</span>
+        </div>
+      </div>
+
+      <!-- Teacher Selection -->
+      <div>
+        <label for="teacherId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          المُعلِم <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="teacherId"
+          formControlName="teacherId"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option [value]="null">اختر المُعلِم</option>
+          <option *ngFor="let teacher of teachers" [value]="teacher.id">
+            {{ teacher.fullName }}
+          </option>
+        </select>
+        <div *ngIf="ringForm.get('teacherId')?.invalid && ringForm.get('teacherId')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار المُعلِم</span>
+        </div>
+      </div>
+
+      <!-- Student Count -->
+      <div>
+        <label for="studentCount" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          عدد الطلاب <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="studentCount"
+          type="number"
+          formControlName="studentCount"
+          min="0"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          placeholder="0"
+        />
+        <div *ngIf="ringForm.get('studentCount')?.invalid && ringForm.get('studentCount')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب إدخال عدد الطلاب</span>
+        </div>
+      </div>
+
+      <!-- Period -->
+      <div>
+        <label for="periodId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          الفترة <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="periodId"
+          formControlName="periodId"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option [value]="null">اختر الفترة</option>
+          <option *ngFor="let period of periods" [value]="period.id">
+            {{ period.name }}
+          </option>
+        </select>
+        <div *ngIf="ringForm.get('periodId')?.invalid && ringForm.get('periodId')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار الفترة</span>
+        </div>
+      </div>
+
+      <!-- Memorization Part -->
+      <div>
+        <label for="memorizationPart" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          جزء الحفظ <span class="text-red-500">*</span>
+        </label>
+        <select
+          id="memorizationPart"
+          formControlName="memorizationPart"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        >
+          <option *ngFor="let part of memorizationParts" [value]="part">
+            {{ getArabicMemorizationPart(part) }}
+          </option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors font-semibold"
+    >
+      إلغاء
+    </button>
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="ringForm.invalid"
+      class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold shadow-md hover:shadow-lg"
+    >
+      {{ data.isEdit ? 'تحديث' : 'إضافة' }}
+    </button>
+  </div>
+</div>

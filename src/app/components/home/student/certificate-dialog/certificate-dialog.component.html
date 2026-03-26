@@ -1,0 +1,149 @@
+<div class="certificate-dialog">
+  <!-- Milestone Selection View -->
+  <div *ngIf="!showCertificate" class="milestone-selection">
+    <div class="dialog-header">
+      <h2 class="text-xl font-bold text-primary dark:text-success flex items-center gap-2">
+        <i class="fas fa-certificate"></i>
+        إنشاء شهادة إتمام حفظ
+      </h2>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        اختر المرحلة التي {{ data.student.gender === 'FEMALE' ? 'أتمتها الطالبة' : 'أتمها الطالب' }} <strong>{{ data.student.fullName }}</strong>
+      </p>
+    </div>
+
+    <div class="milestones-grid">
+      <button
+        *ngFor="let milestone of milestones"
+        class="milestone-card"
+        [style.border-color]="milestone.color"
+        (click)="selectMilestone(milestone)"
+      >
+        <div class="milestone-icon" [style.color]="milestone.color">
+          <i [class]="milestone.icon"></i>
+        </div>
+        <div class="milestone-parts" [style.color]="milestone.color">
+          {{ milestone.parts }}
+        </div>
+        <div class="milestone-label">
+          {{ milestone.parts === 30 ? 'ختم القرآن الكريم' : milestone.labelAr }}
+        </div>
+        <div class="milestone-parts-label">
+          {{ milestone.parts === 30 ? 'كاملاً' : 'جزءاً' }}
+        </div>
+      </button>
+    </div>
+
+    <div class="dialog-actions">
+      <button
+        type="button"
+        class="px-6 py-2.5 bg-gray-200 dark:bg-neutral-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-neutral-600 transition-all font-semibold"
+        (click)="onClose()"
+      >
+        إلغاء
+      </button>
+    </div>
+  </div>
+
+  <!-- Certificate Preview View -->
+  <div *ngIf="showCertificate && selectedMilestone" class="certificate-preview">
+    <div class="preview-toolbar">
+      <button
+        class="px-4 py-2 bg-gray-200 dark:bg-neutral-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-neutral-600 transition-all text-sm font-semibold flex items-center gap-2"
+        (click)="goBack()"
+      >
+        <i class="fas fa-arrow-right"></i>
+        رجوع
+      </button>
+      <button
+        class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-hover transition-all text-sm font-semibold flex items-center gap-2 shadow-md"
+        (click)="printCertificate()"
+      >
+        <i class="fas fa-print"></i>
+        طباعة الشهادة
+      </button>
+    </div>
+
+    <div class="preview-scroll">
+      <div id="certificate-print-area">
+        <div class="certificate-wrapper">
+          <!-- Outer Border -->
+          <div class="certificate-border-outer"></div>
+          <!-- Inner Border -->
+          <div class="certificate-border-inner"></div>
+
+          <!-- Corner Ornaments -->
+          <div class="corner-ornament top-right">✦</div>
+          <div class="corner-ornament top-left">✦</div>
+          <div class="corner-ornament bottom-right">✦</div>
+          <div class="corner-ornament bottom-left">✦</div>
+
+          <!-- Certificate Content -->
+          <div class="certificate-content">
+            <!-- Header -->
+            <div class="cert-header">
+              <div class="logo-area">
+                <img src="assets/imgs/logo3.png" alt="Logo" />
+                <div>
+                  <div class="cert-org-name">دار الرحمن لتحفيظ القرآن الكريم</div>
+                  <div class="cert-subtitle">Dar Al-Rahman for Quran Memorization</div>
+                </div>
+                <img src="assets/imgs/logo3.png" alt="Logo" />
+              </div>
+              <div class="cert-divider"></div>
+            </div>
+
+            <!-- Title -->
+            <div class="cert-title-section">
+              <i [class]="selectedMilestone.icon + ' cert-milestone-icon'" [style.color]="selectedMilestone.color"></i>
+              <div class="cert-title" [style.color]="selectedMilestone.color">شهادة إتمام حفظ</div>
+            </div>
+
+            <!-- Body -->
+            <div class="cert-body">
+              <div class="cert-text">تشهد إدارة دار الرحمن لتحفيظ القرآن الكريم بأن {{ data.student.gender === 'FEMALE' ? 'الطالبة' : 'الطالب' }}</div>
+
+              <!-- Profile Picture + Name -->
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                <img *ngIf="data.student.profilePictureUrl" [src]="data.student.profilePictureUrl" class="cert-profile-pic" />
+                <div *ngIf="!data.student.profilePictureUrl" class="cert-profile-placeholder" [style.border-color]="selectedMilestone.color">
+                  <i [class]="data.student.gender === 'FEMALE' ? 'fas fa-female' : 'fas fa-user'"></i>
+                </div>
+                <div class="cert-student-name" [style.border-bottom-color]="selectedMilestone.color">{{ data.student.fullName }}</div>
+              </div>
+
+              <div class="cert-text">
+                {{ data.student.gender === 'FEMALE' ? 'قد أتمت حفظ' : 'قد أتم حفظ' }}
+              </div>
+              <div class="cert-milestone-text" [style.color]="selectedMilestone.color">
+                {{ selectedMilestone.parts === 30 ? 'القرآن الكريم كاملاً' : selectedMilestone.labelAr + ' من القرآن الكريم' }}
+              </div>
+
+              <div class="cert-quran-verse">
+                ﴿ وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ ﴾
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="cert-footer">
+              <div class="cert-footer-item">
+                <span class="cert-footer-label">التاريخ</span>
+                <span class="cert-footer-value">{{ formatDate(today) }}</span>
+                <span class="cert-footer-label">{{ getHijriYear() }}</span>
+              </div>
+
+              <div class="cert-footer-item">
+                <span class="cert-footer-label">مدير الدار</span>
+                <div class="cert-signature-line"></div>
+              </div>
+
+              <div class="cert-footer-item">
+                <span class="cert-footer-label">المُعَلِم</span>
+                <div class="cert-signature-line"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

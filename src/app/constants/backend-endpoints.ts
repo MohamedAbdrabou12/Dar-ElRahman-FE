@@ -12,4 +12,13 @@ export class BackendEndpoints {
   public static teacher_result = '/api/v1/teacher-results';
   public static graduates = '/api/v1/graduates';
   public static tuitions = '/api/v1/tuitions';
+  public static staff = '/api/v1/staff';
+  public static activate = '/api/v1/auth/activate';
+  public static resendActivation = '/api/v1/auth/resend-activation';
+  public static forgotPassword = '/api/v1/auth/forgot-password';
+  public static validateResetToken = '/api/v1/auth/reset-password';
+  public static resetPassword = '/api/v1/auth/reset-password';
+  public static examSchedule = '/api/v1/exam-schedules';
+  public static salarySlabs = '/api/v1/salary-slabs';
+  public static profile = '/api/v1/profile';
 }

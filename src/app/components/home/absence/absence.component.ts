@@ -6,9 +6,9 @@ import { LoadingService } from 'src/app/services/loading.service';
 import {StudentAbsence} from "../../../models/StudentAbsence.model";
 import {StudentAbsenceService} from "../../../services/absence/absence.service";
 import {AddAbsenceDialogComponent} from "./add-student-absence-dialog/add-student-absence-dialog.component";
-import {NgClass, NgIf} from "@angular/common";
+import {DatePipe, NgClass, NgIf} from "@angular/common";
+import {FormsModule} from "@angular/forms";
 import {ConfirmDialogComponent} from "../../shared/confirmation/confirmation.component";
-import {Period} from "../../../models/enums/Period.enum";
 import {TeacherMaritalStatus} from "../../../models/enums/TeacherMaritalStatus.enum";
 import {StudentMaritalStatus} from "../../../models/enums/StudentMaritalStatus.enum";
 
@@ -17,13 +17,22 @@ import {StudentMaritalStatus} from "../../../models/enums/StudentMaritalStatus.e
   templateUrl: './absence.component.html',
   imports: [
     NgClass,
-    NgIf
+    NgIf,
+    FormsModule,
+    DatePipe
   ],
   styleUrls: ['./absence.component.scss']
 })
 export class AbsenceComponent {
   absences = signal<StudentAbsence[]>([]);
+  filteredAbsences = signal<StudentAbsence[]>([]);
   dialog = inject(MatDialog);
+
+  searchTerm = '';
+  pageNo = 0;
+  pageSize = 10;
+  totalRecords = 0;
+  totalPages = 0;
 
   rowSelected: StudentAbsence | undefined;
 
@@ -37,11 +46,15 @@ export class AbsenceComponent {
 
   loadAbsences() {
     this.loadingService.startLoading();
-    this.absenceService.getAllStudentAbsences().subscribe({
+    this.absenceService.getAllStudentAbsences(this.pageNo, this.pageSize).subscribe({
       next: (response) => {
         this.absences.set(response?.data);
-        this.rowSelected = this.absences()?.[0];
-
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.applySearch();
+        if (!this.rowSelected) {
+          this.rowSelected = this.filteredAbsences()?.[0];
+        }
         this.loadingService.stopLoading();
       },
       error: () => {
@@ -51,9 +64,38 @@ export class AbsenceComponent {
     });
   }
 
+  applySearch() {
+    const data = this.absences();
+    if (!this.searchTerm.trim()) {
+      this.filteredAbsences.set(data);
+      return;
+    }
+    const term = this.searchTerm.toLowerCase();
+    this.filteredAbsences.set(
+      data.filter((row: any) =>
+        row.student?.fullName?.toLowerCase().includes(term) ||
+        row.studentId?.toString().includes(term) ||
+        row.student?.ring?.name?.toLowerCase().includes(term) ||
+        row.absenceDate?.toLowerCase().includes(term)
+      )
+    );
+  }
+
+  onSearchChange() {
+    this.applySearch();
+  }
+
+  goToPage(page: number) {
+    if (page < 0 || page >= this.totalPages) return;
+    this.pageNo = page;
+    this.loadAbsences();
+  }
+
   openAddDialog() {
     const dialogRef = this.dialog.open(AddAbsenceDialogComponent, {
-      width: '480px', maxWidth: '95vw', height: '500px',
+      width: '500px',
+      maxHeight: '90vh',
+      direction: 'rtl',
       data: {
         mode: 'create',
       }
@@ -65,7 +107,9 @@ export class AbsenceComponent {
 
   openEditDialog(absence: StudentAbsence) {
     const dialogRef = this.dialog.open(AddAbsenceDialogComponent, {
-      width: '480px', maxWidth: '95vw' , height: '500px',
+      width: '500px',
+      maxHeight: '90vh',
+      direction: 'rtl',
       data: {
         mode: 'edit',
         details: absence
@@ -107,8 +151,11 @@ export class AbsenceComponent {
     return typeof status === 'string' && status === value;
   }
 
+  printEntity() {
+    window.print();
+  }
+
   private statusMap: { [key: string]: string } = {
-    [StudentMaritalStatus.not_defined]: 'غير معروف',
     [StudentMaritalStatus.single_parents]: 'لديه والد',
     [StudentMaritalStatus.living_parents]: 'لديه والدان',
     [StudentMaritalStatus.orphan]: 'يتيم'
@@ -119,7 +166,4 @@ export class AbsenceComponent {
       return '';
     return this.statusMap[status] || status;
   }
-
-  protected readonly Period = Period;
-  protected readonly StudentMaritalStatus = StudentMaritalStatus;
 }

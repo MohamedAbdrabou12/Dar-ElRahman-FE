@@ -1,54 +1,62 @@
 @if (rowSelected) {
-  <div class="d-flex justify-content-between details-container">
-    <!-- Questionnaire Details Section -->
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات السؤال</h3>
-        <p class="d-flex justify-content-between">
-          <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>نوع
-            الحفظ:</strong> {{ rowSelected.questionnaireType === QuestionnaireType.memorization ? 'تسميع' : 'مراجعة' }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>نوع
-            السؤال:</strong> {{ rowSelected.questionType === QuestionType.first ? 'أول' : (rowSelected.questionType === QuestionType.second ? 'ثالث' : 'ثانى') }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>تاريخ السؤال:</strong> {{ rowSelected.questionDate | date: 'yyyy-MM-dd' }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>السورة الحالية:</strong> {{ rowSelected.currentSurah?.nameAr }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الحلقة:</strong> {{ rowSelected.ring?.name }}
-        </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 animate-fade-in-up">
+    <!-- بيانات السؤال -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-question-circle"></i>
+        بيانات السؤال
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">رقم المسلسل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.id }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">نوع الحفظ:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.questionnaireType === QuestionnaireType.memorization ? 'تسميع' : 'مراجعة' }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ السؤال:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.questionDate | date: 'yyyy-MM-dd' }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">السورة الحالية:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.currentSurah?.nameAr }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الحلقة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.ring?.name }}</span>
+        </div>
       </div>
     </div>
-    <div class="card" *ngIf="rowSelected.questionnaireResult">
-      <div class="card-body">
-        <h3 class="card-title">نتيجة السؤال</h3>
-        <p class="d-flex justify-content-between">
-          <strong>عدد النقاط:</strong>
-          {{ rowSelected.questionnaireResult.questionPoints }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>عدد الناجحين:</strong>
-          {{ rowSelected.questionnaireResult.successCount }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>عدد الراسبين:</strong>
-          {{ rowSelected.questionnaireResult.failedCount }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>عدد الغائبين:</strong>
-          {{ rowSelected.questionnaireResult.absenceCount }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>نسبة النجاح:</strong>
-          {{ rowSelected.questionnaireType === QuestionnaireType.memorization ? rowSelected.questionnaireResult.successPercentage : rowSelected.questionnaireResult.revisionPercentage }} %
-        </p>
+
+    <!-- نتيجة السؤال -->
+    <div *ngIf="rowSelected.questionnaireResult" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-chart-bar"></i>
+        نتيجة السؤال
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">عدد النقاط:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.questionnaireResult.questionPoints }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">عدد الناجحين:</span>
+          <span class="px-2 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded text-sm font-semibold">{{ rowSelected.questionnaireResult.successCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">عدد الراسبين:</span>
+          <span class="px-2 py-1 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded text-sm font-semibold">{{ rowSelected.questionnaireResult.failedCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">عدد الغائبين:</span>
+          <span class="px-2 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 rounded text-sm font-semibold">{{ rowSelected.questionnaireResult.absenceCount }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">نسبة النجاح:</span>
+          <span class="px-2 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded text-sm font-semibold">{{ rowSelected.questionnaireType === QuestionnaireType.memorization ? rowSelected.questionnaireResult.successPercentage : rowSelected.questionnaireResult.revisionPercentage }}%</span>
+        </div>
       </div>
     </div>
   </div>
@@ -56,187 +64,122 @@
 <!-- Button to trigger the modal -->
 <button
   type="button"
-  class="details-button add-button btn"
-  data-bs-toggle="modal"
-  data-bs-target="#questionnaireModal"
+  class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg mb-4"
   (click)="handleAddClick()"
 >
-  اضافة سؤال جديد
+  <i class="fas fa-plus-circle"></i>
+  <span>إضافة سؤال جديد</span>
 </button>
 
-<!-- Modal -->
-<div
-  #questionnaireModal
-  class="modal fade"
-  id="questionnaireModal"
-  tabindex="-1"
-  aria-labelledby="questionnaireModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error.error.errorDescription }}
-        </div>
-        <h5 class="modal-title" id="questionnaireModalLabel">بيانات السؤال</h5>
-      </div>
-      <div class="modal-body">
-        <form
-          *ngIf="questionnaireForm"
-          [formGroup]="questionnaireForm"
-          (ngSubmit)="onSubmit()"
-        >
-          <div class="mb-3">
-            <label class="form-label" for="questionnaireType">نوع الحفظ:</label>
-            <select
-              class="form-control"
-              id="questionnaireType"
-              formControlName="questionnaireType"
-            >
-              <option [ngValue]="QuestionnaireType.memorization">تسميع</option>
-              <option [ngValue]="QuestionnaireType.revision">مراجعة</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="questionType">نوع السؤال:</label>
-            <select
-              class="form-control"
-              id="questionType"
-              formControlName="questionType"
-            >
-              <option [ngValue]="QuestionType.first">أول</option>
-              <option [ngValue]="QuestionType.second">ثانى</option>
-              <option [ngValue]="QuestionType.third">ثالث</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="questionDate">تاريخ السؤال:</label>
-            <input
-              id="questionDate"
-              formControlName="questionDate"
-              class="form-control"
-              type="date"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="currentSurah">السورة الحالية:</label>
-            <select
-              class="form-control"
-              id="currentSurah"
-              formControlName="currentSurah"
-              [compareWith]="compareObjects"
-            >
-              <option *ngFor="let surah of surahs" [ngValue]="surah">{{ surah.nameAr }}</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="ring">الحلقة:</label>
-            <select
-              class="form-control"
-              id="ring"
-              formControlName="ring"
-              [compareWith]="compareObjects"
-            >
-              <option *ngFor="let ring of rings" [ngValue]="ring">{{ ring.name }}</option>
-            </select>
-          </div>
-
-          <div class="mb-3 modal-footer d-flex justify-content-end">
-            <div>
-              <button
-                *ngIf="buttonName === 'إضافة'"
-                type="submit"
-                [disabled]="questionnaireForm.invalid"
-                class="details-button btn"
-              >
-                {{ buttonName }}
-              </button>
-              <button
-                *ngIf="buttonName === 'تعديل'"
-                type="submit"
-                class="details-button btn"
-              >
-                {{ buttonName }}
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                class="danger-button btn"
-                (click)="reset()"
-                data-bs-dismiss="modal"
-              >
-                الغاء
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+<div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
+  <!-- Search Bar -->
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="بحث بالحلقة، السورة، رقم المسلسل..."
+        class="w-full pr-10 pl-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
+      />
     </div>
   </div>
-</div>
 
-<div class="table-container">
-  <div *ngIf="deleteError" class="alert alert-danger">
-    {{ deleteError }}
+  <!-- Error Message -->
+  <div *ngIf="deleteError" class="m-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <p class="text-red-700 dark:text-red-400 text-sm">{{ deleteError }}</p>
   </div>
-  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي أسئلة حتى الآن. </h2>
-  <table class="custom-table" *ngIf="data && data!.length > 0">
-    <thead class="thead-dark">
-    <tr>
-      <th>نوع الحفظ</th>
-      <th>نوع السؤال</th>
-      <th>تاريخ السؤال</th>
-      <th>السورة الحالية</th>
-      <th>الحلقة</th>
-      <th>العمليات</th>
-    </tr>
-    </thead>
-    <tbody>
-      @for (row of data; track row.id; ) {
+
+  <!-- Empty State -->
+  <div *ngIf="!filteredData || filteredData!.length == 0" class="p-12 text-center">
+    <i class="fas fa-question-circle text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لم يتم تسجيل أي أسئلة حتى الآن</h2>
+  </div>
+
+  <!-- Questionnaire Table -->
+  <div *ngIf="filteredData && filteredData!.length > 0" class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
         <tr>
-          <td>{{ row.questionnaireType === QuestionnaireType.memorization ? 'تسميع' : 'مراجعة' }}</td>
-          <td>{{ row.questionType === QuestionType.first ? 'أول' : (row.questionType === QuestionType.second ? 'ثالث' : 'ثانى') }}</td>
-          <td>{{ row.questionDate | date: 'yyyy-MM-dd' }}</td>
-          <td>{{ row.currentSurah?.nameAr }}</td>
-          <td>{{ row.ring?.name }}</td>
-          <td>
-            <div class="d-flex justify-content-between">
-              <button class="btn-sm details-button" (click)="selectRow(row)">
-                <i class="fa fa-eye"></i>
-                <span>البيانات</span>
-              </button>
-
-              <button
-                class="btn-sm edit-button"
-                (click)="editQuestionnaire(row)"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#questionnaireModal"
-              >
-                <i class="fa fa-edit"></i>
-                <span>تعديل</span>
-              </button>
-
-              <button class="btn-sm mark-button" type="button" (click)="markStudentQuestionnaireAsDone(row)"
-                      [disabled]="row.done">
-                <i class="fa fa-check"></i>
-                <span>أخْتُبِر</span>
-              </button>
-
-              <button class="btn-sm danger-button" (click)="deleteQuestionnaire(row)">
-                <i class="fa fa-trash"></i>
-                <span>حذف</span>
-              </button>
-            </div>
-          </td>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نوع الحفظ</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">تاريخ السؤال</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">السورة الحالية</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحلقة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        @for (row of filteredData; track row.id; ) {
+          <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.questionnaireType === QuestionnaireType.memorization ? 'تسميع' : 'مراجعة' }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.questionDate | date: 'yyyy-MM-dd' }}</td>
+            <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row.currentSurah?.nameAr }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.ring?.name }}</td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2 flex-wrap">
+                <button
+                  class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="selectRow(row)"
+                >
+                  <i class="fa fa-eye"></i>
+                  <span>عرض</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="editQuestionnaire(row)"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#questionnaireModal"
+                >
+                  <i class="fa fa-edit"></i>
+                  <span>تعديل</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-green text-white rounded-lg hover:bg-green-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  type="button"
+                  (click)="markStudentQuestionnaireAsDone(row)"
+                  [disabled]="row.done"
+                >
+                  <i class="fa fa-check"></i>
+                  <span>أخْتُبِر</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="deleteQuestionnaire(row)"
+                >
+                  <i class="fa fa-trash"></i>
+                  <span>حذف</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-900">
+    <div class="text-sm text-gray-600 dark:text-gray-400">
+      صفحة {{ pageNo + 1 }} من {{ totalPages }} ({{ totalRecords }} سجل)
+    </div>
+    <div class="flex items-center gap-1">
+      <button (click)="goToPage(0)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo - 1)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo + 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-left"></i>
+      </button>
+      <button (click)="goToPage(totalPages - 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-left"></i>
+      </button>
+    </div>
+  </div>
 </div>

@@ -1,23 +1,42 @@
 @if (rowSelected) {
-  <div class="d-flex justify-content-between details-container">
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات الطالب</h3>
-        <p class="d-flex justify-content-between">
-          <strong>رقم المسلسل:</strong> {{ rowSelected?.student?.id }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الاسم رباعي:</strong> {{ rowSelected?.student?.fullName }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الرقم القومي:</strong> {{ rowSelected?.student?.nationalId }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الحالة:</strong>
+  <div class="flex justify-end mb-4 no-print">
+    <button
+      type="button"
+      class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
+      (click)="printEntity()"
+    >
+      <i class="fas fa-print"></i>
+      طباعة بيانات الغياب
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 animate-fade-in-up">
+    <!-- بيانات الطالب -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-user-graduate"></i>
+        بيانات الطالب
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">رقم المسلسل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.id }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الاسم رباعي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.fullName }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الرقم القومي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.nationalId }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الحالة:</span>
           <span
+            class="font-semibold px-3 py-1 rounded-full text-sm"
             [ngClass]="{
-              'green-status': isStatus(rowSelected?.student?.status, 'connected'),
-              'green-danger': isStatus(rowSelected?.student?.status, 'stopped')
+              'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': isStatus(rowSelected?.student?.status, 'connected'),
+              'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': isStatus(rowSelected?.student?.status, 'stopped')
             }"
           >
             {{
@@ -28,80 +47,155 @@
                   : ""
             }}
           </span>
-        </p>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات الغياب</h3>
-        <p class="card-text d-flex justify-content-between">
-          <strong>تاريخ الغياب:</strong> {{ rowSelected?.absenceDate }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong> عدد مرات الغياب منذ ذلك الوقت:</strong> {{ rowSelected?.absenceCounter }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الفترة:</strong> {{ rowSelected?.student?.ring?.period === Period.first ? 'أولى' : (rowSelected?.student?.ring?.period === Period.second ? 'ثانية' : 'ممتدة') }}
-        </p>
+    <!-- بيانات الغياب -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-calendar-times"></i>
+        بيانات الغياب
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الغياب:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.absenceDate }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">عدد مرات الغياب:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.absenceCounter }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الفترة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.ring?.periodName  }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات أخرى</h3>
-        <p class="card-text d-flex justify-content-between">
-          <strong>الحالة الاجتماعية:</strong> {{ getArabicStatus(rowSelected?.student?.maritalStatus) }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الفصل:</strong> {{ rowSelected?.student?.ring?.name }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>تاريخ الالتحاق:</strong> {{ rowSelected?.student?.joiningDate }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>تاريخ الميلاد:</strong>{{ rowSelected?.student?.birthDate }}
-        </p>
+    <!-- بيانات أخرى -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-info-circle"></i>
+        بيانات أخرى
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الحالة الاجتماعية:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ getArabicStatus(rowSelected?.student?.maritalStatus) }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الفصل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.ring?.name }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الالتحاق:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.joiningDate }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الميلاد:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.birthDate }}</span>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Print-only area -->
+  <div class="print-area hidden">
+    <div class="print-header">
+      <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+      <h2>بيانات غياب الطالب: {{ rowSelected?.student?.fullName }}</h2>
+      <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
+    </div>
+    <div class="print-cards-grid print-cols-3">
+      <div class="print-card">
+        <h3><i class="fas fa-user-graduate"></i> بيانات الطالب</h3>
+        <div class="print-row"><span class="print-label">رقم المسلسل:</span><span class="print-value">{{ rowSelected?.student?.id }}</span></div>
+        <div class="print-row"><span class="print-label">الاسم رباعي:</span><span class="print-value">{{ rowSelected?.student?.fullName }}</span></div>
+        <div class="print-row"><span class="print-label">الرقم القومي:</span><span class="print-value">{{ rowSelected?.student?.nationalId }}</span></div>
+        <div class="print-row"><span class="print-label">الحالة:</span><span class="print-badge">{{ isStatus(rowSelected?.student?.status, 'stopped') ? "منقطع" : "متصل" }}</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-calendar-times"></i> بيانات الغياب</h3>
+        <div class="print-row"><span class="print-label">تاريخ الغياب:</span><span class="print-value">{{ rowSelected?.absenceDate }}</span></div>
+        <div class="print-row"><span class="print-label">عدد مرات الغياب:</span><span class="print-value">{{ rowSelected?.absenceCounter }}</span></div>
+        <div class="print-row"><span class="print-label">الفترة:</span><span class="print-value">{{ rowSelected?.student?.ring?.periodName }}</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-info-circle"></i> بيانات أخرى</h3>
+        <div class="print-row"><span class="print-label">الحالة الاجتماعية:</span><span class="print-value">{{ getArabicStatus(rowSelected?.student?.maritalStatus) }}</span></div>
+        <div class="print-row"><span class="print-label">الفصل:</span><span class="print-value">{{ rowSelected?.student?.ring?.name }}</span></div>
+        <div class="print-row"><span class="print-label">تاريخ الالتحاق:</span><span class="print-value">{{ rowSelected?.student?.joiningDate }}</span></div>
+        <div class="print-row"><span class="print-label">تاريخ الميلاد:</span><span class="print-value">{{ rowSelected?.student?.birthDate }}</span></div>
+      </div>
+    </div>
+    <div class="print-footer">
+      <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+      <span>{{ today | date: 'yyyy-MM-dd' }}</span>
     </div>
   </div>
 }
 
 <main class="p-2">
-  <button class="details-button add-button"
-          (click)="openAddDialog()">إضافة غياب
+  <button
+    class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg mb-4"
+    (click)="openAddDialog()">
+    <i class="fas fa-plus-circle"></i>
+    <span>إضافة غياب</span>
   </button>
 
-  <div class="table-container">
-    <h2 *ngIf="!absences() || absences()!.length == 0">لم يتم تسجيل أي غيابات لأي من الطلاب حتى الآن. </h2>
-    <table class="custom-table" style="text-align: center" *ngIf="absences() && absences()!.length > 0">
-      <thead class="thead-dark">
+  <div class="table-container bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <!-- Search Bar -->
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="relative">
+        <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange()"
+          placeholder="بحث باسم الطالب، الحلقة، تاريخ الغياب..."
+          class="w-full pr-10 pl-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
+        />
+      </div>
+    </div>
+
+    <div *ngIf="!filteredAbsences() || filteredAbsences()!.length == 0" class="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-gray-400">
+      <i class="fas fa-calendar-times text-6xl mb-4 opacity-50"></i>
+      <h2 class="text-xl font-semibold">لم يتم تسجيل أي غيابات لأي من الطلاب حتى الآن</h2>
+    </div>
+    <table class="w-full" style="text-align: center" *ngIf="filteredAbsences() && filteredAbsences()!.length > 0">
+      <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
       <tr>
-        <th>رقم المسلسل للطالب</th>
-        <th>الاسم</th>
-        <th>الحلقة</th>
-        <th>تاريخ الغياب</th>
-        <th>العمليات</th>
+        <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">رقم المسلسل للطالب</th>
+        <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الاسم</th>
+        <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحلقة</th>
+        <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">تاريخ الغياب</th>
+        <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
       </tr>
       </thead>
-      <tbody>
-        @for (absence of absences(); track absence.id; let i = $index) {
-          <tr>
-            <td>{{ absence.studentId }}</td>
-            <td>{{ absence.student?.fullName }}</td>
-            <td>{{ absence.student?.ring?.name }}</td>
-            <td>{{ absence.absenceDate }}</td>
-            <td>
-              <div class="d-flex justify-content-center gap-3">
-                <button class="btn-sm details-button" (click)="selectRow(absence)">
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        @for (absence of filteredAbsences(); track absence.id; let i = $index) {
+          <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ absence.studentId }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ absence.student?.fullName }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ absence.student?.ring?.name }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ absence.absenceDate }}</td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2">
+                <button class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold" (click)="selectRow(absence)">
                   <i class="fa fa-eye"></i>
-                  <span>البيانات</span>
+                  <span>عرض</span>
                 </button>
-                <button class="btn-sm edit-button" (click)="openEditDialog(absence)">
-                  تعديل
+                <button
+                  class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="openEditDialog(absence)"
+                >
+                  <i class="fa fa-edit"></i>
+                  <span>تعديل</span>
                 </button>
-                <button class="btn-sm delete-button" (click)="deleteAbsence(absence)">
-                  حذف
+                <button class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold" (click)="deleteAbsence(absence)">
+                  <i class="fa fa-trash"></i>
+                  <span>حذف</span>
                 </button>
               </div>
             </td>
@@ -109,6 +203,27 @@
         }
       </tbody>
     </table>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-900">
+      <div class="text-sm text-gray-600 dark:text-gray-400">
+        صفحة {{ pageNo + 1 }} من {{ totalPages }} ({{ totalRecords }} سجل)
+      </div>
+      <div class="flex items-center gap-1">
+        <button (click)="goToPage(0)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+          <i class="fas fa-angle-double-right"></i>
+        </button>
+        <button (click)="goToPage(pageNo - 1)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+          <i class="fas fa-angle-right"></i>
+        </button>
+        <button (click)="goToPage(pageNo + 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+          <i class="fas fa-angle-left"></i>
+        </button>
+        <button (click)="goToPage(totalPages - 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+          <i class="fas fa-angle-double-left"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </main>
 

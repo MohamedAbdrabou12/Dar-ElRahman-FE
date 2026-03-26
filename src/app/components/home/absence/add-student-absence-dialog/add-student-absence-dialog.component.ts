@@ -1,64 +1,32 @@
 import { Component, Inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogTitle,
-  MatDialogActions
-} from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { StudentService } from 'src/app/services/student/student.service';
 import { Student } from 'src/app/models/Student.model';
 import { AlertService } from 'src/app/services/alert.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import {StudentAbsenceService} from "../../../../services/absence/absence.service";
-import {MatFormField, MatFormFieldModule} from "@angular/material/form-field";
-import {MatOption, MatSelect, MatLabel} from "@angular/material/select";
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from "@angular/material/datepicker";
-import {MatInput, MatInputModule} from "@angular/material/input";
-import {MatButton} from "@angular/material/button";
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, NativeDateAdapter} from "@angular/material/core";
-import {DatePipe} from "@angular/common";
-
-export const MY_DATE_FORMATS = {
-  parse: {
-    dateInput: 'YYYY-MM-DD',
-  },
-  display: {
-    dateInput: 'YYYY-MM-DD',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'LL',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
 
 @Component({
   selector: 'app-add-absence-dialog',
+  standalone: true,
   templateUrl: './add-student-absence-dialog.component.html',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
-    MatFormField,
-    MatSelect,
-    MatOption,
-    MatDatepickerToggle,
-    MatInput,
-    MatDatepicker,
-    MatDatepickerInput,
-    MatButton,
-    MatDialogClose,
-    MatFormFieldModule,
-    MatInputModule,
     FormsModule,
-    MatDialogContent,
-    MatDialogTitle,
-    MatDialogActions
-  ],
-  providers: [
-    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },  // Optional: Set your locale (e.g., 'en-US' or 'en-GB')
-    { provide: DateAdapter, useClass: NativeDateAdapter }, // Provide the NativeDateAdapter
-    DatePipe,
+    MatDialogModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
   styleUrls: ['./add-student-absence-dialog.component.scss']
 })
@@ -73,7 +41,6 @@ export class AddAbsenceDialogComponent implements OnInit {
     private absenceService: StudentAbsenceService,
     private alertService: AlertService,
     private loadingService: LoadingService,
-    private datePipe: DatePipe,
     public dialogRef: MatDialogRef<AddAbsenceDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -100,6 +67,15 @@ export class AddAbsenceDialogComponent implements OnInit {
     });
   }
 
+  private formatDate(date: Date | string | null): string | null {
+    if (!date) return null;
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   onSubmit() {
     this.absenceForm.markAllAsTouched();
 
@@ -112,9 +88,10 @@ export class AddAbsenceDialogComponent implements OnInit {
 
       if (this.data?.mode === 'edit') {
         // Update
-        const payload = { id,
+        const payload = { 
+          id,
           studentId,
-          absenceDate: this.datePipe.transform(absenceDate, 'yyyy-MM-dd')
+          absenceDate: this.formatDate(absenceDate)
         };
 
         this.absenceService.updateStudentAbsence(payload).subscribe({
@@ -132,7 +109,7 @@ export class AddAbsenceDialogComponent implements OnInit {
         // Create
         const payload = {
           studentId,
-          absenceDate: this.datePipe.transform(absenceDate, 'yyyy-MM-dd')
+          absenceDate: this.formatDate(absenceDate)
         };
         this.absenceService.createStudentAbsence(payload).subscribe({
           next: () => {

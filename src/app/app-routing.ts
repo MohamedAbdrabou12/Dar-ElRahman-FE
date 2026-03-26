@@ -6,7 +6,7 @@ import { publicGuard } from './core/guards/public-guard';
 export const APP_ROUTES: Routes = [
   {
     path: AppRoutes.REGISTRATION,
-    canActivate: [publicGuard],
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./components/registration/registration.component').then(
         (c) => c.RegistrationComponent
@@ -30,6 +30,27 @@ export const APP_ROUTES: Routes = [
     loadChildren: () =>
       import('./components/home/home-routing').then(
         (routes) => routes.HOME_CHILDREN_ROUTES,
+      ),
+  },
+  {
+    path: AppRoutes.ACTIVATE,
+    loadComponent: () =>
+      import('./components/activate/activate.component').then(
+        (c) => c.ActivateComponent
+      ),
+  },
+  {
+    path: AppRoutes.FORGOT_PASSWORD,
+    loadComponent: () =>
+      import('./components/forgot-password/forgot-password.component').then(
+        (c) => c.ForgotPasswordComponent
+      ),
+  },
+  {
+    path: AppRoutes.RESET_PASSWORD,
+    loadComponent: () =>
+      import('./components/reset-password/reset-password.component').then(
+        (c) => c.ResetPasswordComponent
       ),
   },
   {

@@ -100,19 +100,15 @@
       </form>
 
       <!-- Forgot Password -->
-      <p class="mt-4 text-sm text-primary dark:text-dark-hover cursor-pointer hover:underline transition-all duration-300 text-center">
-        نسيت كلمة المرور؟
+      <p class="mt-4 text-sm text-center">
+        <a [routerLink]="['/', AppRoutes.FORGOT_PASSWORD]" class="text-primary dark:text-dark-hover cursor-pointer hover:underline transition-all duration-300">
+          نسيت كلمة المرور؟
+        </a>
       </p>
 
-      <!-- Register -->
-      <p class="mt-2 text-sm text-text dark:text-dark-text text-center">
-        ليس لديك حساب؟
-        <a
-          [routerLink]="['/', AppRoutes.REGISTRATION]"
-          class="text-primary dark:text-dark-hover font-semibold hover:underline transition-all duration-300"
-        >
-          قم بالتسجيل
-        </a>
+      <!-- Info -->
+      <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 text-center">
+        إذا لم يكن لديك حساب، يرجى التواصل مع الإدارة.
       </p>
     </div>
   </div>

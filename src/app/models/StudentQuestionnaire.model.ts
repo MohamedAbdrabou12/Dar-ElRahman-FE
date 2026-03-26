@@ -8,6 +8,7 @@ export interface StudentQuestionnaire extends BaseAuditModel {
   grade?: Grade;
   successDate?: Date;
   done?: boolean;
+  attemptNumber?: number;
   studentId?: number;
   student?: Student;
   questionnaireId?: number;

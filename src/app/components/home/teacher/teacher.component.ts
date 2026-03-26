@@ -1,5 +1,5 @@
 import {CommonModule, NgClass} from '@angular/common';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,8 +9,9 @@ import {
 } from '@angular/forms';
 import {TeacherService} from 'src/app/services/teacher/teacher.service';
 import {AppRegexPatterns} from 'src/app/constants/app-regex-patterns';
-import {Modal} from 'bootstrap';
 import {TeacherMaritalStatus} from "../../../models/enums/TeacherMaritalStatus.enum";
+import {MatDialog} from "@angular/material/dialog";
+import {AddTeacherDialogComponent} from "./add-teacher-dialog/add-teacher-dialog.component";
 
 @Component({
   selector: 'app-teacher',
@@ -19,11 +20,18 @@ import {TeacherMaritalStatus} from "../../../models/enums/TeacherMaritalStatus.e
   styleUrl: './teacher.component.scss',
 })
 export class TeacherComponent implements OnInit {
-  @ViewChild('teachertModal') teacherModal!: ElementRef; // Reference to the modal
-  private modalInstance: Modal | null = null;
+  private dialog = inject(MatDialog);
 
   data: any[] = [];
+  filteredData: any[] = [];
   rowSelected: any;
+  today = new Date();
+
+  searchTerm = '';
+  pageNo = 0;
+  pageSize = 10;
+  totalRecords = 0;
+  totalPages = 0;
   buttonName = 'إضافة';
   teacher = {
     id: null,
@@ -32,7 +40,7 @@ export class TeacherComponent implements OnInit {
     phoneNumber: '',
     address: '',
     birthDate: '',
-    maritalStatus: 'غير معروف',
+    maritalStatus: 'أعزب',
     joiningDate: '',
     exitDate: '',
     profession: '',
@@ -58,16 +66,44 @@ export class TeacherComponent implements OnInit {
   }
 
   private getAllTeachers() {
-    this.teacherService.getAllTeachers().subscribe(
+    this.teacherService.getAllTeachers(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
-        console.log('Teacher response', response);
         this.data = response.data;
-        this.rowSelected = this.data[0];
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.applySearch();
+        if (!this.rowSelected) {
+          this.rowSelected = this.filteredData[0];
+        }
       },
       (error) => {
         console.error('Teacher failed', error);
       }
     );
+  }
+
+  applySearch() {
+    if (!this.searchTerm.trim()) {
+      this.filteredData = this.data;
+      return;
+    }
+    const term = this.searchTerm.toLowerCase();
+    this.filteredData = this.data.filter((row: any) =>
+      row.fullName?.toLowerCase().includes(term) ||
+      row.nationalId?.toLowerCase().includes(term) ||
+      row.id?.toString().includes(term) ||
+      row.phoneNumber?.toLowerCase().includes(term)
+    );
+  }
+
+  onSearchChange() {
+    this.applySearch();
+  }
+
+  goToPage(page: number) {
+    if (page < 0 || page >= this.totalPages) return;
+    this.pageNo = page;
+    this.getAllTeachers();
   }
 
   buildTeacherForm() {
@@ -107,74 +143,56 @@ export class TeacherComponent implements OnInit {
     this.rowSelected = row;
   }
 
-  onSubmit() {
-    if (this.buttonName === 'إضافة') {
-      this.teacherService.addTeacher(this.teacherForm?.value).subscribe(
-        (response) => {
-          this.getAllTeachers();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    } else {
-      console.log('Edit Request', this.teacherForm?.value);
-
-      this.teacherService.updateTeacher(this.teacherForm?.value).subscribe(
-        (response) => {
-          this.getAllTeachers();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    }
-  }
-
-  reset() {
-    this.teacher = {
-      id: null,
-      fullName: '',
-      nationalId: '',
-      phoneNumber: '',
-      address: '',
-      birthDate: '',
-      maritalStatus: 'غير معروف',
-      joiningDate: '',
-      exitDate: '',
-      profession: '',
-      educationalQualification: '',
-      qualificationDate: '',
-      outOfWork: '',
-      emailAddress: '',
-    };
-  }
 
   handleAddClick() {
-    this.buildTeacherForm();
+    const dialogRef = this.dialog.open(AddTeacherDialogComponent, {
+      width: '1000px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: false
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.teacherService.addTeacher(result).subscribe({
+          next: () => {
+            this.getAllTeachers();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
-  editTeacher(student: any) {
-    this.teacher = this.cloneTeacher(student);
-    this.teacherForm?.patchValue({
-      id: this.teacher.id,
-      fullName: this.teacher.fullName,
-      nationalId: this.teacher.nationalId,
-      phoneNumber: this.teacher.phoneNumber,
-      emailAddress: this.teacher.emailAddress,
-      address: this.teacher.address,
-      birthDate: this.teacher.birthDate,
-      maritalStatus: this.teacher.maritalStatus,
-      profession: this.teacher.profession,
-      educationalQualification: this.teacher.educationalQualification,
-      qualificationDate: this.teacher.qualificationDate,
-      joiningDate: this.teacher.joiningDate,
-      outOfWork: this.teacher.outOfWork,
-      exitDate: this.teacher.exitDate,
+  editTeacher(teacher: any) {
+    const dialogRef = this.dialog.open(AddTeacherDialogComponent, {
+      width: '1000px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: true,
+        teacher: teacher
+      }
     });
-    this.buttonName = 'تعديل';
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.teacherService.updateTeacher(result).subscribe({
+          next: () => {
+            this.getAllTeachers();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   deleteTeacher(teacher: any) {
@@ -191,22 +209,6 @@ export class TeacherComponent implements OnInit {
     );
   }
 
-  ngAfterViewInit() {
-    this.modalInstance = new Modal(this.teacherModal.nativeElement);
-  }
-
-  closeModal() {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-      // Manually remove the backdrop
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-    } else {
-      console.error('Modal instance is not initialized.');
-    }
-  }
 
   cloneTeacher(teacher: any): any {
     return {
@@ -227,8 +229,11 @@ export class TeacherComponent implements OnInit {
     };
   }
 
+  printEntity() {
+    window.print();
+  }
+
   private statusMap: { [key: string]: string } = {
-    [TeacherMaritalStatus.not_defined]: 'غير معروف',
     [TeacherMaritalStatus.single]: 'أعزب',
     [TeacherMaritalStatus.married]: 'متزوج',
     [TeacherMaritalStatus.divorced]: 'مطلق'
@@ -240,5 +245,9 @@ export class TeacherComponent implements OnInit {
     return this.statusMap[status] || status;
   }
 
-
+  getArabicGender(gender: string | null | undefined): string {
+    if (!gender) return '';
+    const map: { [key: string]: string } = { 'MALE': 'ذكر', 'FEMALE': 'أنثى' };
+    return map[gender] || gender;
+  }
 }

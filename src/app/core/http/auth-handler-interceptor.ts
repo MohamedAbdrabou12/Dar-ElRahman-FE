@@ -21,19 +21,22 @@ export class AuthHandlerInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
+    // Public endpoints don't need token
     if (this.isPublicEndpoint(request)) {
-      return next.handle(request).pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 401) {
-            // Token expired or invalid
-            this.authService.logout(); // Clear session and logout
-          }
-          return throwError(() => error);
-        })
-      );
-    } else {
-      return next.handle(this.addRequiredHeaderProperties(request));
+      return next.handle(request);
     }
+    
+    // Protected endpoints - add token and handle expiration
+    return next.handle(this.addRequiredHeaderProperties(request)).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          // Token expired or invalid - logout user
+          console.warn('Token expired or unauthorized. Logging out...');
+          this.authService.logout();
+        }
+        return throwError(() => error);
+      })
+    );
   }
 
   isPublicEndpoint(request: HttpRequest<any>){

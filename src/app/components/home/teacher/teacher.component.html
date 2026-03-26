@@ -1,396 +1,275 @@
 @if (rowSelected) {
-  <div class="d-flex justify-content-between details-container">
-    <!-- User Details Section -->
+  <div class="flex justify-end mb-4 no-print">
+    <button
+      type="button"
+      class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
+      (click)="printEntity()"
+    >
+      <i class="fas fa-print"></i>
+      طباعة بيانات المُعلم
+    </button>
+  </div>
 
-    <!-- user-details.component.html -->
-
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">بيانات المُعلم</h3>
-        <p class="d-flex justify-content-between">
-          <strong>رقم المسلسل:</strong> {{ rowSelected.id }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الاسم رباعي:</strong> {{ rowSelected.fullName }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>الرقم القومي:</strong> {{ rowSelected.nationalId }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>رقم الهاتف:</strong> {{ rowSelected.phoneNumber }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>البريد الالكترونى:</strong> {{ rowSelected.emailAddress }}
-        </p>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 animate-fade-in-up">
+    <!-- بيانات المُعلم -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-chalkboard-teacher"></i>
+        بيانات المُعلم
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">رقم المسلسل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.id }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الاسم رباعي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.fullName }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الرقم القومي:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.nationalId }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">رقم الهاتف:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.phoneNumber }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">البريد الالكترونى:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.emailAddress }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">البيانات الشخصية</h3>
-        <p class="card-text d-flex justify-content-between">
-          <strong>العنوان:</strong> {{ rowSelected.address }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>تاريخ الميلاد:</strong> {{ rowSelected.birthDate }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>الحالة الاجتماعية:</strong> {{ getArabicStatus(rowSelected.maritalStatus) }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>تاريخ بداية العمل:</strong> {{ rowSelected.joiningDate }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>تاريخ نهاية العمل:</strong> {{ rowSelected.exitDate }}
-        </p>
+    <!-- البيانات الشخصية -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-user"></i>
+        البيانات الشخصية
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">النوع:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ getArabicGender(rowSelected.gender) }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">العنوان:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.address }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الميلاد:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.birthDate }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الحالة الاجتماعية:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ getArabicStatus(rowSelected.maritalStatus) }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ بداية العمل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.joiningDate }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ نهاية العمل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.exitDate }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">البيانات المهنية</h3>
-        <p class="card-text d-flex justify-content-between">
-          <strong>المهنة:</strong> {{ rowSelected.profession }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>المؤهل الدراسى:</strong>
-          {{ rowSelected.educationalQualification }}
-        </p>
-        <p class="card-text d-flex justify-content-between">
-          <strong>تاريخ المؤهل:</strong> {{ rowSelected.qualificationDate }}
-        </p>
-        <p class="d-flex justify-content-between">
-          <strong>خارج العمل:</strong>
+    <!-- البيانات المهنية -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-briefcase"></i>
+        البيانات المهنية
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">المهنة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.profession }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">المؤهل الدراسى:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.educationalQualification }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ المؤهل:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.qualificationDate }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">خارج العمل:</span>
           <span
-            class="green-status"
+            class="px-3 py-1 rounded-full text-xs font-semibold"
             [ngClass]="{
-            'green-status': rowSelected.outOfWork == false,
-            'danger-status': rowSelected.outOfWork === true
-          }"
-          >{{ rowSelected.outOfWork === false ? "لا" : "نعم" }}</span
-          >
-        </p>
+              'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': rowSelected.outOfWork == false,
+              'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': rowSelected.outOfWork === true
+            }"
+          >{{ rowSelected.outOfWork === false ? "لا" : "نعم" }}</span>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Print-only area -->
+  <div class="print-area hidden">
+    <div class="print-header">
+      <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+      <h2>بيانات المُعلم: {{ rowSelected.fullName }}</h2>
+      <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
+    </div>
+    <div class="print-cards-grid print-cols-3">
+      <div class="print-card">
+        <h3><i class="fas fa-chalkboard-teacher"></i> بيانات المُعلم</h3>
+        <div class="print-row"><span class="print-label">رقم المسلسل:</span><span class="print-value">{{ rowSelected.id }}</span></div>
+        <div class="print-row"><span class="print-label">الاسم رباعي:</span><span class="print-value">{{ rowSelected.fullName }}</span></div>
+        <div class="print-row"><span class="print-label">الرقم القومي:</span><span class="print-value">{{ rowSelected.nationalId }}</span></div>
+        <div class="print-row"><span class="print-label">رقم الهاتف:</span><span class="print-value">{{ rowSelected.phoneNumber }}</span></div>
+        <div class="print-row"><span class="print-label">البريد الالكترونى:</span><span class="print-value">{{ rowSelected.emailAddress }}</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-user"></i> البيانات الشخصية</h3>
+        <div class="print-row"><span class="print-label">العنوان:</span><span class="print-value">{{ rowSelected.address }}</span></div>
+        <div class="print-row"><span class="print-label">تاريخ الميلاد:</span><span class="print-value">{{ rowSelected.birthDate }}</span></div>
+        <div class="print-row"><span class="print-label">الحالة الاجتماعية:</span><span class="print-value">{{ getArabicStatus(rowSelected.maritalStatus) }}</span></div>
+        <div class="print-row"><span class="print-label">تاريخ بداية العمل:</span><span class="print-value">{{ rowSelected.joiningDate }}</span></div>
+        <div class="print-row"><span class="print-label">تاريخ نهاية العمل:</span><span class="print-value">{{ rowSelected.exitDate }}</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-briefcase"></i> البيانات المهنية</h3>
+        <div class="print-row"><span class="print-label">المهنة:</span><span class="print-value">{{ rowSelected.profession }}</span></div>
+        <div class="print-row"><span class="print-label">المؤهل الدراسى:</span><span class="print-value">{{ rowSelected.educationalQualification }}</span></div>
+        <div class="print-row"><span class="print-label">تاريخ المؤهل:</span><span class="print-value">{{ rowSelected.qualificationDate }}</span></div>
+        <div class="print-row"><span class="print-label">خارج العمل:</span><span class="print-badge">{{ rowSelected.outOfWork === false ? "لا" : "نعم" }}</span></div>
+      </div>
+    </div>
+    <div class="print-footer">
+      <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+      <span>{{ today | date: 'yyyy-MM-dd' }}</span>
     </div>
   </div>
 }
-<!-- Button to trigger the modal -->
 <button
   type="button"
-  class="details-button add-button butn"
-  data-bs-toggle="modal"
-  data-bs-target="#teachertModal"
+  class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
   (click)="handleAddClick()"
 >
+  <i class="fas fa-plus-circle"></i>
   اضافة مُعَلِم جديد
 </button>
 
-<!-- Modal -->
-<div
-  #teachertModal
-  class="modal fade"
-  id="teachertModal"
-  tabindex="-1"
-  aria-labelledby="teachertModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error.error.errorDescription }}
-        </div>
-        <h5 class="modal-title" id="teachertModalLabel">بيانات المُعلم</h5>
-      </div>
-      <div class="modal-body">
-        <form
-          *ngIf="teacherForm"
-          [formGroup]="teacherForm"
-          (ngSubmit)="onSubmit()"
-        >
-          <div class="mb-3">
-            <label class="form-label" for="fullName">الاسم رباعى:</label>
-            <input
-              id="fullName"
-              formControlName="fullName"
-              class="form-control"
-              type="text"
-            />
-            <div
-              *ngIf="
-                teacherForm.get('fullName')?.invalid &&
-                teacherForm.get('fullName')?.touched
-              "
-              class="alert alert-danger"
-            >
-              <small *ngIf="teacherForm.get('fullName')?.errors?.['required']"
-              >يجب ادخال اسم الدرس</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="nationalId">الرقم القومى:</label>
-            <input
-              class="form-control"
-              id="nationalId"
-              formControlName="nationalId"
-              type="text"
-            />
-            <div
-              class="alert alert-danger"
-              *ngIf="
-                teacherForm.get('nationalId')?.invalid &&
-                teacherForm.get('nationalId')?.touched
-              "
-            >
-              <small *ngIf="teacherForm.get('nationalId')?.errors?.['pattern']"
-              >يجب ادخال رقم قومى صحيح</small
-              >
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="phoneNumber">رقم الهاتف</label>
-            <input
-              class="form-control"
-              id="phoneNumber"
-              formControlName="phoneNumber"
-              type="text"
-            />
-            <div
-              class="alert alert-danger"
-              *ngIf="
-                teacherForm.get('phoneNumber')?.invalid &&
-                teacherForm.get('phoneNumber')?.touched
-              "
-            >
-              <small *ngIf="teacherForm.get('phoneNumber')?.errors?.['pattern']"
-              >يجب ادخال رقم هاتف صحيح</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="emailAddress"
-            >البريد الالكترونى:</label
-            >
-            <input
-              class="form-control"
-              id="emailAddress"
-              formControlName="emailAddress"
-              type="email"
-            />
-            <div
-              class="alert alert-danger"
-              *ngIf="
-                teacherForm.get('emailAddress')?.invalid &&
-                teacherForm.get('emailAddress')?.touched
-              "
-            >
-              <small
-                *ngIf="teacherForm.get('emailAddress')?.errors?.['pattern']"
-              >الأيميل يجب أن يكون صحيحاً</small
-              >
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="address">العنوان:</label>
-            <input
-              class="form-control"
-              id="address"
-              formControlName="address"
-              type="text"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="birthDate">تاريخ الميلاد:</label>
-            <input
-              class="form-control"
-              id="birthDate"
-              formControlName="birthDate"
-              type="date"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="maritalStatus"
-            >الحالة الاجتماعية:</label
-            >
-            <select
-              class="form-control"
-              id="maritalStatus"
-              formControlName="maritalStatus"
-            >
-              <option value="single">أعزب</option>
-              <option value="married">متزوج</option>
-              <option value="divorced">مُطلّق</option>
-              <option value="not_defined">غير معروف</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="profession">المهنة:</label>
-            <input
-              class="form-control"
-              id="profession"
-              formControlName="profession"
-              type="text"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="educationalQualification"
-            >المؤهل الدراسى:</label
-            >
-            <input
-              id="educationalQualification"
-              formControlName="educationalQualification"
-              type="text"
-              class="form-control"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="qualificationDate"
-            >تاريخ المؤهل:</label
-            >
-            <input
-              class="form-control"
-              id="qualificationDate"
-              formControlName="qualificationDate"
-              type="month"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="joiningDate">تاريخ الانضمام:</label>
-            <input
-              class="form-control"
-              id="joiningDate"
-              formControlName="joiningDate"
-              type="date"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="outOfWork">خارج العمل:</label>
-            <input
-              class="form-check-input mx-4"
-              id="outOfWork"
-              formControlName="outOfWork"
-              type="checkbox"
-            />
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="exitDate">تاريخ الانتهاء:</label>
-            <input
-              class="form-control"
-              id="exitDate"
-              formControlName="exitDate"
-              type="date"
-            />
-          </div>
-
-          <div class="mb-3" class="modal-footer d-flex justify-content-end">
-            <div>
-              <button
-                *ngIf="buttonName === 'إضافة'"
-                type="submit"
-                [disabled]="teacherForm.invalid"
-                class="details-button butn"
-              >
-                {{ buttonName }}
-              </button>
-              <button
-                *ngIf="buttonName === 'تعديل'"
-                type="submit"
-                type="submit"
-                class="details-button butn"
-              >
-                {{ buttonName }}
-              </button>
-            </div>
-            <div>
-              <button
-                type="button"
-                class="danger-button butn"
-                (click)="reset()"
-                data-bs-dismiss="modal"
-              >
-                الغاء
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
+<div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
+  <!-- Search Bar -->
+  <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="بحث بالاسم، الرقم القومي، رقم الهاتف..."
+        class="w-full pr-10 pl-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm"
+      />
     </div>
   </div>
-</div>
 
-<div class="table-container">
-  <div *ngIf="deleteError" class="alert alert-danger">
-    {{ deleteError }}
+  <!-- Error Message -->
+  <div *ngIf="deleteError" class="m-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <p class="text-red-700 dark:text-red-400 text-sm">{{ deleteError }}</p>
   </div>
-  <h2 *ngIf="!data || data!.length == 0">لم يتم تسجيل أي معلمين\معلمات حتى الآن. </h2>
-  <table class="custom-table" *ngIf="data && data!.length > 0">
-    <thead class="thead-dark">
-    <tr>
-      <th>رقم المسلسل</th>
-      <th>الاسم رباعي</th>
-      <th>الرقم القومي</th>
-      <th>خارج العمل</th>
-      <th>المهنة</th>
-      <th>الحالة الاجتماعية</th>
-      <th>العمليات</th>
-    </tr>
-    </thead>
-    <tbody>
-      @for (row of data; track row.id; ) {
+
+  <!-- Empty State -->
+  <div *ngIf="!filteredData || filteredData!.length == 0" class="p-12 text-center">
+    <i class="fas fa-chalkboard-teacher text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لم يتم تسجيل أي معلمين\معلمات حتى الآن</h2>
+  </div>
+
+  <!-- Teachers Table -->
+  <div *ngIf="filteredData && filteredData!.length > 0" class="overflow-x-auto">
+    <table class="w-full">
+      <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
         <tr>
-          <td>{{ row.id }}</td>
-          <td>{{ row.fullName }}</td>
-          <td>{{ row.nationalId }}</td>
-          <td>
-          <span
-            class="badge"
-            [ngClass]="{
-              'green-status': row.outOfWork == false,
-              'danger-status': row.outOfWork === true
-            }"
-          >{{ row.outOfWork === false ? "نعم" : "لا" }}</span
-          >
-          </td>
-          <td>{{ row.profession }}</td>
-          <td>{{ getArabicStatus(row.maritalStatus) }}</td>
-          <td>
-            <div class="d-flex justify-content-between">
-              <button class="btn-sm details-button" (click)="selectRow(row)">
-                <i class="fa fa-eye"></i>
-                <span>البيانات</span>
-              </button>
-
-              <button
-                class="btn-sm edit-button"
-                (click)="editTeacher(row)"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#teachertModal"
-              >
-                <i class="fa fa-eye"></i>
-                <span>تعديل</span>
-              </button>
-
-              <button class="btn-sm delete-button" (click)="deleteTeacher(row)">
-                <i class="fa fa-eye"></i>
-                <span>حذف</span>
-              </button>
-            </div>
-          </td>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الصورة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الاسم رباعي</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الرقم القومي</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">خارج العمل</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">المهنة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحالة الاجتماعية</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        @for (row of filteredData; track row.id; ) {
+          <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
+            <td class="px-6 py-4 text-center">
+              <div class="flex justify-center">
+                <div class="w-10 h-10 rounded-full bg-primary dark:bg-success flex items-center justify-center text-white font-bold overflow-hidden">
+                  <img *ngIf="row.profilePictureUrl" [src]="row.profilePictureUrl" class="w-full h-full object-cover" />
+                  <i *ngIf="!row.profilePictureUrl" [class]="row.gender === 'FEMALE' ? 'fas fa-female' : 'fas fa-user'"></i>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row.fullName }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.nationalId }}</td>
+            <td class="px-6 py-4 text-center">
+              <span
+                class="inline-flex px-3 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': row.outOfWork == false,
+                  'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': row.outOfWork === true
+                }"
+              >{{ row.outOfWork === false ? "نعم" : "لا" }}</span>
+            </td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.profession }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ getArabicStatus(row.maritalStatus) }}</td>
+            <td class="px-6 py-4">
+              <div class="flex justify-center items-center gap-2">
+                <button
+                  class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="selectRow(row)"
+                >
+                  <i class="fa fa-eye"></i>
+                  <span>عرض</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="editTeacher(row)"
+                >
+                  <i class="fa fa-edit"></i>
+                  <span>تعديل</span>
+                </button>
+
+                <button
+                  class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="deleteTeacher(row)"
+                >
+                  <i class="fa fa-trash"></i>
+                  <span>حذف</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-neutral-900">
+    <div class="text-sm text-gray-600 dark:text-gray-400">
+      صفحة {{ pageNo + 1 }} من {{ totalPages }} ({{ totalRecords }} سجل)
+    </div>
+    <div class="flex items-center gap-1">
+      <button (click)="goToPage(0)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo - 1)" [disabled]="pageNo === 0" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-right"></i>
+      </button>
+      <button (click)="goToPage(pageNo + 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-left"></i>
+      </button>
+      <button (click)="goToPage(totalPages - 1)" [disabled]="pageNo >= totalPages - 1" class="px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200" [class]="pageNo >= totalPages - 1 ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-700'">
+        <i class="fas fa-angle-double-left"></i>
+      </button>
+    </div>
+  </div>
 </div>

@@ -3,6 +3,7 @@ import {TeacherMaritalStatus} from "./enums/TeacherMaritalStatus.enum";
 
 export interface Teacher extends BaseAuditModel {
   id?: number; // Optional because it might be auto-generated
+  userId?: number;
   fullName: string; // Required, min 5, max 100 characters
   nationalId?: string; // Optional, must match NATIONAL_ID_PATTERN
   phoneNumber?: string; // Optional, must match EGP_MOBILE_PATTERN
@@ -17,4 +18,6 @@ export interface Teacher extends BaseAuditModel {
   outOfWork?: boolean; // Optional
   exitDate?: string; // Optional, format: yyyy-MM-dd
   deleted?: boolean; // Optional
+  gender: string;
+  profilePictureUrl?: string;
 }

@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {RingService} from 'src/app/services/ring/ring.service';
@@ -10,20 +10,23 @@ import {Questionnaire} from 'src/app/models/Questionnaire.model';
 import {Student} from 'src/app/models/Student.model';
 import {Grade} from 'src/app/models/enums/Grade.enum';
 import {StudentQuestionnaire} from 'src/app/models/StudentQuestionnaire.model';
-import {QuestionType} from "../../../models/enums/QuestionType.enum.js";
 import {QuestionnaireType} from "../../../models/enums/QuestionnaireType.enum";
-import {Modal} from 'bootstrap';
+import {MatDialog} from "@angular/material/dialog";
+import {AddStudentQuestionnaireDialogComponent} from "./add-student-questionnaire-dialog/add-student-questionnaire-dialog.component";
 
 @Component({
   selector: 'app-student-questionnaire',
   templateUrl: './student-questionnaire.component.html',
   styleUrls: ['./student-questionnaire.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
 })
 export class StudentQuestionnaireComponent implements OnInit {
-  @ViewChild('questionnaireModal') questionnaireModal!: ElementRef;
-  private modalInstance: Modal | null = null;
+  private dialog = inject(MatDialog);
 
   studentQuestionnaireForm: FormGroup;
   filterForm: FormGroup;
@@ -37,6 +40,12 @@ export class StudentQuestionnaireComponent implements OnInit {
   rowSelected: any;
   buttonName = 'إضافة';
   error: any;
+
+  pageNo = 0;
+  pageSize = 10;
+  totalRecords = 0;
+  totalPages = 0;
+  showFilters = false;
 
   constructor(
     private fb: FormBuilder,
@@ -71,11 +80,6 @@ export class StudentQuestionnaireComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit() {
-    if (this.questionnaireModal) {
-      this.modalInstance = new Modal(this.questionnaireModal.nativeElement);
-    }
-  }
 
   loadRings(): void {
     this.ringService.getAllRings().subscribe(
@@ -132,16 +136,41 @@ export class StudentQuestionnaireComponent implements OnInit {
   }
 
   loadStudentQuestionnaires(): void {
-    this.studentQuestionnaireService.getAllStudentQuestionnaires().subscribe(
+    this.studentQuestionnaireService.getAllStudentQuestionnaires(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.studentQuestionnaires = response.data;
-        this.filteredStudentQuestionnaires = response.data; // Initialize filtered list
-        this.rowSelected = response.data[0];
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.filteredStudentQuestionnaires = response.data;
+        this.filterStudentQuestionnaires();
+        if (!this.rowSelected) {
+          this.rowSelected = this.filteredStudentQuestionnaires[0];
+        }
       },
       (error) => {
         console.error('Failed to load student questionnaires', error);
       }
     );
+  }
+
+  goToPage(page: number): void {
+    if (page < 0 || page >= this.totalPages) return;
+    this.pageNo = page;
+    this.loadStudentQuestionnaires();
+  }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  resetFilters(): void {
+    this.filterForm.reset({
+      ringId: null,
+      studentName: '',
+      grade: null,
+      questionnaireId: null,
+      questionDate: ''
+    });
   }
 
   filterStudentQuestionnaires(): void {
@@ -171,35 +200,63 @@ export class StudentQuestionnaireComponent implements OnInit {
     this.rowSelected = row;
   }
 
-  onSubmit() {
-    if (this.studentQuestionnaireForm.invalid) {
-      return;
-    }
-
-    const action = this.buttonName === 'إضافة'
-      ? this.studentQuestionnaireService.addStudentQuestionnaire(this.studentQuestionnaireForm.value)
-      : this.studentQuestionnaireService.updateStudentQuestionnaire(this.studentQuestionnaireForm.value);
-
-    action.subscribe(
-      () => {
-        this.loadStudentQuestionnaires();
-        this.closeModal();
-      },
-      (error) => {
-        this.error = error;
-        console.error('Operation failed', error);
-      }
-    );
-  }
 
   handleAddClick() {
-    this.buttonName = 'إضافة';
-    this.studentQuestionnaireForm.reset();
-    this.questionnaires = [];
-    this.students = [];
+    const dialogRef = this.dialog.open(AddStudentQuestionnaireDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: false,
+        rings: this.rings,
+        questionnaires: this.questionnaires,
+        students: this.students
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.studentQuestionnaireService.addStudentQuestionnaire(result).subscribe({
+          next: () => {
+            this.loadStudentQuestionnaires();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   handleEditClick(item: StudentQuestionnaire) {
+    const dialogRef = this.dialog.open(AddStudentQuestionnaireDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: true,
+        studentQuestionnaire: item,
+        rings: this.rings,
+        questionnaires: this.questionnaires,
+        students: this.students
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.studentQuestionnaireService.updateStudentQuestionnaire(result).subscribe({
+          next: () => {
+            this.loadStudentQuestionnaires();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
+  }
+
+  handleEditClickOLD(item: StudentQuestionnaire) {
     this.buttonName = 'تعديل';
     this.error = null;
 
@@ -254,20 +311,6 @@ export class StudentQuestionnaireComponent implements OnInit {
     }
   }
 
-  closeModal() {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-      this.error = null;
-      this.studentQuestionnaireForm.reset();
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-    }
-  }
-
   private gradeMap: { [key: string]: string } = {
     [Grade.excellent]: 'ممتاز',
     [Grade.very_good]: 'جيد جدا',
@@ -281,5 +324,4 @@ export class StudentQuestionnaireComponent implements OnInit {
   }
 
   protected readonly QuestionnaireType = QuestionnaireType;
-  protected readonly QuestionType = QuestionType;
 }

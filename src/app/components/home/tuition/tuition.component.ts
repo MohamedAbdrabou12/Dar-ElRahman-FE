@@ -1,12 +1,13 @@
 import {CommonModule} from '@angular/common';
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Modal} from 'bootstrap';
 import {Tuition} from "../../../models/Tuition.model";
 import {Grade} from "../../../models/enums/Grade.enum";
 import {StudentService} from "../../../services/student/student.service";
 import {Student} from "../../../models/Student.model";
 import {TuitionService} from "../../../services/tuition/tuition.service";
+import {MatDialog} from "@angular/material/dialog";
+import {AddTuitionDialogComponent} from "./add-tuition-dialog/add-tuition-dialog.component";
 
 @Component({
   selector: 'app-tuition',
@@ -16,12 +17,19 @@ import {TuitionService} from "../../../services/tuition/tuition.service";
   standalone: true,
 })
 export class TuitionComponent implements OnInit {
-  @ViewChild('tuitionModal') tuitionModal!: ElementRef;
-  private modalInstance: Modal | null = null;
+  private dialog = inject(MatDialog);
 
   data: Tuition[] = [];
+  filteredData: Tuition[] = [];
   rowSelected: Tuition | undefined;
   students: Student[] = [];
+  today = new Date();
+
+  searchTerm = '';
+  pageNo = 0;
+  pageSize = 10;
+  totalRecords = 0;
+  totalPages = 0;
   buttonName = 'إضافة';
   tuition: Tuition = {
     tuitionAmount: 0.0,
@@ -47,15 +55,43 @@ export class TuitionComponent implements OnInit {
   }
 
   private getAllTuitions() {
-    this.tuitionService.getAllTuitions().subscribe(
+    this.tuitionService.getAllTuitions(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.rowSelected = this.data[0];
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.applySearch();
+        if (!this.rowSelected) {
+          this.rowSelected = this.filteredData[0];
+        }
       },
       (error) => {
         console.error('Tuitions fetch failed', error);
       }
     );
+  }
+
+  applySearch() {
+    if (!this.searchTerm.trim()) {
+      this.filteredData = this.data;
+      return;
+    }
+    const term = this.searchTerm.toLowerCase();
+    this.filteredData = this.data.filter((row: any) =>
+      row.student?.fullName?.toLowerCase().includes(term) ||
+      row.student?.nationalId?.toLowerCase().includes(term) ||
+      row.id?.toString().includes(term)
+    );
+  }
+
+  onSearchChange() {
+    this.applySearch();
+  }
+
+  goToPage(page: number) {
+    if (page < 0 || page >= this.totalPages) return;
+    this.pageNo = page;
+    this.getAllTuitions();
   }
 
   private getNonTuitionStudents() {
@@ -82,53 +118,57 @@ export class TuitionComponent implements OnInit {
     this.rowSelected = row;
   }
 
-  onSubmit() {
-    if (this.buttonName === 'إضافة') {
-      this.tuitionService.addTuition(this.tuitionForm?.value).subscribe(
-        (response) => {
-          this.getAllTuitions();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    } else {
-      this.tuitionService.updateTuition(this.tuitionForm?.value).subscribe(
-        (response) => {
-          this.getAllTuitions();
-          this.closeModal();
-        },
-        (error) => {
-          this.error = error;
-        }
-      );
-    }
-  }
-
-  reset() {
-    this.tuition = {
-      tuitionAmount: 0.0,
-      tuitionDate: new Date(),
-      studentId: undefined
-    };
-    this.buttonName = 'إضافة';
-  }
 
   handleAddClick() {
-    this.reset();
-    this.buildTuitionForm();
+    const dialogRef = this.dialog.open(AddTuitionDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: false,
+        students: this.students
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.tuitionService.addTuition(result).subscribe({
+          next: () => {
+            this.getAllTuitions();
+            this.getNonTuitionStudents();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   editTuition(tuition: Tuition) {
-    this.tuition = {...tuition};
-    this.tuitionForm?.patchValue({
-      id: this.tuition.id,
-      tuitionAmount: this.tuition.tuitionAmount,
-      tuitionDate: this.tuition.tuitionDate,
-      studentId: this.tuition.student?.id,
+    const dialogRef = this.dialog.open(AddTuitionDialogComponent, {
+      width: '600px',
+      maxHeight: '90vh',
+      direction: 'rtl',
+      data: {
+        isEdit: true,
+        tuition: tuition,
+        students: this.students
+      }
     });
-    this.buttonName = 'تعديل';
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.tuitionService.updateTuition(result).subscribe({
+          next: () => {
+            this.getAllTuitions();
+          },
+          error: (error) => {
+            this.error = error;
+          }
+        });
+      }
+    });
   }
 
   deleteTuition(tuition: Tuition) {
@@ -146,26 +186,9 @@ export class TuitionComponent implements OnInit {
     );
   }
 
-  ngAfterViewInit() {
-    if (this.tuitionModal) {
-      this.modalInstance = new Modal(this.tuitionModal.nativeElement);
-    }
-  }
 
-  closeModal() {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-      const backdrop = document.querySelector('.modal-backdrop');
-      if (backdrop) {
-        backdrop.remove();
-      }
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = '';
-    }
-  }
-
-  compareObjects(o1: any, o2: any): boolean {
-    return o1 && o2 ? o1.id === o2.id : o1 === o2;
+  printEntity() {
+    window.print();
   }
 
   protected readonly Grade = Grade;
