@@ -61,7 +61,6 @@ export class AddRingDialogComponent implements OnInit {
       this.ringForm.patchValue({
         id: this.data.ring.id,
         name: this.data.ring.name,
-        studentCount: this.data.ring.studentCount,
         periodId: this.data.ring.periodId,
         memorizationPart: this.data.ring.memorizationPart,
         teacherId: this.data.ring.teacherId?.toString() || ''
@@ -73,7 +72,6 @@ export class AddRingDialogComponent implements OnInit {
     this.ringForm = this.fb.group({
       id: [null],
       name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
-      studentCount: [0, Validators.required],
       periodId: [null, Validators.required],
       memorizationPart: [MemorizationPart.page, Validators.required],
       teacherId: [null, Validators.required]

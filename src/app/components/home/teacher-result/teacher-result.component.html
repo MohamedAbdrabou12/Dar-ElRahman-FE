@@ -10,7 +10,7 @@
     </button>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 animate-fade-in-up">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 animate-fade-in-up">
     <!-- بيانات المُعلم -->
     <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
       <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
@@ -108,6 +108,42 @@
         </div>
       </div>
     </div>
+
+    <!-- مؤشرات الأداء المتقدمة -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-md">
+      <h3 class="text-lg font-bold text-primary dark:text-success mb-4 flex items-center gap-2">
+        <i class="fas fa-tachometer-alt"></i>
+        مؤشرات الأداء المتقدمة
+      </h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">النقاط المكتسبة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.pointsEarned }} / {{ rowSelected.maxPossiblePoints }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">متوسط المحاولات:</span>
+          <span class="px-2 py-1 rounded text-sm font-semibold"
+                [class]="(rowSelected.averageAttempts || 0) <= 1.5 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : (rowSelected.averageAttempts || 0) <= 2.5 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'">
+            {{ (rowSelected.averageAttempts || 0) | number:'1.1-1' }}
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">نسبة الممتاز:</span>
+          <span class="px-2 py-1 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded text-sm font-semibold">{{ rowSelected.excellentRate }}%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">نسبة الغياب:</span>
+          <span class="px-2 py-1 rounded text-sm font-semibold"
+                [class]="(rowSelected.absentRate || 0) <= 10 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : (rowSelected.absentRate || 0) <= 25 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'">
+            {{ rowSelected.absentRate }}%
+          </span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">وزن التسميع / المراجعة:</span>
+          <span class="font-semibold text-text dark:text-dark-text text-xs">{{ (rowSelected.memorizationWeight || 0.6) * 100 }}% / {{ (rowSelected.revisionWeight || 0.4) * 100 }}%</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Print-only area -->
@@ -117,7 +153,7 @@
       <h2>نتيجة المُعلم: {{ rowSelected?.teacher?.fullName }}</h2>
       <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
     </div>
-    <div class="print-cards-grid print-cols-3">
+    <div class="print-cards-grid print-cols-4">
       <div class="print-card">
         <h3><i class="fas fa-chalkboard-teacher"></i> بيانات المُعلم</h3>
         <div class="print-row"><span class="print-label">رقم المسلسل:</span><span class="print-value">{{ rowSelected?.teacher?.id }}</span></div>
@@ -143,6 +179,14 @@
         <div class="print-row"><span class="print-label">نسبة النجاح فى التسميع:</span><span class="print-badge">{{ rowSelected.memorizationPercentage }}%</span></div>
         <div class="print-row"><span class="print-label">نسبة النجاح فى المراجعة:</span><span class="print-badge">{{ rowSelected.revisionPercentage }}%</span></div>
         <div class="print-row"><span class="print-label">إجمالى نسبة النجاح:</span><span class="print-badge">{{ rowSelected.successPercentage }}%</span></div>
+      </div>
+      <div class="print-card">
+        <h3><i class="fas fa-tachometer-alt"></i> مؤشرات الأداء المتقدمة</h3>
+        <div class="print-row"><span class="print-label">النقاط المكتسبة:</span><span class="print-value">{{ rowSelected.pointsEarned }} / {{ rowSelected.maxPossiblePoints }}</span></div>
+        <div class="print-row"><span class="print-label">متوسط المحاولات:</span><span class="print-value">{{ (rowSelected.averageAttempts || 0) | number:'1.1-1' }}</span></div>
+        <div class="print-row"><span class="print-label">نسبة الممتاز:</span><span class="print-badge">{{ rowSelected.excellentRate }}%</span></div>
+        <div class="print-row"><span class="print-label">نسبة الغياب:</span><span class="print-badge">{{ rowSelected.absentRate }}%</span></div>
+        <div class="print-row"><span class="print-label">وزن التسميع / المراجعة:</span><span class="print-value">{{ (rowSelected.memorizationWeight || 0.6) * 100 }}% / {{ (rowSelected.revisionWeight || 0.4) * 100 }}%</span></div>
       </div>
     </div>
     <div class="print-footer">
@@ -197,6 +241,8 @@
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نسبة النجاح فى التسميع</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نسبة النجاح فى المراجعة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">إجمالى نسبة النجاح</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">النقاط</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نسبة الممتاز</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
       </thead>
@@ -214,6 +260,10 @@
             </td>
             <td class="px-6 py-4 text-center">
               <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">{{ row.successPercentage }}%</span>
+            </td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.pointsEarned }}/{{ row.maxPossiblePoints }}</td>
+            <td class="px-6 py-4 text-center">
+              <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{{ row.excellentRate }}%</span>
             </td>
             <td class="px-6 py-4">
               <div class="flex justify-center items-center gap-2">

@@ -18,6 +18,13 @@ export interface TeacherResult extends BaseAuditModel {
   revisionPercentage?: number;
   adjustmentValue?: number;
   successPercentage?: number;
+  averageAttempts?: number;
+  excellentRate?: number;
+  absentRate?: number;
+  pointsEarned?: number;
+  maxPossiblePoints?: number;
+  memorizationWeight?: number;
+  revisionWeight?: number;
   teacherId?: number;
   teacher?: Teacher;
 }

@@ -34,7 +34,6 @@ export class RingComponent implements OnInit {
   buttonName = 'إضافة';
   ring: Ring = {
     name: '',
-    studentCount: 0,
     periodId: 0,
     memorizationPart: MemorizationPart.page,
     teacherId: 0,
@@ -136,7 +135,6 @@ export class RingComponent implements OnInit {
           Validators.maxLength(255),
         ],
       ],
-      studentCount: [0, Validators.required],
       periodId: [null, Validators.required],
       memorizationPart: [MemorizationPart.page, Validators.required],
       teacherId: [null, Validators.required],

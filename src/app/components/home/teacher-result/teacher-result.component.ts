@@ -46,6 +46,13 @@ export class TeacherResultComponent implements OnInit {
     revisionPercentage: '',
     adjustmentValue: '',
     successPercentage: '',
+    averageAttempts: '',
+    excellentRate: '',
+    absentRate: '',
+    pointsEarned: '',
+    maxPossiblePoints: '',
+    memorizationWeight: '',
+    revisionWeight: '',
     teacher: ''
   };
   error: any;
@@ -255,6 +262,13 @@ export class TeacherResultComponent implements OnInit {
       revisionPercentage: teacherResult.revisionPercentage,
       adjustmentValue: teacherResult.adjustmentValue,
       successPercentage: teacherResult.successPercentage,
+      averageAttempts: teacherResult.averageAttempts,
+      excellentRate: teacherResult.excellentRate,
+      absentRate: teacherResult.absentRate,
+      pointsEarned: teacherResult.pointsEarned,
+      maxPossiblePoints: teacherResult.maxPossiblePoints,
+      memorizationWeight: teacherResult.memorizationWeight,
+      revisionWeight: teacherResult.revisionWeight,
       teacher: teacherResult.teacher,
     };
   }

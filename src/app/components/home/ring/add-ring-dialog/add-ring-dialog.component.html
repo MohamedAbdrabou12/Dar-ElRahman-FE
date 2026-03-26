@@ -59,26 +59,6 @@
         </div>
       </div>
 
-      <!-- Student Count -->
-      <div>
-        <label for="studentCount" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-          عدد الطلاب <span class="text-red-500">*</span>
-        </label>
-        <input
-          id="studentCount"
-          type="number"
-          formControlName="studentCount"
-          min="0"
-          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-          placeholder="0"
-        />
-        <div *ngIf="ringForm.get('studentCount')?.invalid && ringForm.get('studentCount')?.touched"
-             class="text-red-500 text-sm mt-1 flex items-center gap-1">
-          <i class="fas fa-exclamation-circle"></i>
-          <span>يجب إدخال عدد الطلاب</span>
-        </div>
-      </div>
-
       <!-- Period -->
       <div>
         <label for="periodId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
