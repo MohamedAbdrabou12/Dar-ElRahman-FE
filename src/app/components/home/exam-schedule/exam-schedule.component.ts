@@ -48,7 +48,7 @@ export class ExamScheduleComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'حدث خطأ أثناء تحميل جدول الاختبارات';
+        this.error = 'حدث خطأ أثناء تحميل جدول أسئلة القرآن';
         this.loading = false;
         console.error('Failed to load schedules', err);
       }

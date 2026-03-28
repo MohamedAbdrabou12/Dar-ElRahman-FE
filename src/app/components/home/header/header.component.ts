@@ -22,7 +22,6 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.authService.getFullName() || '';
     this.userGender = this.authService.getGender() || '';
-    this.profilePictureUrl = this.authService.getProfilePictureUrl() || '';
     const session_token = localStorage.getItem('token');
     if (session_token) {
       const decoded = this.decodeJwt(session_token);

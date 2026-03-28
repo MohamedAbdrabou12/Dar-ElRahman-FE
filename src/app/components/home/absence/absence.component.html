@@ -85,7 +85,7 @@
           <span class="font-semibold text-text dark:text-dark-text">{{ getArabicStatus(rowSelected?.student?.maritalStatus) }}</span>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-sm text-gray-600 dark:text-gray-400">الفصل:</span>
+          <span class="text-sm text-gray-600 dark:text-gray-400">الحلقة:</span>
           <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected?.student?.ring?.name }}</span>
         </div>
         <div class="flex justify-between items-center">
@@ -124,7 +124,7 @@
       <div class="print-card">
         <h3><i class="fas fa-info-circle"></i> بيانات أخرى</h3>
         <div class="print-row"><span class="print-label">الحالة الاجتماعية:</span><span class="print-value">{{ getArabicStatus(rowSelected?.student?.maritalStatus) }}</span></div>
-        <div class="print-row"><span class="print-label">الفصل:</span><span class="print-value">{{ rowSelected?.student?.ring?.name }}</span></div>
+        <div class="print-row"><span class="print-label">الحلقة:</span><span class="print-value">{{ rowSelected?.student?.ring?.name }}</span></div>
         <div class="print-row"><span class="print-label">تاريخ الالتحاق:</span><span class="print-value">{{ rowSelected?.student?.joiningDate }}</span></div>
         <div class="print-row"><span class="print-label">تاريخ الميلاد:</span><span class="print-value">{{ rowSelected?.student?.birthDate }}</span></div>
       </div>

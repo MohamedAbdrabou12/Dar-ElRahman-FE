@@ -166,14 +166,6 @@ export class AuthService {
   }
 
   /**
-   * Get the profilePictureUrl from the JWT token
-   */
-  getProfilePictureUrl(): string {
-    const decoded = this.decodeToken();
-    return decoded?.profilePictureUrl ?? '';
-  }
-
-  /**
    * Validate an activation token (GET)
    */
   validateActivationToken(token: string): Observable<any> {

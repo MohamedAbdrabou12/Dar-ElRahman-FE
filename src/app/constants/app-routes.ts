@@ -20,4 +20,8 @@ export class AppRoutes {
   public static EXAM_DISTRIBUTION = 'exam-distribution';
   public static EXAM_SCHEDULE = 'exam-schedule';
   public static SALARY_CONFIG = 'salary-config';
+  public static TEACHER_DASHBOARD = 'teacher-dashboard';
+  public static GUARDIAN_DASHBOARD = 'guardian-dashboard';
+  public static ADMIN_DASHBOARD = 'dashboard';
+  public static REPORTS = 'reports';
 }

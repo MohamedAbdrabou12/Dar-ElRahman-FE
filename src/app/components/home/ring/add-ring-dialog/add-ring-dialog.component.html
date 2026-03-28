@@ -81,20 +81,36 @@
         </div>
       </div>
 
-      <!-- Memorization Part -->
-      <div>
-        <label for="memorizationPart" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-          جزء الحفظ <span class="text-red-500">*</span>
-        </label>
-        <select
-          id="memorizationPart"
-          formControlName="memorizationPart"
-          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-        >
-          <option *ngFor="let part of memorizationParts" [value]="part">
-            {{ getArabicMemorizationPart(part) }}
-          </option>
-        </select>
+      <!-- Memorization Part & Order -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="memorizationPart" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+            جزء الحفظ <span class="text-red-500">*</span>
+          </label>
+          <select
+            id="memorizationPart"
+            formControlName="memorizationPart"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          >
+            <option *ngFor="let part of memorizationParts" [value]="part">
+              {{ getArabicMemorizationPart(part) }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label for="memorizationOrder" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+            ترتيب الحفظ <span class="text-red-500">*</span>
+          </label>
+          <select
+            id="memorizationOrder"
+            formControlName="memorizationOrder"
+            class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          >
+            <option *ngFor="let order of memorizationOrders" [value]="order">
+              {{ getArabicMemorizationOrder(order) }}
+            </option>
+          </select>
+        </div>
       </div>
     </form>
   </div>

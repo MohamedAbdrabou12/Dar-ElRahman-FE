@@ -172,7 +172,7 @@ export class ExamDistributionComponent implements OnInit {
       assignments: assignmentsList
     }).subscribe({
       next: () => {
-        this.success = 'تم توزيع الطلاب للاختبار بنجاح';
+        this.success = 'تم توزيع الطلاب لأسئلة القرآن بنجاح';
         this.loading = false;
         this.selectedStudentIds.clear();
         this.assignments.clear();

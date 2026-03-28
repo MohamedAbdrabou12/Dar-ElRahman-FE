@@ -23,6 +23,10 @@
           <span class="text-sm text-gray-600 dark:text-gray-400">الرسوم الشهرية:</span>
           <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.monthlyTuition ? (rowSelected.monthlyTuition + ' ج.م') : 'غير محددة' }}</span>
         </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">أقصى عدد أسئلة يومياً:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.maxExamsPerDay ?? 'غير محدد' }}</span>
+        </div>
       </div>
     </div>
 
@@ -102,7 +106,7 @@
         <tr>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">رقم المسلسل</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الاسم</th>
-          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الوصف</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">أقصى عدد أسئلة يومياً</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الرسوم الشهرية</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">عدد الأيام</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
@@ -113,7 +117,7 @@
           <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.id }}</td>
             <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row.name }}</td>
-            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.description || 'لا يوجد' }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.maxExamsPerDay ?? '-' }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.monthlyTuition ? (row.monthlyTuition + ' ج.م') : '-' }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.timeSlots?.length || 0 }}</td>
             <td class="px-6 py-4">

@@ -21,4 +21,7 @@ export class BackendEndpoints {
   public static examSchedule = '/api/v1/exam-schedules';
   public static salarySlabs = '/api/v1/salary-slabs';
   public static profile = '/api/v1/profile';
+  public static myData = '/api/v1/my';
+  public static dashboard = '/api/v1/dashboard';
+  public static reports = '/api/v1/reports';
 }

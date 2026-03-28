@@ -1,8 +1,18 @@
 import {Routes} from '@angular/router';
 import {AppRoutes} from "../../constants/app-routes";
 import {roleGuard} from "../../core/guards/role-guard";
+// homeRedirectGuard available in ../../core/guards/home-redirect-guard if needed
 
 export const HOME_CHILDREN_ROUTES: Routes = [
+  {
+    path: AppRoutes.ADMIN_DASHBOARD,
+    loadComponent: () =>
+      import('./admin-dashboard/admin-dashboard.component').then(
+        (c) => c.AdminDashboardComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
+  },
   {
     path: AppRoutes.STUDENT,
     loadComponent: () =>
@@ -10,7 +20,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.StudentComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.TEACHER,
@@ -28,7 +38,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.SurahsComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.ABSENCE,
@@ -37,7 +47,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.AbsenceComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER']},
+    data: {roles: ['ADMIN']},
   },
   {
     path: AppRoutes.RING,
@@ -64,7 +74,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.QuestionnaireComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.STUDENT_QUESTIONNAIRE,
@@ -73,7 +83,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.StudentQuestionnaireComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER']},
+    data: {roles: ['ADMIN']},
   },
   {
     path: AppRoutes.TEACHER_RESULT,
@@ -91,7 +101,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.GraduateComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.TUITIONS,
@@ -118,7 +128,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.ExamDistributionComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER']},
+    data: {roles: ['ADMIN']},
   },
   {
     path: AppRoutes.EXAM_SCHEDULE,
@@ -139,8 +149,35 @@ export const HOME_CHILDREN_ROUTES: Routes = [
     data: {roles: ['ADMIN']},
   },
   {
+    path: AppRoutes.REPORTS,
+    loadComponent: () =>
+      import('./reports/reports.component').then(
+        (c) => c.ReportsComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
+  },
+  {
+    path: AppRoutes.TEACHER_DASHBOARD,
+    loadComponent: () =>
+      import('./teacher-dashboard/teacher-dashboard.component').then(
+        (c) => c.TeacherDashboardComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['TEACHER']},
+  },
+  {
+    path: AppRoutes.GUARDIAN_DASHBOARD,
+    loadComponent: () =>
+      import('./guardian-dashboard/guardian-dashboard.component').then(
+        (c) => c.GuardianDashboardComponent,
+      ),
+    canActivate: [roleGuard],
+    data: {roles: ['GUARDIAN']},
+  },
+  {
     path: '',
     pathMatch: 'full',
-    redirectTo: AppRoutes.STUDENT,
+    redirectTo: AppRoutes.ADMIN_DASHBOARD,
   },
 ];

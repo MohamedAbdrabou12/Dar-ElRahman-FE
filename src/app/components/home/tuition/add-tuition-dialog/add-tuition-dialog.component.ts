@@ -52,7 +52,8 @@ export class AddTuitionDialogComponent implements OnInit {
         id: this.data.tuition.id,
         studentId: this.data.tuition.student?.id?.toString() || '',
         tuitionAmount: this.data.tuition.tuitionAmount,
-        tuitionDate: this.formatDateForInput(this.data.tuition.tuitionDate)
+        tuitionDate: this.formatDateForInput(this.data.tuition.tuitionDate),
+        tuitionMonth: this.data.tuition.tuitionMonth || ''
       });
     }
   }
@@ -62,7 +63,8 @@ export class AddTuitionDialogComponent implements OnInit {
       id: [null],
       studentId: ['', Validators.required],
       tuitionAmount: [0, [Validators.required, Validators.min(0)]],
-      tuitionDate: ['', Validators.required]
+      tuitionDate: ['', Validators.required],
+      tuitionMonth: ['', Validators.required]
     });
   }
 
@@ -86,7 +88,9 @@ export class AddTuitionDialogComponent implements OnInit {
       const formValue = this.tuitionForm.value;
       const formattedData = {
         ...formValue,
-        tuitionDate: this.formatDate(formValue.tuitionDate)
+        tuitionDate: this.formatDate(formValue.tuitionDate),
+        tuitionMonth: formValue.tuitionMonth + '-01',
+        paid: true
       };
       this.dialogRef.close(formattedData);
     }

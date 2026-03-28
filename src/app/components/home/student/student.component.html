@@ -97,8 +97,8 @@
           <span class="font-semibold text-text dark:text-dark-text">{{ getArabicStatus(rowSelected.maritalStatus) }}</span>
         </div>
         <div class="flex justify-between items-center">
-          <span class="text-sm text-gray-600 dark:text-gray-400">الفصل:</span>
-          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.ring.teacherName }}</span>
+          <span class="text-sm text-gray-600 dark:text-gray-400">الحلقة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.ring.name }}</span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الالتحاق:</span>
@@ -140,7 +140,7 @@
       <div class="print-card">
         <h3><i class="fas fa-info-circle"></i> بيانات أخرى</h3>
         <div class="print-row"><span class="print-label">الحالة الاجتماعية:</span><span class="print-value">{{ getArabicStatus(rowSelected.maritalStatus) }}</span></div>
-        <div class="print-row"><span class="print-label">الفصل:</span><span class="print-value">{{ rowSelected.ring.teacherName }}</span></div>
+        <div class="print-row"><span class="print-label">الحلقة:</span><span class="print-value">{{ rowSelected.ring.teacherName }}</span></div>
         <div class="print-row"><span class="print-label">تاريخ الالتحاق:</span><span class="print-value">{{ rowSelected.joiningDate }}</span></div>
         <div class="print-row"><span class="print-label">تاريخ الميلاد:</span><span class="print-value">{{ rowSelected.birthDate }}</span></div>
         <div class="print-row"><span class="print-label">الفترة:</span><span class="print-value">{{ rowSelected.ring.periodName }}</span></div>
@@ -190,7 +190,7 @@
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الاسم رباعي</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحالة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفترة</th>
-          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفصل</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحلقة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
       </thead>
@@ -216,7 +216,7 @@
               >{{ row.status === "stopped" ? "منقطع" : "متصل" }}</span>
             </td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.ring?.periodName }}</td>
-            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.ring.teacherName }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.ring.name }}</td>
             <td class="px-6 py-4">
               <div class="flex justify-center items-center gap-2">
                 <button

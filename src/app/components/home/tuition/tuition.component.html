@@ -45,8 +45,18 @@
           <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.tuitionAmount }}</span>
         </div>
         <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">شهر الرسوم:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.tuitionMonth | date: 'yyyy-MM' }}</span>
+        </div>
+        <div class="flex justify-between items-center">
           <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الدفع:</span>
           <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.tuitionDate | date: 'yyyy-MM-dd' }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الحالة:</span>
+          <span [class]="rowSelected.exempted ? 'font-semibold text-green-600' : (rowSelected.paid ? 'font-semibold text-blue-600' : 'font-semibold text-red-500')">
+            {{ rowSelected.exempted ? 'معفى' : (rowSelected.paid ? 'مدفوع' : 'مستحق') }}
+          </span>
         </div>
       </div>
     </div>
@@ -69,7 +79,9 @@
       <div class="print-card">
         <h3><i class="fas fa-money-bill-wave"></i> بيانات الدفع</h3>
         <div class="print-row"><span class="print-label">المبلغ المدفوع:</span><span class="print-value">{{ rowSelected.tuitionAmount }}</span></div>
+        <div class="print-row"><span class="print-label">شهر الرسوم:</span><span class="print-value">{{ rowSelected.tuitionMonth | date: 'yyyy-MM' }}</span></div>
         <div class="print-row"><span class="print-label">تاريخ الدفع:</span><span class="print-value">{{ rowSelected.tuitionDate | date: 'yyyy-MM-dd' }}</span></div>
+        <div class="print-row"><span class="print-label">الحالة:</span><span class="print-value">{{ rowSelected.exempted ? 'معفى' : (rowSelected.paid ? 'مدفوع' : 'مستحق') }}</span></div>
       </div>
     </div>
     <div class="print-footer">
@@ -121,7 +133,9 @@
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">أسم الطالب</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الرقم القومى</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">المبلغ المدفوع</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">شهر الرسوم</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">تاريخ الدفع</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحالة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
       </thead>
@@ -131,7 +145,13 @@
             <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ row.student?.fullName }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.student?.nationalId }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.tuitionAmount }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.tuitionMonth | date: 'yyyy-MM' }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.tuitionDate | date: 'yyyy-MM-dd' }}</td>
+            <td class="px-6 py-4 text-center text-sm">
+              <span [class]="row.exempted ? 'text-green-600 font-semibold' : (row.paid ? 'text-blue-600 font-semibold' : 'text-red-500 font-semibold')">
+                {{ row.exempted ? 'معفى' : (row.paid ? 'مدفوع' : 'مستحق') }}
+              </span>
+            </td>
             <td class="px-6 py-4">
               <div class="flex justify-center items-center gap-2">
                 <button

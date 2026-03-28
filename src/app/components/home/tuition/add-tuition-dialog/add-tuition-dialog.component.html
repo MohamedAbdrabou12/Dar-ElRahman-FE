@@ -60,6 +60,24 @@
         </div>
       </div>
 
+      <!-- Tuition Month -->
+      <div>
+        <label for="tuitionMonth" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          شهر الرسوم <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="tuitionMonth"
+          type="month"
+          formControlName="tuitionMonth"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+        />
+        <div *ngIf="tuitionForm.get('tuitionMonth')?.invalid && tuitionForm.get('tuitionMonth')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب اختيار شهر الرسوم</span>
+        </div>
+      </div>
+
       <!-- Date -->
       <div>
         <mat-form-field class="w-full" appearance="outline">

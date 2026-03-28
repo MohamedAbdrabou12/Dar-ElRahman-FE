@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Ring } from '../../../../models/Ring.model';
 import { Teacher } from '../../../../models/Teacher.model';
 import { Period } from '../../../../models/Period.model';
+import { MemorizationOrder } from '../../../../models/enums/MemorizationOrder.enum';
 import { MemorizationPart } from '../../../../models/enums/MemorizationPart.enum';
 
 export interface RingDialogData {
@@ -32,6 +33,7 @@ export class AddRingDialogComponent implements OnInit {
   teachers: Teacher[] = [];
   periods: Period[] = [];
   memorizationParts = Object.values(MemorizationPart);
+  memorizationOrders = Object.values(MemorizationOrder);
 
   private memorizationPartMap: { [key: string]: string } = {
     [MemorizationPart.juz]: 'جزء',
@@ -43,6 +45,11 @@ export class AddRingDialogComponent implements OnInit {
     [MemorizationPart.half_page]: 'نصف وجه',
     [MemorizationPart.five_lines]: 'خمسة أسطر',
     [MemorizationPart.three_lines]: 'ثلاثة أسطر'
+  };
+
+  private memorizationOrderMap: { [key: string]: string } = {
+    [MemorizationOrder.descending]: 'تنازلي',
+    [MemorizationOrder.ascending]: 'تصاعدي'
   };
 
   constructor(
@@ -63,6 +70,7 @@ export class AddRingDialogComponent implements OnInit {
         name: this.data.ring.name,
         periodId: this.data.ring.periodId,
         memorizationPart: this.data.ring.memorizationPart,
+        memorizationOrder: this.data.ring.memorizationOrder || MemorizationOrder.descending,
         teacherId: this.data.ring.teacherId?.toString() || ''
       });
     }
@@ -74,8 +82,13 @@ export class AddRingDialogComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
       periodId: [null, Validators.required],
       memorizationPart: [MemorizationPart.page, Validators.required],
+      memorizationOrder: [MemorizationOrder.descending, Validators.required],
       teacherId: [null, Validators.required]
     });
+  }
+
+  getArabicMemorizationOrder(order: string): string {
+    return this.memorizationOrderMap[order] || order;
   }
 
   getArabicMemorizationPart(part: string): string {

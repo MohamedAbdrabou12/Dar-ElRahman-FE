@@ -6,6 +6,7 @@ import {TeacherService} from 'src/app/services/teacher/teacher.service';
 import {Ring} from 'src/app/models/Ring.model';
 import {Teacher} from 'src/app/models/Teacher.model';
 import {Period} from 'src/app/models/Period.model';
+import {MemorizationOrder} from "../../../models/enums/MemorizationOrder.enum";
 import {MemorizationPart} from "../../../models/enums/MemorizationPart.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {AddRingDialogComponent} from "./add-ring-dialog/add-ring-dialog.component";
@@ -36,6 +37,7 @@ export class RingComponent implements OnInit {
     name: '',
     periodId: 0,
     memorizationPart: MemorizationPart.page,
+    memorizationOrder: MemorizationOrder.descending,
     teacherId: 0,
     teacherName: ''
   };
@@ -230,6 +232,17 @@ export class RingComponent implements OnInit {
     [MemorizationPart.five_lines]: 'خمسة أسطر',
     [MemorizationPart.three_lines]: 'ثلاثة أسطر'
   };
+
+  private memorizationOrderMap: { [key: string]: string } = {
+    [MemorizationOrder.descending]: 'تنازلي',
+    [MemorizationOrder.ascending]: 'تصاعدي'
+  };
+
+  getArabicMemorizationOrder(order: string | null | undefined): string {
+    if (!order)
+      return '';
+    return this.memorizationOrderMap[order] || order;
+  }
 
   getArabicMemorizationPart(grade: string | null | undefined): string {
     if (!grade)

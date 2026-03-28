@@ -34,6 +34,10 @@
         <span class="text-sm text-gray-600 dark:text-gray-400">جزء الحفظ:</span>
         <span class="font-semibold text-text dark:text-dark-text">{{ getArabicMemorizationPart(rowSelected.memorizationPart) }}</span>
       </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm text-gray-600 dark:text-gray-400">ترتيب الحفظ:</span>
+        <span class="font-semibold text-text dark:text-dark-text">{{ getArabicMemorizationOrder(rowSelected.memorizationOrder) }}</span>
+      </div>
     </div>
   </div>
 
@@ -70,6 +74,7 @@
       <div class="print-row"><span class="print-label">اسم الحلقة:</span><span class="print-value">{{ rowSelected.name }}</span></div>
       <div class="print-row"><span class="print-label">عدد الطلاب:</span><span class="print-value">{{ rowSelected.studentCount }}</span></div>
       <div class="print-row"><span class="print-label">جزء الحفظ:</span><span class="print-value">{{ getArabicMemorizationPart(rowSelected.memorizationPart) }}</span></div>
+      <div class="print-row"><span class="print-label">ترتيب الحفظ:</span><span class="print-value">{{ getArabicMemorizationOrder(rowSelected.memorizationOrder) }}</span></div>
     </div>
     <div class="print-card">
       <h3><i class="fas fa-info-circle"></i> تفاصيل إضافية</h3>
@@ -128,6 +133,7 @@
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">عدد الطلاب</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفترة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">جزء الحفظ</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">ترتيب الحفظ</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">اسم المُعلم</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
@@ -140,6 +146,7 @@
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.studentCount }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.periodName || 'غير محدد' }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ getArabicMemorizationPart(row.memorizationPart) }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ getArabicMemorizationOrder(row.memorizationOrder) }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.teacherName }}</td>
             <td class="px-6 py-4">
               <div class="flex justify-center items-center gap-2">

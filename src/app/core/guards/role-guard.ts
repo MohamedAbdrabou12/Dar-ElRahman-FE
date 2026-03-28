@@ -1,4 +1,4 @@
-import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {inject} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {AppRoutes} from '../../constants/app-routes';
@@ -6,7 +6,7 @@ import {AppRoutes} from '../../constants/app-routes';
 export function roleGuard(
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
-): boolean {
+): boolean | UrlTree {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -20,7 +20,29 @@ export function roleGuard(
     return true;
   }
 
-  // Redirect to default page if user doesn't have permission
-  router.navigateByUrl(`/${AppRoutes.HOME}/${AppRoutes.STUDENT}`).then();
-  return false;
+  // Redirect to role-appropriate default page using UrlTree to avoid race conditions
+  const defaultRoute = getDefaultRouteForRole(authService);
+  const targetUrl = `/${AppRoutes.HOME}/${defaultRoute}`;
+
+  // Prevent infinite loop: if we're already heading to the target, allow through
+  if (state.url === targetUrl) {
+    return true;
+  }
+
+  return router.parseUrl(targetUrl);
+}
+
+export function getDefaultRouteForRole(authService: AuthService): string {
+  if (authService.hasRole('ADMIN') || authService.hasRole('SUPERVISOR')) {
+    return AppRoutes.ADMIN_DASHBOARD;
+  }
+  if (authService.hasRole('TEACHER')) {
+    return AppRoutes.TEACHER_DASHBOARD;
+  }
+  if (authService.hasRole('GUARDIAN')) {
+    return AppRoutes.GUARDIAN_DASHBOARD;
+  }
+  // Fallback: use teacher-dashboard or guardian-dashboard if user has ANY role
+  // to avoid looping back to a page they can't access
+  return AppRoutes.STUDENT;
 }

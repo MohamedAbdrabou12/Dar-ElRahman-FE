@@ -58,6 +58,20 @@ export class LoginComponent {
   }
 
   /** Form submission */
+  private getDefaultRoute(): string {
+    if (this.authService.hasRole('ADMIN') || this.authService.hasRole('SUPERVISOR')) {
+      return AppRoutes.ADMIN_DASHBOARD;
+    }
+    if (this.authService.hasRole('TEACHER')) {
+      return AppRoutes.TEACHER_DASHBOARD;
+    }
+    if (this.authService.hasRole('GUARDIAN')) {
+      return AppRoutes.GUARDIAN_DASHBOARD;
+    }
+    return AppRoutes.STUDENT;
+  }
+
+  /** Form submission */
   onSubmit(form: NgForm) {
     // Check email
     if (!this.credentials.email.trim()) {
@@ -92,7 +106,10 @@ export class LoginComponent {
         localStorage.setItem('token', response.data.token);
         this.loadingService.stopLoading();
         this.showToast('تم تسجيل الدخول بنجاح 🎉', 'success');
-        setTimeout(() => this.router.navigate(['/', AppRoutes.HOME, AppRoutes.STUDENT]), 1000);
+        setTimeout(() => {
+          const defaultRoute = this.getDefaultRoute();
+          this.router.navigate(['/', AppRoutes.HOME, defaultRoute]);
+        }, 1000);
       },
       (error) => {
         console.error('Login failed', error);

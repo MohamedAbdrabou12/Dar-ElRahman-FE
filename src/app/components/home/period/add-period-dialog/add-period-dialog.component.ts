@@ -49,7 +49,8 @@ export class AddPeriodDialogComponent implements OnInit {
         id: this.data.period.id,
         name: this.data.period.name,
         description: this.data.period.description,
-        monthlyTuition: this.data.period.monthlyTuition
+        monthlyTuition: this.data.period.monthlyTuition,
+        maxExamsPerDay: this.data.period.maxExamsPerDay
       });
 
       if (this.data.period.timeSlots && this.data.period.timeSlots.length > 0) {
@@ -65,7 +66,8 @@ export class AddPeriodDialogComponent implements OnInit {
       id: [null],
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       description: ['', [Validators.maxLength(500)]],
-      monthlyTuition: [null, [Validators.min(0)]],
+      monthlyTuition: [null, [Validators.required, Validators.min(0)]],
+      maxExamsPerDay: [null, [Validators.required, Validators.min(1)]],
       timeSlots: this.fb.array([])
     });
   }

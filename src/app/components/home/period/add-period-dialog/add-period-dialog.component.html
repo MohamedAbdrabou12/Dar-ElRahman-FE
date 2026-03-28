@@ -45,6 +45,47 @@
             </div>
           </div>
 
+          <!-- Monthly Tuition -->
+          <div>
+            <label for="monthlyTuition" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الرسوم الشهرية <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="monthlyTuition"
+              type="number"
+              formControlName="monthlyTuition"
+              min="0"
+              step="0.01"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              placeholder="أدخل مبلغ الرسوم الشهرية"
+            />
+            <div *ngIf="periodForm.get('monthlyTuition')?.invalid && periodForm.get('monthlyTuition')?.touched"
+                 class="text-red-500 text-sm mt-1 flex items-center gap-1">
+              <i class="fas fa-exclamation-circle"></i>
+              <span *ngIf="periodForm.get('monthlyTuition')?.errors?.['required']">يجب إدخال مبلغ الرسوم الشهرية</span>
+              <span *ngIf="periodForm.get('monthlyTuition')?.errors?.['min']">يجب أن يكون المبلغ أكبر من أو يساوي صفر</span>
+            </div>
+          </div>
+          <!-- Max Exams Per Day -->
+          <div>
+            <label for="maxExamsPerDay" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الحد الأقصى لأسئلة القرآن في اليوم <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="maxExamsPerDay"
+              type="number"
+              formControlName="maxExamsPerDay"
+              min="1"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              placeholder="أدخل الحد الأقصى لأسئلة القرآن في اليوم"
+            />
+            <div *ngIf="periodForm.get('maxExamsPerDay')?.invalid && periodForm.get('maxExamsPerDay')?.touched"
+                 class="text-red-500 text-sm mt-1 flex items-center gap-1">
+              <i class="fas fa-exclamation-circle"></i>
+              <span *ngIf="periodForm.get('maxExamsPerDay')?.errors?.['required']">يجب إدخال الحد الأقصى لأسئلة القرآن</span>
+              <span *ngIf="periodForm.get('maxExamsPerDay')?.errors?.['min']">يجب أن يكون العدد 1 على الأقل</span>
+            </div>
+          </div>
           <!-- Description -->
           <div>
             <label for="description" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -60,26 +101,6 @@
             ></textarea>
             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-left">
               {{ periodForm.get('description')?.value?.length || 0 }} / 500
-            </div>
-          </div>
-          <!-- Monthly Tuition -->
-          <div>
-            <label for="monthlyTuition" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              الرسوم الشهرية
-            </label>
-            <input
-              id="monthlyTuition"
-              type="number"
-              formControlName="monthlyTuition"
-              min="0"
-              step="0.01"
-              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-              placeholder="أدخل مبلغ الرسوم الشهرية (اختياري)"
-            />
-            <div *ngIf="periodForm.get('monthlyTuition')?.invalid && periodForm.get('monthlyTuition')?.touched"
-                 class="text-red-500 text-sm mt-1 flex items-center gap-1">
-              <i class="fas fa-exclamation-circle"></i>
-              <span>يجب أن يكون المبلغ أكبر من أو يساوي صفر</span>
             </div>
           </div>
         </div>

@@ -25,19 +25,26 @@ export class SidebarComponent implements OnInit {
   filteredMenuItems: MenuItem[] = [];
 
   private allMenuItems: MenuItem[] = [
-    {route: AppRoutes.STUDENT, label: 'الطلبة', icon: 'fas fa-user-graduate', roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
+    // Teacher dashboard (teacher-only scoped view)
+    {route: AppRoutes.TEACHER_DASHBOARD, label: 'لوحة المُعلِم', icon: 'fas fa-chalkboard', roles: ['TEACHER']},
+    // Guardian dashboard (guardian-only scoped view)
+    {route: AppRoutes.GUARDIAN_DASHBOARD, label: 'متابعة الطالب', icon: 'fas fa-child', roles: ['GUARDIAN']},
+    // Admin & Supervisor pages
+    {route: AppRoutes.ADMIN_DASHBOARD, label: 'لوحة التحكم', icon: 'fas fa-tachometer-alt', roles: ['ADMIN', 'SUPERVISOR']},
+    {route: AppRoutes.STUDENT, label: 'الطلبة', icon: 'fas fa-user-graduate', roles: ['ADMIN', 'SUPERVISOR']},
     {route: AppRoutes.PERIOD, label: 'الفترات', icon: 'fas fa-calendar-alt', roles: ['ADMIN', 'SUPERVISOR']},
     {route: AppRoutes.RING, label: 'الحلقات', icon: 'fas fa-mosque', roles: ['ADMIN', 'SUPERVISOR']},
     {route: AppRoutes.TEACHER, label: 'المُعلِمون', icon: 'fas fa-chalkboard-teacher', roles: ['ADMIN', 'SUPERVISOR']},
-    {route: AppRoutes.ABSENCE, label: 'الغياب', icon: 'fas fa-user-check', roles: ['ADMIN', 'TEACHER']},
-    {route: AppRoutes.QUESTIONNAIRE, label: 'أسئلة القرآن', icon: 'fas fa-quran', roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
-    {route: AppRoutes.EXAM_DISTRIBUTION, label: 'توزيع الاختبارات', icon: 'fas fa-clipboard-list', roles: ['ADMIN', 'TEACHER']},
-    {route: AppRoutes.EXAM_SCHEDULE, label: 'جدول الاختبارات', icon: 'fas fa-calendar-day', roles: ['ADMIN', 'SUPERVISOR']},
-    {route: AppRoutes.STUDENT_QUESTIONNAIRE, label: 'نتائج الطلبة', icon: 'fas fa-user-graduate', roles: ['ADMIN', 'TEACHER']},
+    {route: AppRoutes.ABSENCE, label: 'الغياب', icon: 'fas fa-user-check', roles: ['ADMIN']},
+    {route: AppRoutes.QUESTIONNAIRE, label: 'أسئلة القرآن', icon: 'fas fa-quran', roles: ['ADMIN', 'SUPERVISOR']},
+    {route: AppRoutes.EXAM_DISTRIBUTION, label: 'توزيع أسئلة القرآن', icon: 'fas fa-clipboard-list', roles: ['ADMIN']},
+    {route: AppRoutes.EXAM_SCHEDULE, label: 'جدول أسئلة القرآن', icon: 'fas fa-calendar-day', roles: ['ADMIN', 'SUPERVISOR']},
+    {route: AppRoutes.STUDENT_QUESTIONNAIRE, label: 'نتائج الطلبة', icon: 'fas fa-user-graduate', roles: ['ADMIN']},
     {route: AppRoutes.TEACHER_RESULT, label: 'نتائج عمل المُعَلِمين', icon: 'fas fa-chart-line', roles: ['ADMIN', 'SUPERVISOR']},
-    {route: AppRoutes.GRADUATES, label: 'قائمة الخريجين (النور)', icon: 'fas fa-graduation-cap', roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
+    {route: AppRoutes.GRADUATES, label: 'قائمة الخريجين (النور)', icon: 'fas fa-graduation-cap', roles: ['ADMIN', 'SUPERVISOR']},
     {route: AppRoutes.TUITIONS, label: 'الرسوم الشهرية', icon: 'fas fa-money-bill-wave', roles: ['ADMIN']},
     {route: AppRoutes.SALARY_CONFIG, label: 'شرائح الرواتب', icon: 'fas fa-money-check-alt', roles: ['ADMIN']},
+    {route: AppRoutes.REPORTS, label: 'التقارير', icon: 'fas fa-file-alt', roles: ['ADMIN', 'SUPERVISOR']},
     {route: AppRoutes.STAFF, label: 'الموظفون', icon: 'fas fa-id-badge', roles: ['ADMIN']},
   ];
 
