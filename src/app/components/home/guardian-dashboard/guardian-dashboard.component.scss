@@ -1,0 +1,172 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.loading-state, .error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+  gap: 12px;
+}
+
+.error-state {
+  color: #d32f2f;
+}
+
+.student-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(135deg, #1a5276, #2e86c1);
+  color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.student-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.student-info h2 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+
+.student-info p {
+  margin: 0 0 8px;
+  opacity: 0.85;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.2);
+
+  &.connected {
+    background: #27ae60;
+  }
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+
+  i {
+    font-size: 2rem;
+    opacity: 0.8;
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .card-label {
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+}
+
+.exams-card { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+.absence-card { background: linear-gradient(135deg, #e67e22, #f39c12); }
+.tuition-card { background: linear-gradient(135deg, #2980b9, #3498db); }
+
+.section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+  h3 {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    color: #1a5276;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  color: #999;
+  font-size: 0.95rem;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 10px 12px;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background: #f8f9fa;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  td {
+    font-size: 0.9rem;
+  }
+
+  tbody tr:hover {
+    background: #f8f9fa;
+  }
+}
+
+.grade-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.grade-excellent { background: #d4efdf; color: #1e8449; }
+.grade-very-good { background: #d5f5e3; color: #27ae60; }
+.grade-good { background: #fef9e7; color: #d4ac0d; }
+.grade-acceptable { background: #fdebd0; color: #e67e22; }
+.grade-fail { background: #fadbd8; color: #c0392b; }
+
+.done { color: #27ae60; font-weight: 600; }
+.pending { color: #f39c12; font-weight: 600; }
+.exempted { color: #27ae60; font-weight: 600; }
+.paid { color: #2980b9; font-weight: 600; }
+.due { color: #e74c3c; font-weight: 600; }

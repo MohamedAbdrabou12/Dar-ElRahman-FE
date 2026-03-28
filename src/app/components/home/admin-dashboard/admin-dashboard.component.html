@@ -1,0 +1,81 @@
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+        <i class="fas fa-tachometer-alt text-primary"></i>
+        لوحة التحكم
+      </h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">نظرة عامة على النظام</p>
+    </div>
+    <button
+      (click)="loadStats()"
+      [disabled]="loading"
+      class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 text-sm font-semibold shadow-sm disabled:opacity-50"
+    >
+      <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+      تحديث
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div *ngFor="let i of [1,2,3,4,5,6,7,8,9]"
+         class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-5 animate-pulse">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-12 h-12 rounded-xl bg-gray-200 dark:bg-neutral-700"></div>
+        <div class="h-5 w-24 bg-gray-200 dark:bg-neutral-700 rounded"></div>
+      </div>
+      <div class="space-y-3">
+        <div class="h-4 w-full bg-gray-200 dark:bg-neutral-700 rounded"></div>
+        <div class="h-4 w-3/4 bg-gray-200 dark:bg-neutral-700 rounded"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading"
+       class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-8 text-center">
+    <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-3"></i>
+    <p class="text-red-600 dark:text-red-400 font-semibold mb-4">حدث خطأ أثناء تحميل البيانات</p>
+    <button (click)="loadStats()"
+            class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-semibold">
+      <i class="fas fa-redo me-2"></i> إعادة المحاولة
+    </button>
+  </div>
+
+  <!-- Dashboard Cards -->
+  <div *ngIf="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div
+      *ngFor="let card of cards"
+      (click)="navigateTo(card.route)"
+      class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-5 hover:shadow-lg hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300 group"
+      [class.cursor-pointer]="card.route"
+    >
+      <!-- Card Header -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-sm {{card.iconBg}}"
+               [ngClass]="card.iconBg">
+            <i [class]="card.icon" class="text-lg"></i>
+          </div>
+          <h3 class="text-base font-bold text-gray-800 dark:text-gray-100 group-hover:text-primary transition-colors">
+            {{ card.title }}
+          </h3>
+        </div>
+        <i *ngIf="card.route" class="fas fa-chevron-left text-gray-300 dark:text-neutral-600 group-hover:text-primary transition-colors text-sm"></i>
+      </div>
+
+      <!-- Card Metrics -->
+      <div class="space-y-2">
+        <div *ngFor="let metric of card.metrics"
+             class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-gray-50 dark:bg-neutral-900/50">
+          <span class="text-sm text-gray-600 dark:text-gray-400">{{ metric.label }}</span>
+          <span class="text-lg font-bold" [ngClass]="metric.color || 'text-gray-800 dark:text-gray-100'">
+            {{ metric.value }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

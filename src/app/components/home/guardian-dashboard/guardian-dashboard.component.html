@@ -1,0 +1,140 @@
+<div class="dashboard-container" dir="rtl">
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <i class="fas fa-spinner fa-spin fa-2x"></i>
+    <p>جاري تحميل البيانات...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-state">
+    <i class="fas fa-exclamation-triangle fa-2x"></i>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Student Info Card -->
+  <div *ngIf="student && !loading" class="content">
+    <div class="student-header">
+      <div class="student-avatar">
+        <i class="fas fa-user-graduate fa-3x"></i>
+      </div>
+      <div class="student-info">
+        <h2>{{ student.fullName }}</h2>
+        <p *ngIf="student.ring">{{ student.ring.name }}</p>
+        <span class="status-badge" [class.connected]="student.status === 'connected'">
+          {{ student.status === 'connected' ? 'متصل' : 'منقطع' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card exams-card">
+        <i class="fas fa-quran"></i>
+        <div class="card-content">
+          <span class="card-value">{{ passedExams }}</span>
+          <span class="card-label">أسئلة ناجحة</span>
+        </div>
+      </div>
+      <div class="summary-card absence-card">
+        <i class="fas fa-user-clock"></i>
+        <div class="card-content">
+          <span class="card-value">{{ totalAbsences }}</span>
+          <span class="card-label">أيام غياب</span>
+        </div>
+      </div>
+      <div class="summary-card tuition-card">
+        <i class="fas fa-money-bill-wave"></i>
+        <div class="card-content">
+          <span class="card-value">{{ totalDue | number }}</span>
+          <span class="card-label">رسوم مستحقة</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Questionnaire Results Section -->
+    <div class="section">
+      <h3><i class="fas fa-chart-bar"></i> نتائج أسئلة القرآن</h3>
+      <div *ngIf="questionnaireResults.length === 0" class="empty-state">
+        لا توجد نتائج أسئلة بعد
+      </div>
+      <table *ngIf="questionnaireResults.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>الاختبار</th>
+            <th>المحاولة</th>
+            <th>التقدير</th>
+            <th>الحالة</th>
+            <th>تاريخ النجاح</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let result of questionnaireResults">
+            <td>{{ result.questionnaire?.name || '-' }}</td>
+            <td>{{ result.attemptNumber || '-' }}</td>
+            <td>
+              <span class="grade-badge" [ngClass]="getGradeClass(result.grade)">
+                {{ getGradeLabel(result.grade) }}
+              </span>
+            </td>
+            <td>
+              <span [class.done]="result.done" [class.pending]="!result.done">
+                {{ result.done ? 'ناجح' : 'قيد الاختبار' }}
+              </span>
+            </td>
+            <td>{{ result.successDate || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Absences Section -->
+    <div class="section">
+      <h3><i class="fas fa-user-clock"></i> سجل الغياب</h3>
+      <div *ngIf="absences.length === 0" class="empty-state">
+        لا يوجد سجل غياب
+      </div>
+      <table *ngIf="absences.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>تاريخ الغياب</th>
+            <th>عدد مرات الغياب</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let absence of absences">
+            <td>{{ absence.absenceDate }}</td>
+            <td>{{ absence.absenceCounter }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tuitions Section -->
+    <div class="section">
+      <h3><i class="fas fa-money-bill-wave"></i> الرسوم الشهرية</h3>
+      <div *ngIf="tuitions.length === 0" class="empty-state">
+        لا توجد رسوم مسجلة
+      </div>
+      <table *ngIf="tuitions.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>شهر الرسوم</th>
+            <th>المبلغ</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tuition of tuitions">
+            <td>{{ tuition.tuitionMonth }}</td>
+            <td>{{ tuition.tuitionAmount | number }}</td>
+            <td>
+              <span [class.exempted]="tuition.exempted" [class.paid]="!tuition.exempted && tuition.paid" [class.due]="!tuition.exempted && !tuition.paid">
+                {{ tuition.exempted ? 'معفى' : (tuition.paid ? 'مدفوع' : 'مستحق') }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

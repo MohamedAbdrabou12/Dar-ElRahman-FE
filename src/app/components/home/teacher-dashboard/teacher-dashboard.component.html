@@ -1,0 +1,180 @@
+<div class="dashboard-container" dir="rtl">
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <i class="fas fa-spinner fa-spin fa-2x"></i>
+    <p>جاري تحميل البيانات...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-state">
+    <i class="fas fa-exclamation-triangle fa-2x"></i>
+    <p>{{ error }}</p>
+  </div>
+
+  <div *ngIf="!loading && !error" class="content">
+    <!-- Teacher Header -->
+    <div class="teacher-header">
+      <div class="teacher-avatar">
+        <i class="fas fa-chalkboard-teacher fa-3x"></i>
+      </div>
+      <div class="teacher-info">
+        <h2>{{ teacherName }}</h2>
+        <p>{{ rings.length }} حلقات · {{ totalStudents }} طالب · {{ totalGraduates }} خريج</p>
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card rings-card" (click)="setTab('rings')">
+        <i class="fas fa-mosque"></i>
+        <div class="card-content">
+          <span class="card-value">{{ rings.length }}</span>
+          <span class="card-label">حلقاتي</span>
+        </div>
+      </div>
+      <div class="summary-card students-card" (click)="setTab('students')">
+        <i class="fas fa-user-graduate"></i>
+        <div class="card-content">
+          <span class="card-value">{{ totalStudents }}</span>
+          <span class="card-label">طلابي</span>
+        </div>
+      </div>
+      <div class="summary-card absence-card" (click)="setTab('absences')">
+        <i class="fas fa-user-clock"></i>
+        <div class="card-content">
+          <span class="card-value">{{ absences.length }}</span>
+          <span class="card-label">سجلات الغياب</span>
+        </div>
+      </div>
+      <div class="summary-card results-card" (click)="setTab('results')">
+        <i class="fas fa-chart-line"></i>
+        <div class="card-content">
+          <span class="card-value">{{ teacherResults.length }}</span>
+          <span class="card-label">تقييمات الأداء</span>
+        </div>
+      </div>
+      <div class="summary-card graduates-card" (click)="setTab('graduates')">
+        <i class="fas fa-graduation-cap"></i>
+        <div class="card-content">
+          <span class="card-value">{{ totalGraduates }}</span>
+          <span class="card-label">الخريجون</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button [class.active]="activeTab === 'rings'" (click)="setTab('rings')">حلقاتي</button>
+      <button [class.active]="activeTab === 'students'" (click)="setTab('students')">طلابي</button>
+      <button [class.active]="activeTab === 'absences'" (click)="setTab('absences')">الغياب</button>
+      <button [class.active]="activeTab === 'results'" (click)="setTab('results')">أدائي</button>
+      <button [class.active]="activeTab === 'graduates'" (click)="setTab('graduates')">الخريجون</button>
+    </div>
+
+    <!-- Rings Tab -->
+    <div class="section" *ngIf="activeTab === 'rings'">
+      <div *ngIf="rings.length === 0" class="empty-state">لا توجد حلقات مسندة إليك</div>
+      <div class="ring-cards" *ngIf="rings.length > 0">
+        <div class="ring-card" *ngFor="let ring of rings">
+          <h4>{{ ring.name }}</h4>
+          <div class="ring-details">
+            <span><i class="fas fa-users"></i> {{ ring.studentCount || 0 }} طالب</span>
+            <span *ngIf="ring.period"><i class="fas fa-calendar"></i> {{ ring.period?.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Tab -->
+    <div class="section" *ngIf="activeTab === 'students'">
+      <div *ngIf="students.length === 0" class="empty-state">لا يوجد طلاب في حلقاتك</div>
+      <table *ngIf="students.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>الحلقة</th>
+            <th>الحالة</th>
+            <th>تاريخ الالتحاق</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of students">
+            <td>{{ student.fullName }}</td>
+            <td>{{ student.ring?.name || '-' }}</td>
+            <td>
+              <span [class.connected]="student.status === 'connected'" [class.disconnected]="student.status !== 'connected'">
+                {{ student.status === 'connected' ? 'متصل' : 'منقطع' }}
+              </span>
+            </td>
+            <td>{{ student.joiningDate || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Absences Tab -->
+    <div class="section" *ngIf="activeTab === 'absences'">
+      <div *ngIf="absences.length === 0" class="empty-state">لا يوجد سجل غياب</div>
+      <table *ngIf="absences.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>الطالب</th>
+            <th>تاريخ الغياب</th>
+            <th>عدد مرات الغياب</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let absence of absences">
+            <td>{{ absence.student?.fullName || '-' }}</td>
+            <td>{{ absence.absenceDate }}</td>
+            <td>{{ absence.absenceCounter }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Teacher Results Tab -->
+    <div class="section" *ngIf="activeTab === 'results'">
+      <div *ngIf="teacherResults.length === 0" class="empty-state">لا توجد تقييمات أداء بعد</div>
+      <table *ngIf="teacherResults.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>التاريخ</th>
+            <th>نسبة التحفيظ</th>
+            <th>نسبة المراجعة</th>
+            <th>النسبة النهائية</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let result of teacherResults">
+            <td>{{ result.resultDate }}</td>
+            <td>{{ result.memorizationPercentage || 0 }}%</td>
+            <td>{{ result.revisionPercentage || 0 }}%</td>
+            <td><strong>{{ result.totalPercentage || 0 }}%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Graduates Tab -->
+    <div class="section" *ngIf="activeTab === 'graduates'">
+      <div *ngIf="graduates.length === 0" class="empty-state">لا يوجد خريجون بعد</div>
+      <table *ngIf="graduates.length > 0" class="data-table">
+        <thead>
+          <tr>
+            <th>الطالب</th>
+            <th>تاريخ التخرج</th>
+            <th>التقدير النهائي</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let grad of graduates">
+            <td>{{ grad.student?.fullName || '-' }}</td>
+            <td>{{ grad.completionDate || '-' }}</td>
+            <td>{{ getGradeLabel(grad.finalGrade) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
