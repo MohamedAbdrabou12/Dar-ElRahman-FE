@@ -1,15 +1,12 @@
-<div class="alert p-0 m-0" [class]="'alert--' + type">
-  <div class="row">
-    <div class="col d-flex justify-content-end">
-      <button class="border-0 dismiss-btn" (click)="onDismiss()">
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </div>
+<div class="alert-toast" [class]="'alert-toast--' + type">
+  <div class="alert-toast__icon">
+    <i [class]="type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'"></i>
   </div>
-  <div class="row container">
-    <div class="col px-3">
-      <p class="font-bold m-0">{{ type === 'error' ? 'خطأ' : 'تم بنجاح' }}</p>
-      <p class="text-shade-0">{{ message }}</p>
-    </div>
+  <div class="alert-toast__body">
+    <span class="alert-toast__title">{{ type === 'error' ? 'خطأ' : 'تم بنجاح' }}</span>
+    <span class="alert-toast__message">{{ message }}</span>
   </div>
+  <button class="alert-toast__dismiss" (click)="onDismiss()">
+    <i class="fas fa-times"></i>
+  </button>
 </div>

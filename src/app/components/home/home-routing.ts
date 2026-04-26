@@ -20,7 +20,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.StudentComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER']},
   },
   {
     path: AppRoutes.TEACHER,
@@ -47,7 +47,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.AbsenceComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN']},
+    data: {roles: ['ADMIN', 'TEACHER']},
   },
   {
     path: AppRoutes.RING,
@@ -56,7 +56,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.RingComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER']},
   },
   {
     path: AppRoutes.PERIOD,
@@ -74,7 +74,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.QuestionnaireComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER']},
   },
   {
     path: AppRoutes.STUDENT_QUESTIONNAIRE,
@@ -83,7 +83,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.StudentQuestionnaireComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN']},
+    data: {roles: ['ADMIN', 'TEACHER']},
   },
   {
     path: AppRoutes.TEACHER_RESULT,
@@ -128,7 +128,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.ExamDistributionComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN']},
+    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.EXAM_SCHEDULE,

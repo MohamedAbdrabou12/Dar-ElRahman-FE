@@ -132,15 +132,8 @@ export class TuitionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tuitionService.addTuition(result).subscribe({
-          next: () => {
-            this.getAllTuitions();
-            this.getNonTuitionStudents();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllTuitions();
+        this.getNonTuitionStudents();
       }
     });
   }
@@ -159,14 +152,7 @@ export class TuitionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tuitionService.updateTuition(result).subscribe({
-          next: () => {
-            this.getAllTuitions();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllTuitions();
       }
     });
   }

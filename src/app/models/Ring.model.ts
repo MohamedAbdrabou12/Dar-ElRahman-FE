@@ -12,4 +12,5 @@ export interface Ring extends BaseAuditModel {
   memorizationOrder?: MemorizationOrder;
   teacherId: number; // Required
   teacherName: string;
+  maxExamBatch?: number;
 }

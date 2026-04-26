@@ -31,7 +31,7 @@
         <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.studentCount }}</span>
       </div>
       <div class="flex justify-between items-center">
-        <span class="text-sm text-gray-600 dark:text-gray-400">جزء الحفظ:</span>
+        <span class="text-sm text-gray-600 dark:text-gray-400">مقدار الحفظ:</span>
         <span class="font-semibold text-text dark:text-dark-text">{{ getArabicMemorizationPart(rowSelected.memorizationPart) }}</span>
       </div>
       <div class="flex justify-between items-center">
@@ -63,7 +63,7 @@
 <!-- Print-only area -->
 <div class="print-area hidden">
   <div class="print-header">
-    <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+    <h1>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</h1>
     <h2>بيانات الحلقة: {{ rowSelected.name }}</h2>
     <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
   </div>
@@ -73,7 +73,7 @@
       <div class="print-row"><span class="print-label">رقم المسلسل:</span><span class="print-value">{{ rowSelected.id }}</span></div>
       <div class="print-row"><span class="print-label">اسم الحلقة:</span><span class="print-value">{{ rowSelected.name }}</span></div>
       <div class="print-row"><span class="print-label">عدد الطلاب:</span><span class="print-value">{{ rowSelected.studentCount }}</span></div>
-      <div class="print-row"><span class="print-label">جزء الحفظ:</span><span class="print-value">{{ getArabicMemorizationPart(rowSelected.memorizationPart) }}</span></div>
+      <div class="print-row"><span class="print-label">مقدار الحفظ:</span><span class="print-value">{{ getArabicMemorizationPart(rowSelected.memorizationPart) }}</span></div>
       <div class="print-row"><span class="print-label">ترتيب الحفظ:</span><span class="print-value">{{ getArabicMemorizationOrder(rowSelected.memorizationOrder) }}</span></div>
     </div>
     <div class="print-card">
@@ -83,11 +83,12 @@
     </div>
   </div>
   <div class="print-footer">
-    <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+    <span>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</span>
     <span>{{ today | date: 'yyyy-MM-dd' }}</span>
   </div>
 </div>
 }
+@if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
 <button
   type="button"
   class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
@@ -96,6 +97,7 @@
   <i class="fas fa-plus-circle"></i>
   اضافة حلقة جديدة
 </button>
+}
 
 <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
   <!-- Search Bar -->
@@ -132,7 +134,7 @@
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">اسم الحلقة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">عدد الطلاب</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفترة</th>
-          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">جزء الحفظ</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">مقدار الحفظ</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">ترتيب الحفظ</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">اسم المُعلم</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
@@ -158,6 +160,7 @@
                   <span>عرض</span>
                 </button>
 
+                @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
                 <button
                   class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
                   (click)="editRing(row)"
@@ -173,6 +176,7 @@
                   <i class="fa fa-trash"></i>
                   <span>حذف</span>
                 </button>
+                }
               </div>
             </td>
           </tr>

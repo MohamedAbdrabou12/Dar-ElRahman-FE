@@ -216,14 +216,7 @@ export class StudentQuestionnaireComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.studentQuestionnaireService.addStudentQuestionnaire(result).subscribe({
-          next: () => {
-            this.loadStudentQuestionnaires();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.loadStudentQuestionnaires();
       }
     });
   }
@@ -244,14 +237,7 @@ export class StudentQuestionnaireComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.studentQuestionnaireService.updateStudentQuestionnaire(result).subscribe({
-          next: () => {
-            this.loadStudentQuestionnaires();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.loadStudentQuestionnaires();
       }
     });
   }

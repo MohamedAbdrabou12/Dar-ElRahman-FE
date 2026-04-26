@@ -11,13 +11,14 @@ export interface Staff extends BaseAuditModel {
   birthDate?: string;
   staffType?: StaffType;
   joiningDate?: string;
+  outOfWork?: boolean;
+  exitDate?: string;
   active?: boolean;
   gender: string;
   profilePictureUrl?: string;
 }
 
 export enum StaffType {
-  ADMIN = 'ADMIN',
   TECHNICAL = 'TECHNICAL',
   SUPERVISOR = 'SUPERVISOR',
 }

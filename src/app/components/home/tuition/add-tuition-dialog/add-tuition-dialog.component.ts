@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Student } from '../../../../models/Student.model';
 import { Tuition } from '../../../../models/Tuition.model';
+import { TuitionService } from '../../../../services/tuition/tuition.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface TuitionDialogData {
   isEdit: boolean;
@@ -39,7 +41,9 @@ export class AddTuitionDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddTuitionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TuitionDialogData
+    @Inject(MAT_DIALOG_DATA) public data: TuitionDialogData,
+    private tuitionService: TuitionService,
+    private alertService: AlertService
   ) {
     this.students = data.students;
   }
@@ -92,7 +96,20 @@ export class AddTuitionDialogComponent implements OnInit {
         tuitionMonth: formValue.tuitionMonth + '-01',
         paid: true
       };
-      this.dialogRef.close(formattedData);
+      const action = this.data.isEdit
+        ? this.tuitionService.updateTuition(formattedData)
+        : this.tuitionService.addTuition(formattedData);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

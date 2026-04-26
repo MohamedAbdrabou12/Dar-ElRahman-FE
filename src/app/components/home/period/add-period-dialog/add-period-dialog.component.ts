@@ -9,6 +9,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {DayOfWeek} from '../../../../models/enums/DayOfWeek.enum';
 import {Period} from '../../../../models/Period.model';
 import {TimeSlot} from '../../../../models/TimeSlot.model';
+import {PeriodService} from '../../../../services/period/period.service';
+import {AlertService} from '../../../../services/alert.service';
 
 export interface PeriodDialogData {
   isEdit: boolean;
@@ -37,7 +39,9 @@ export class AddPeriodDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddPeriodDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: PeriodDialogData
+    @Inject(MAT_DIALOG_DATA) public data: PeriodDialogData,
+    private periodService: PeriodService,
+    private alertService: AlertService
   ) {
   }
 
@@ -177,7 +181,20 @@ export class AddPeriodDialogComponent implements OnInit {
         }));
       }
 
-      this.dialogRef.close(formValue);
+      const action = this.data.isEdit
+        ? this.periodService.updatePeriod(formValue)
+        : this.periodService.addPeriod(formValue);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

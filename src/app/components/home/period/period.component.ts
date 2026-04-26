@@ -98,14 +98,7 @@ export class PeriodComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.periodService.addPeriod(result).subscribe({
-          next: () => {
-            this.getAllPeriods();
-          },
-          error: (error) => {
-            this.error = error;
-          },
-        });
+        this.getAllPeriods();
       }
     });
   }
@@ -124,14 +117,7 @@ export class PeriodComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.periodService.updatePeriod(result).subscribe({
-          next: () => {
-            this.getAllPeriods();
-          },
-          error: (error) => {
-            this.error = error;
-          },
-        });
+        this.getAllPeriods();
       }
     });
   }

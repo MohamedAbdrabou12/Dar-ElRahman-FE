@@ -85,7 +85,7 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label for="memorizationPart" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-            جزء الحفظ <span class="text-red-500">*</span>
+            مقدار الحفظ <span class="text-red-500">*</span>
           </label>
           <select
             id="memorizationPart"
@@ -110,6 +110,27 @@
               {{ getArabicMemorizationOrder(order) }}
             </option>
           </select>
+        </div>
+      </div>
+
+      <!-- Max Exam Batch -->
+      <div>
+        <label for="maxExamBatch" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          الحد الأقصى لعدد مرات التقديم للإختبار <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="maxExamBatch"
+          type="number"
+          formControlName="maxExamBatch"
+          min="1"
+          class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          placeholder="عدد مرات التقديم"
+        />
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">أقصى عدد مرات يمكن للمعلم تقديم طلابه للاختبار لكل سؤال</p>
+        <div *ngIf="ringForm.get('maxExamBatch')?.invalid && ringForm.get('maxExamBatch')?.touched"
+             class="text-red-500 text-sm mt-1 flex items-center gap-1">
+          <i class="fas fa-exclamation-circle"></i>
+          <span>يجب أن يكون العدد 1 على الأقل</span>
         </div>
       </div>
     </form>

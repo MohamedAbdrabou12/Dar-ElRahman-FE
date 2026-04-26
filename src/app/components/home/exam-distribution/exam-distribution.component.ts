@@ -11,6 +11,7 @@ import {QuestionnaireService} from 'src/app/services/questionnaire/questionnaire
 import {StudentService} from 'src/app/services/student/student.service';
 import {ExamScheduleService} from 'src/app/services/exam-schedule/exam-schedule.service';
 import {AlertService} from 'src/app/services/alert.service';
+import {AuthService} from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-exam-distribution',
@@ -45,6 +46,7 @@ export class ExamDistributionComponent implements OnInit {
     private studentService: StudentService,
     private examScheduleService: ExamScheduleService,
     private alertService: AlertService,
+    protected authService: AuthService,
   ) {
   }
 

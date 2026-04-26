@@ -132,15 +132,8 @@ export class GraduateComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.graduateService.addGraduate(result).subscribe({
-          next: () => {
-            this.getAllGraduates();
-            this.getNonGraduateStudents();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllGraduates();
+        this.getNonGraduateStudents();
       }
     });
   }
@@ -159,14 +152,7 @@ export class GraduateComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.graduateService.updateGraduate(result).subscribe({
-          next: () => {
-            this.getAllGraduates();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllGraduates();
       }
     });
   }

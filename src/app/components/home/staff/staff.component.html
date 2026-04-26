@@ -70,6 +70,20 @@
           <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الالتحاق:</span>
           <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.joiningDate }}</span>
         </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">حالة العمل:</span>
+          <span
+            class="px-3 py-1 rounded-full text-xs font-semibold"
+            [ngClass]="{
+              'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': !rowSelected.outOfWork,
+              'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': rowSelected.outOfWork
+            }"
+          >{{ rowSelected.outOfWork ? 'خارج العمل' : 'يعمل' }}</span>
+        </div>
+        <div *ngIf="rowSelected.outOfWork && rowSelected.exitDate" class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">تاريخ الخروج:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.exitDate }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -77,7 +91,7 @@
   <!-- Print-only area -->
   <div class="print-area hidden">
     <div class="print-header">
-      <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+      <h1>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</h1>
       <h2>بيانات الموظف: {{ rowSelected.fullName }}</h2>
       <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
     </div>
@@ -99,7 +113,7 @@
       </div>
     </div>
     <div class="print-footer">
-      <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+      <span>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</span>
       <span>{{ today | date: 'yyyy-MM-dd' }}</span>
     </div>
   </div>
@@ -151,6 +165,7 @@
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">رقم الهاتف</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">نوع الموظف</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">تاريخ الالتحاق</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحالة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
       </thead>
@@ -174,6 +189,15 @@
               >{{ getArabicStaffType(row.staffType) }}</span>
             </td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.joiningDate }}</td>
+            <td class="px-6 py-4 text-center">
+              <span
+                class="inline-flex px-3 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400': !row.outOfWork,
+                  'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400': row.outOfWork
+                }"
+              >{{ row.outOfWork ? 'خارج العمل' : 'يعمل' }}</span>
+            </td>
             <td class="px-6 py-4">
               <div class="flex justify-center items-center gap-2">
                 <button

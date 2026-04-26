@@ -19,7 +19,7 @@ export class LoginComponent {
   public readonly AppRoutes = AppRoutes;
 
   credentials = {
-    email: '',
+    identifier: '',
     password: '',
   };
 
@@ -51,12 +51,6 @@ export class LoginComponent {
     setTimeout(() => el.classList.remove('border-red-500', 'animate-shake'), 1500);
   }
 
-  /** Validate email format */
-  private validateEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
   /** Form submission */
   private getDefaultRoute(): string {
     if (this.authService.hasRole('ADMIN') || this.authService.hasRole('SUPERVISOR')) {
@@ -73,15 +67,8 @@ export class LoginComponent {
 
   /** Form submission */
   onSubmit(form: NgForm) {
-    // Check email
-    if (!this.credentials.email.trim()) {
-      this.showToast('يرجى إدخال البريد الإلكتروني 📧', 'warning');
-      this.highlightField(this.usernameInput);
-      return;
-    }
-
-    if (!this.validateEmail(this.credentials.email)) {
-      this.showToast('صيغة البريد الإلكتروني غير صحيحة 📭', 'error');
+    if (!this.credentials.identifier.trim()) {
+      this.showToast('يرجى إدخال رقم الهوية أو البريد الإلكتروني', 'warning');
       this.highlightField(this.usernameInput);
       return;
     }
@@ -117,15 +104,9 @@ export class LoginComponent {
 
         const msg = error?.error?.message || error?.message || '';
         if (msg.includes('not activated') || msg.includes('not active')) {
-          this.showToast('لم يتم تفعيل حسابك بعد. يرجى مراجعة بريدك الإلكتروني.', 'warning');
-        } else if (msg.includes('email')) {
-          this.showToast('هذا البريد غير مسجل 🚫', 'error');
-          this.highlightField(this.usernameInput);
-        } else if (msg.includes('password')) {
-          this.showToast('كلمة المرور غير صحيحة 🔑', 'error');
-          this.highlightField(this.passwordInput);
+          this.showToast('لم يتم تفعيل حسابك بعد. يرجى التواصل مع الإدارة.', 'warning');
         } else {
-          this.showToast('حدث خطأ أثناء تسجيل الدخول ⚠️', 'error');
+          this.showToast('بيانات الدخول غير صحيحة', 'error');
         }
       }
     );

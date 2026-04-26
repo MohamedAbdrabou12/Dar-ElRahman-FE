@@ -10,6 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { Student } from '../../../../models/Student.model';
 import { Graduate } from '../../../../models/Graduate.model';
 import { Grade } from '../../../../models/enums/Grade.enum';
+import { GraduateService } from '../../../../services/graduate/graduate.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface GraduateDialogData {
   isEdit: boolean;
@@ -47,7 +49,9 @@ export class AddGraduateDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddGraduateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: GraduateDialogData
+    @Inject(MAT_DIALOG_DATA) public data: GraduateDialogData,
+    private graduateService: GraduateService,
+    private alertService: AlertService
   ) {
     this.students = data.students;
   }
@@ -103,7 +107,20 @@ export class AddGraduateDialogComponent implements OnInit {
         ...formValue,
         completionDate: this.formatDate(formValue.completionDate)
       };
-      this.dialogRef.close(formattedData);
+      const action = this.data.isEdit
+        ? this.graduateService.updateGraduate(formattedData)
+        : this.graduateService.addGraduate(formattedData);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

@@ -5,13 +5,24 @@
       <i class="fas fa-book-quran"></i>
       سور القرآن
     </h2>
-    <button
-      type="button"
-      mat-dialog-close
-      class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-    >
-      <i class="fas fa-times text-xl"></i>
-    </button>
+    <div class="flex items-center gap-2">
+      <button
+        *ngIf="studentSurahs && studentSurahs.length > 0"
+        type="button"
+        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-hover transition-all text-sm font-semibold flex items-center gap-2 shadow-sm"
+        (click)="printSurahReport()"
+      >
+        <i class="fas fa-print"></i>
+        طباعة
+      </button>
+      <button
+        type="button"
+        mat-dialog-close
+        class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+      >
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
   </div>
 
   <!-- Content -->

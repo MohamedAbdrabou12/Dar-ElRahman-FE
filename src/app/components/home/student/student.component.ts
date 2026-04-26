@@ -22,6 +22,7 @@ import {Period} from "../../../models/Period.model";
 import {Surah} from "../../../models/Surah.model";
 import {StudentMaritalStatus} from "../../../models/enums/StudentMaritalStatus.enum";
 import {PeriodService} from '../../../services/period/period.service';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-student',
@@ -58,6 +59,7 @@ export class StudentComponent implements OnInit {
     private alertService: AlertService,
     private surahsService: SurahsService,
     protected loadingService: LoadingService,
+    protected authService: AuthService,
   ) {
     effect(() => {
       if (this.data() && this.teachers() && this.rings())
@@ -69,8 +71,13 @@ export class StudentComponent implements OnInit {
     this.loadingService.startLoading();
     this.getAllStudents();
     this.gatAllRings();
-    this.getAllTeachers();
-    this.getAllPeriods();
+    if (this.authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
+      this.getAllTeachers();
+      this.getAllPeriods();
+    } else {
+      this.teachers.set([]);
+      this.periods.set([]);
+    }
   }
 
 
@@ -246,7 +253,7 @@ export class StudentComponent implements OnInit {
       maxWidth: '95vw',
       maxHeight: '90vh',
       direction: 'rtl',
-      data: {studentId: studentId, surahs: this.surahs()}
+      data: {studentId: studentId, studentName: this.rowSelected?.fullName, surahs: this.surahs()}
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -276,6 +283,46 @@ export class StudentComponent implements OnInit {
     if (!gender) return '';
     const map: { [key: string]: string } = { 'MALE': 'ذكر', 'FEMALE': 'أنثى' };
     return map[gender] || gender;
+  }
+
+  activationLinkData: { link: string; student: any; message: string } | null = null;
+
+  shareActivationLink(student: any): void {
+    this.loadingService.startLoading();
+    this.studentService.getActivationLink(student.id).subscribe(
+      (response: any) => {
+        this.loadingService.stopLoading();
+        const link = response.data;
+        const studentName = student.fullName || 'الطالب';
+        const message = `السلام عليكم ورحمة الله وبركاته\n\nتم تسجيل ابنكم (${studentName}) في دار عباد الرحمن لتحفيظ القرآن الكريم.\n\nلتفعيل الحساب وتعيين كلمة المرور، يرجى الضغط على الرابط التالي:\n${link}\n\nرقم الهوية للدخول: ${student.nationalId || 'غير متوفر'}\n\nجزاكم الله خيراً`;
+        this.activationLinkData = { link, student, message };
+      },
+      (error: any) => {
+        this.loadingService.stopLoading();
+      }
+    );
+  }
+
+  copyActivationLink(): void {
+    if (!this.activationLinkData) return;
+    navigator.clipboard.writeText(this.activationLinkData.link).then(() => {
+      this.alertService.success('تم نسخ رابط التفعيل بنجاح');
+      this.activationLinkData = null;
+    });
+  }
+
+  sendWhatsApp(): void {
+    if (!this.activationLinkData) return;
+    const phone = this.activationLinkData.student.fatherPhoneNumber;
+    if (!phone) return;
+    const formattedPhone = phone.startsWith('0') ? '2' + phone : phone;
+    const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(this.activationLinkData.message)}`;
+    window.open(whatsappUrl, '_blank');
+    this.activationLinkData = null;
+  }
+
+  closeActivationDialog(): void {
+    this.activationLinkData = null;
   }
 
   openCertificateDialog(student: any): void {

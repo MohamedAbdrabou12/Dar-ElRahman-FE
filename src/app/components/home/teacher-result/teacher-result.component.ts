@@ -166,14 +166,7 @@ export class TeacherResultComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.teacherResultService.addTeacherResult(result).subscribe({
-          next: () => {
-            this.getAllTeacherResults();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllTeacherResults();
       }
     });
   }
@@ -193,14 +186,7 @@ export class TeacherResultComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.teacherResultService.updateTeacherResult(result).subscribe({
-          next: () => {
-            this.getAllTeacherResults();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllTeacherResults();
       }
     });
   }

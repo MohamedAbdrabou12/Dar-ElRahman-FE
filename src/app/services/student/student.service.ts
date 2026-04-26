@@ -58,6 +58,12 @@ export class StudentService {
     );
   }
 
+  getActivationLink(studentId: number): Observable<any> {
+    return this.http.get<any>(
+      `${environment.memoApiUrl}${BackendEndpoints.student}/${studentId}/activation-link`
+    );
+  }
+
   getNonTuitionStudents(): Observable<any> {
     return this.http.get<any>(
       `${environment.memoApiUrl}${BackendEndpoints.student}/non-graduates`

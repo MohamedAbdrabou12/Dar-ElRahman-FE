@@ -32,38 +32,6 @@
   width: 80px;
 }
 
-.sidebar.minimized .logo h2 {
-  opacity: 0;
-  display: none;
-}
-.sidebar.minimized .logo h2 {
-  opacity: 0;
-  display: none;
-}
-
-.sidebar.minimized .logo img {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
-}
-
-.logo {
-  text-align: center;
-}
-
-.logo img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-}
-
-
-
-@media (prefers-color-scheme: dark) {
-  .logo h2 {
-    color: #22c55e;
-  }
-}
 
 .menu {
   list-style: none;
@@ -72,7 +40,7 @@
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100vh - 220px);
+  max-height: calc(100vh - 120px);
   padding-right: 5px;
 
   /* Custom scrollbar styling */

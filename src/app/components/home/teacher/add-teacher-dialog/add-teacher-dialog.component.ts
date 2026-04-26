@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AppRegexPatterns } from '../../../../constants/app-regex-patterns';
 import { TeacherMaritalStatus } from '../../../../models/enums/TeacherMaritalStatus.enum';
+import { TeacherService } from '../../../../services/teacher/teacher.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface TeacherDialogData {
   isEdit: boolean;
@@ -39,7 +41,9 @@ export class AddTeacherDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddTeacherDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TeacherDialogData
+    @Inject(MAT_DIALOG_DATA) public data: TeacherDialogData,
+    private teacherService: TeacherService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -132,7 +136,20 @@ export class AddTeacherDialogComponent implements OnInit {
         exitDate: this.formatDate(formValue.exitDate),
         qualificationDate: this.formatYearMonth(formValue.qualificationDate)
       };
-      this.dialogRef.close(formattedData);
+      const action = this.data.isEdit
+        ? this.teacherService.updateTeacher(formattedData)
+        : this.teacherService.addTeacher(formattedData);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

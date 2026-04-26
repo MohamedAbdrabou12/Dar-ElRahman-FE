@@ -24,6 +24,8 @@ export interface Milestone {
 })
 export class CertificateDialogComponent {
   milestones: Milestone[] = [
+    {parts: 1, labelAr: 'جزء واحد', icon: 'fas fa-book', color: '#17a2b8'},
+    {parts: 3, labelAr: 'ثلاثة أجزاء', icon: 'fas fa-book-open', color: '#e67e22'},
     {parts: 5, labelAr: 'خمسة أجزاء', icon: 'fas fa-star', color: '#cd7f32'},
     {parts: 10, labelAr: 'عشرة أجزاء', icon: 'fas fa-star', color: '#c0c0c0'},
     {parts: 15, labelAr: 'خمسة عشر جزءاً', icon: 'fas fa-star', color: '#ffd700'},

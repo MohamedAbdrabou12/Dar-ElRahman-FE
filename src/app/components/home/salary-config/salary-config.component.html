@@ -7,7 +7,7 @@
     </h2>
     <div class="flex items-center gap-2">
       <button
-        *ngIf="!isEditing"
+        *ngIf="!isEditing && selectedPeriodId"
         class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
         (click)="startEditing()"
         [disabled]="loading"
@@ -37,6 +37,25 @@
     </div>
   </div>
 
+  <!-- Period Dropdown -->
+  <div *ngIf="!loadingPeriods && periods.length > 0" class="flex items-center gap-3">
+    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">الفترة:</label>
+    <select
+      [(ngModel)]="selectedPeriodId"
+      (ngModelChange)="onPeriodChange()"
+      [disabled]="isEditing"
+      class="px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-800 text-text dark:text-dark-text text-sm font-semibold focus:ring-2 focus:ring-primary focus:border-transparent min-w-[200px]"
+    >
+      <option *ngFor="let period of periods" [ngValue]="period.id">{{ period.name }}</option>
+    </select>
+  </div>
+
+  <!-- Loading Periods -->
+  <div *ngIf="loadingPeriods" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+    <i class="fas fa-spinner fa-spin text-4xl text-primary dark:text-success mb-4"></i>
+    <p class="text-gray-600 dark:text-gray-400">جاري تحميل الفترات...</p>
+  </div>
+
   <!-- Messages -->
   <div *ngIf="error" class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
     <p class="text-red-700 dark:text-red-400 text-sm flex items-center gap-2">
@@ -51,7 +70,7 @@
     </p>
   </div>
 
-  <!-- Loading -->
+  <!-- Loading Slabs -->
   <div *ngIf="loading && !isEditing" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
     <i class="fas fa-spinner fa-spin text-4xl text-primary dark:text-success mb-4"></i>
     <p class="text-gray-600 dark:text-gray-400">جاري تحميل إعدادات الرواتب...</p>
@@ -62,7 +81,7 @@
     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
       <h3 class="text-lg font-bold text-primary dark:text-success flex items-center gap-2">
         <i class="fas fa-table"></i>
-        جدول شرائح الرواتب حسب نسبة النجاح
+        جدول شرائح الرواتب حسب نسبة النجاح — {{ selectedPeriodName }}
       </h3>
     </div>
     <div class="overflow-x-auto">
@@ -98,36 +117,47 @@
   </div>
 
   <!-- Edit Table -->
-  <div *ngIf="isEditing && editingSlabs.length > 0" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-blue-300 dark:border-blue-700 overflow-hidden">
-    <div class="p-4 border-b border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20">
-      <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
-        <i class="fas fa-edit"></i>
-        تعديل شرائح الرواتب
-      </h3>
-      <p class="text-sm text-blue-600 dark:text-blue-500 mt-1">قم بتعديل مبلغ الراتب لكل شريحة ثم اضغط "حفظ الكل"</p>
+  <div *ngIf="isEditing" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-blue-300 dark:border-blue-700 overflow-hidden">
+    <div class="p-4 border-b border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 flex items-center justify-between flex-wrap gap-3">
+      <div>
+        <h3 class="text-lg font-bold text-blue-700 dark:text-blue-400 flex items-center gap-2">
+          <i class="fas fa-edit"></i>
+          تعديل شرائح الرواتب — {{ selectedPeriodName }}
+        </h3>
+        <p class="text-sm text-blue-600 dark:text-blue-500 mt-1">قم بتعديل أو إضافة شرائح الرواتب ثم اضغط "حفظ الكل"</p>
+      </div>
+      <button
+        (click)="addSlab()"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center gap-2 text-sm font-semibold shadow-sm"
+      >
+        <i class="fas fa-plus"></i>
+        <span>إضافة شريحة</span>
+      </button>
     </div>
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto" *ngIf="editingSlabs.length > 0">
       <table class="w-full">
         <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
           <tr>
-            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">#</th>
-            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">التصنيف</th>
-            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحد الأدنى %</th>
-            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحد الأعلى %</th>
-            <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">مبلغ الراتب</th>
+            <th class="px-4 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">#</th>
+            <th class="px-4 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">التصنيف</th>
+            <th class="px-4 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحد الأدنى %</th>
+            <th class="px-4 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحد الأعلى %</th>
+            <th class="px-4 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">مبلغ الراتب</th>
+            <th class="px-4 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">حذف</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
           <tr *ngFor="let slab of editingSlabs; let i = index" class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
-            <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">{{ i + 1 }}</td>
-            <td class="px-6 py-4 text-center">
+            <td class="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400">{{ i + 1 }}</td>
+            <td class="px-4 py-4 text-center">
               <input
                 type="text"
                 [(ngModel)]="slab.label"
+                placeholder="اسم الشريحة"
                 class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-text dark:text-dark-text text-sm text-center focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </td>
-            <td class="px-6 py-4 text-center">
+            <td class="px-4 py-4 text-center">
               <input
                 type="number"
                 [(ngModel)]="slab.minPercentage"
@@ -136,7 +166,7 @@
                 class="w-24 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-text dark:text-dark-text text-sm text-center focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </td>
-            <td class="px-6 py-4 text-center">
+            <td class="px-4 py-4 text-center">
               <input
                 type="number"
                 [(ngModel)]="slab.maxPercentage"
@@ -145,7 +175,7 @@
                 class="w-24 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-neutral-900 text-text dark:text-dark-text text-sm text-center focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </td>
-            <td class="px-6 py-4 text-center">
+            <td class="px-4 py-4 text-center">
               <input
                 type="number"
                 [(ngModel)]="slab.salaryAmount"
@@ -154,15 +184,35 @@
                 class="w-32 px-3 py-2 rounded-lg border border-blue-400 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-text dark:text-dark-text text-sm text-center font-bold focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </td>
+            <td class="px-4 py-4 text-center">
+              <button
+                (click)="removeSlab(i)"
+                class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200"
+                title="حذف الشريحة"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div *ngIf="editingSlabs.length === 0" class="p-8 text-center">
+      <p class="text-gray-500 dark:text-gray-400 text-sm">لا توجد شرائح. اضغط "إضافة شريحة" لإنشاء شريحة جديدة.</p>
+    </div>
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="!loading && slabs.length === 0 && !isEditing" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+  <div *ngIf="!loading && !loadingPeriods && selectedPeriodId && slabs.length === 0 && !isEditing" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
     <i class="fas fa-cogs text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
-    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لا توجد إعدادات شرائح رواتب حتى الآن</h2>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لا توجد إعدادات شرائح رواتب لهذه الفترة</h2>
+    <p class="text-gray-400 dark:text-gray-500 mt-2 text-sm">اضغط "تعديل" لإضافة شرائح جديدة</p>
+  </div>
+
+  <!-- No Periods -->
+  <div *ngIf="!loadingPeriods && periods.length === 0" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+    <i class="fas fa-clock text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+    <h2 class="text-xl font-semibold text-gray-600 dark:text-gray-400">لا توجد فترات مسجلة في النظام</h2>
+    <p class="text-gray-400 dark:text-gray-500 mt-2 text-sm">يرجى إضافة فترة أولاً من صفحة إدارة الفترات</p>
   </div>
 </div>

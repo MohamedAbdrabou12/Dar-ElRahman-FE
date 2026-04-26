@@ -11,7 +11,7 @@
       <!-- Logo Container (Using the provided styles/colors) -->
       <div class="w-16 h-16 mb-4 rounded-full overflow-hidden border-2 border-[var(--color-primary)] shadow-lg">
         <!-- Replace with your logo path or use a placeholder icon -->
-        <img src="assets/imgs/logo3.png" alt="شعار دار الرحمن" class="w-full h-full object-cover"/>
+        <img src="assets/imgs/logo.jpg" alt="شعار دار عباد الرحمن" class="w-full h-full object-cover"/>
       </div>
 
       <!-- Title & Subtitle -->
@@ -29,10 +29,10 @@
         <input
           type="text"
           id="username"
-          [(ngModel)]="credentials.email"
+          [(ngModel)]="credentials.identifier"
           name="username"
           required
-          placeholder="أدخل اسم المستخدم أو البريد"
+          placeholder="رقم الهوية أو البريد الإلكتروني"
         />
       </div>
 
@@ -102,7 +102,7 @@
 
 <!-- <div class="login-container">
   <div class="logo">
-    <img src="assets/imgs/logo.png" alt="Logo" class="logo"/>
+    <img src="assets/imgs/logo.jpg" alt="Logo" class="logo"/>
 
   </div>
   <h1>تسجيل الدخول</h1>

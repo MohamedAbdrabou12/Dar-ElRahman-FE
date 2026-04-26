@@ -18,7 +18,7 @@ export class LoginComponent {
 
 
   credentials = {
-    email: '',
+    identifier: '',
     password: '',
   };
 

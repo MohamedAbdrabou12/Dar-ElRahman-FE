@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Teacher } from '../../../../models/Teacher.model';
 import { TeacherResult } from '../../../../models/TeacherResult.model';
+import { TeacherResultService } from '../../../../services/teacher-result/teacher-result.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface TeacherResultDialogData {
   isEdit: boolean;
@@ -39,7 +41,9 @@ export class AddTeacherResultDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddTeacherResultDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TeacherResultDialogData
+    @Inject(MAT_DIALOG_DATA) public data: TeacherResultDialogData,
+    private teacherResultService: TeacherResultService,
+    private alertService: AlertService
   ) {
     this.teachers = data.teachers;
   }
@@ -118,7 +122,20 @@ export class AddTeacherResultDialogComponent implements OnInit {
         resultDate: this.formatDate(formValue.resultDate),
         resultCalculationDate: this.formatDate(formValue.resultCalculationDate)
       };
-      this.dialogRef.close(formattedData);
+      const action = this.data.isEdit
+        ? this.teacherResultService.updateTeacherResult(formattedData)
+        : this.teacherResultService.addTeacherResult(formattedData);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

@@ -37,7 +37,7 @@ export function getDefaultRouteForRole(authService: AuthService): string {
     return AppRoutes.ADMIN_DASHBOARD;
   }
   if (authService.hasRole('TEACHER')) {
-    return AppRoutes.TEACHER_DASHBOARD;
+    return AppRoutes.STUDENT;
   }
   if (authService.hasRole('GUARDIAN')) {
     return AppRoutes.GUARDIAN_DASHBOARD;

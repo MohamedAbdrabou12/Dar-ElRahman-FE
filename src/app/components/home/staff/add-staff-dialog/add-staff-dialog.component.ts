@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AppRegexPatterns } from '../../../../constants/app-regex-patterns';
 import { StaffType } from '../../../../models/Staff.model';
+import { StaffService } from '../../../../services/staff/staff.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface StaffDialogData {
   isEdit: boolean;
@@ -39,7 +41,9 @@ export class AddStaffDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddStaffDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: StaffDialogData
+    @Inject(MAT_DIALOG_DATA) public data: StaffDialogData,
+    private staffService: StaffService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +61,9 @@ export class AddStaffDialogComponent implements OnInit {
         joiningDate: this.formatDateForInput(this.data.staff.joiningDate),
         emailAddress: this.data.staff.emailAddress,
         gender: this.data.staff.gender,
-        profilePictureUrl: this.data.staff.profilePictureUrl
+        profilePictureUrl: this.data.staff.profilePictureUrl,
+        outOfWork: this.data.staff.outOfWork || false,
+        exitDate: this.formatDateForInput(this.data.staff.exitDate)
       });
       this.profilePicPreview = this.data.staff.profilePictureUrl || '';
     }
@@ -75,7 +81,9 @@ export class AddStaffDialogComponent implements OnInit {
       joiningDate: ['', Validators.required],
       emailAddress: ['', [Validators.pattern(AppRegexPatterns.EMAIL_PATTERN)]],
       gender: ['', Validators.required],
-      profilePictureUrl: ['']
+      profilePictureUrl: [''],
+      outOfWork: [false],
+      exitDate: ['']
     });
   }
 
@@ -96,7 +104,6 @@ export class AddStaffDialogComponent implements OnInit {
 
   getArabicStaffType(type: string): string {
     const typeMap: { [key: string]: string } = {
-      [StaffType.ADMIN]: 'مدير',
       [StaffType.TECHNICAL]: 'فني',
       [StaffType.SUPERVISOR]: 'مشرف',
     };
@@ -110,8 +117,22 @@ export class AddStaffDialogComponent implements OnInit {
         ...formValue,
         birthDate: this.formatDate(formValue.birthDate),
         joiningDate: this.formatDate(formValue.joiningDate),
+        exitDate: formValue.exitDate ? this.formatDate(formValue.exitDate) : null,
       };
-      this.dialogRef.close(formattedData);
+      const action = this.data.isEdit
+        ? this.staffService.updateStaff(formattedData)
+        : this.staffService.createStaff(formattedData);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('تمت العملية بنجاح!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

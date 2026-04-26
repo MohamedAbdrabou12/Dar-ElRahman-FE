@@ -66,15 +66,15 @@ export class AddStudentDialogComponent implements OnInit {
     this.studentForm = this.formBuilder.group({
       fullName: [{value: this.data.student ? this.data.student.fullName : '', disabled: false}, [Validators.required]],
       nationalId: [{value: this.data.student ? this.data.student.nationalId : '', disabled: false}, Validators.required],
-      motherName: [{value: this.data.student ? this.data.student.motherName : '', disabled: false}, Validators.required],
-      address: [{value: this.data.student ? this.data.student.address : '', disabled: false}, Validators.required],
+      motherName: [{value: this.data.student ? this.data.student.motherName : '', disabled: false}],
+      address: [{value: this.data.student ? this.data.student.address : '', disabled: false}],
       motherPhoneNumber: [{
         value: this.data.student ? this.data.student.motherPhoneNumber : '',
         disabled: false
-      }, Validators.required],
+      }],
       maritalStatus: [{value: this.data.student ? this.data.student.maritalStatus : '', disabled: false}, Validators.required],
       periodId: [{value: this.data.student ? this.data.student?.ring?.periodId : '', disabled: false}],
-      ringId: [{value: this.data.student ? this.data.student.ringId?.toString() : '', disabled: false}, Validators.required],
+      ringId: [{value: this.data.student ? this.data.student.ringId?.toString() : '', disabled: false}],
       joiningDate: [{value: this.data.student ? this.data.student.joiningDate : '', disabled: false}, Validators.required],
       birthDate: [{value: this.data.student ? this.data.student.birthDate : '', disabled: false}, Validators.required],
       fatherPhoneNumber: [{
@@ -84,7 +84,7 @@ export class AddStudentDialogComponent implements OnInit {
       fatherEmailAddress: [{
         value: this.data.student ? this.data.student.fatherEmailAddress : '',
         disabled: false
-      }, Validators.required],
+      }],
       status: [{value: this.data.student ? this.data.student.status?.toLowerCase() : '', disabled: false}, Validators.required],
       gender: [{value: this.data.student ? this.data.student.gender : '', disabled: false}, Validators.required],
       profilePictureUrl: [{value: this.data.student ? this.data.student.profilePictureUrl : '', disabled: false}],
@@ -111,13 +111,13 @@ export class AddStudentDialogComponent implements OnInit {
         : this.studentService.addStudent(studentData);
 
       action.subscribe({
-        next: (response) => {
+        next: (response: any) => {
+          if (response?.successful === false) return;
           this.alertService.success('تمت العملية بنجاح!');
           this.dialogRef.close('success');
         },
-        error: (error) => {
-          this.alertService.error('هناك خطأ. الرجاء المحاولة مرة أخرى.');
-          this.loadingService.stopLoading();
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
         }
       });
     }
@@ -142,7 +142,7 @@ export class AddStudentDialogComponent implements OnInit {
       address: this.studentForm.controls['address'].value ?? '',
       motherPhoneNumber: this.studentForm.controls['motherPhoneNumber'].value ?? '',
       maritalStatus: this.studentForm.controls['maritalStatus'].value ?? '',
-      ringId: this.studentForm.controls['ringId'].value ?? '',
+      ringId: this.studentForm.controls['ringId'].value || null,
       joiningDate: this.formatDate(this.studentForm.controls['joiningDate'].value) ?? '',
       birthDate: this.formatDate(this.studentForm.controls['birthDate'].value) ?? '',
       fatherPhoneNumber: this.studentForm.controls['fatherPhoneNumber'].value ?? '',

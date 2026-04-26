@@ -12,6 +12,7 @@ import { Ring } from '../../../../models/Ring.model';
 import { Surah } from '../../../../models/Surah.model';
 import { QuestionnaireType } from '../../../../models/enums/QuestionnaireType.enum';
 import { QuestionnaireService } from '../../../../services/questionnaire/questionnaire.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface QuestionnaireDialogData {
   isEdit: boolean;
@@ -48,7 +49,8 @@ export class AddQuestionnaireDialogComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddQuestionnaireDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: QuestionnaireDialogData,
-    private questionnaireService: QuestionnaireService
+    private questionnaireService: QuestionnaireService,
+    private alertService: AlertService
   ) {
     this.rings = data.rings;
     this.surahs = data.surahs;
@@ -154,7 +156,20 @@ export class AddQuestionnaireDialogComponent implements OnInit {
         ringId: formValue.ring.id,
         currentSurahId: formValue.currentSurah.id
       };
-      this.dialogRef.close(formattedData);
+      const action = this.data.isEdit
+        ? this.questionnaireService.updateQuestionnaire(formattedData)
+        : this.questionnaireService.addQuestionnaire(formattedData);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

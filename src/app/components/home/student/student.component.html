@@ -119,7 +119,7 @@
   <!-- Print-only area -->
   <div class="print-area hidden">
     <div class="print-header">
-      <h1>دار الرحمن لتحفيظ القرآن الكريم</h1>
+      <h1>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</h1>
       <h2>بيانات الطالب: {{ rowSelected.fullName }}</h2>
       <p>تاريخ الطباعة: {{ today | date: 'yyyy-MM-dd' }}</p>
     </div>
@@ -147,12 +147,13 @@
       </div>
     </div>
     <div class="print-footer">
-      <span>دار الرحمن لتحفيظ القرآن الكريم</span>
+      <span>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</span>
       <span>{{ today | date: 'yyyy-MM-dd' }}</span>
     </div>
   </div>
 }
 
+@if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
 <button
   type="button"
   class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
@@ -161,6 +162,7 @@
   <i class="fas fa-plus-circle"></i>
   اضافة طالب جديد
 </button>
+}
 
 <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
   <!-- Search Bar -->
@@ -227,6 +229,7 @@
                   <span>عرض</span>
                 </button>
 
+                @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
                 <button
                   class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
                   (click)="openAddStudentDialog(row)"
@@ -236,12 +239,22 @@
                 </button>
 
                 <button
+                  class="px-3 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
+                  (click)="shareActivationLink(row)"
+                  title="مشاركة رابط التفعيل"
+                >
+                  <i class="fab fa-whatsapp"></i>
+                  <span>تفعيل</span>
+                </button>
+
+                <button
                   class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
                   (click)="deleteStudent(row)"
                 >
                   <i class="fa fa-trash"></i>
                   <span>حذف</span>
                 </button>
+                }
               </div>
             </td>
           </tr>
@@ -291,3 +304,44 @@
     </div>
   </div>
 </div>
+
+<!-- Activation Link Modal -->
+@if (activationLinkData) {
+<div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" (click)="closeActivationDialog()">
+  <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 animate-fade-in-up" (click)="$event.stopPropagation()">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-bold text-primary dark:text-success flex items-center gap-2">
+        <i class="fas fa-share-alt"></i>
+        مشاركة رابط التفعيل
+      </h3>
+      <button (click)="closeActivationDialog()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      رابط تفعيل حساب الطالب: <strong>{{ activationLinkData.student.fullName }}</strong>
+    </p>
+    <div class="bg-gray-50 dark:bg-neutral-900 rounded-lg p-3 text-xs text-gray-500 dark:text-gray-400 break-all border border-gray-200 dark:border-gray-700">
+      {{ activationLinkData.link }}
+    </div>
+    <div class="flex flex-col gap-3">
+      <button
+        (click)="copyActivationLink()"
+        class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-2 font-semibold shadow-md"
+      >
+        <i class="fas fa-copy"></i>
+        نسخ الرابط
+      </button>
+      @if (activationLinkData.student.fatherPhoneNumber) {
+      <button
+        (click)="sendWhatsApp()"
+        class="w-full px-4 py-3 bg-[#25D366] text-white rounded-lg hover:bg-[#1da851] transition-all duration-300 flex items-center justify-center gap-2 font-semibold shadow-md"
+      >
+        <i class="fab fa-whatsapp text-lg"></i>
+        إرسال عبر واتساب إلى ولي الأمر
+      </button>
+      }
+    </div>
+  </div>
+</div>
+}

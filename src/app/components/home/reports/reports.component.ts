@@ -1,7 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {ReportService, ReportDefinition, REPORT_DEFINITIONS} from '../../../services/report/report.service';
+import {ReportService, ReportDefinition, ReportDataResponse, REPORT_DEFINITIONS} from '../../../services/report/report.service';
+import {PeriodService} from '../../../services/period/period.service';
+import {RingService} from '../../../services/ring/ring.service';
+import {Period} from '../../../models/Period.model';
+import {Ring} from '../../../models/Ring.model';
 
 interface CategoryTab {
   key: string;
@@ -32,16 +36,65 @@ export class ReportsComponent implements OnInit {
   dateFrom = '';
   dateTo = '';
   periodId: number | null = null;
+  ringId: number | null = null;
+
+  // Lookup data
+  periods: Period[] = [];
+  rings: Ring[] = [];
+  allRings: Ring[] = [];
 
   // Download state
   downloading: { [key: string]: boolean } = {};
   downloadError: { [key: string]: string } = {};
 
-  constructor(private reportService: ReportService) {}
+  // View state
+  viewingReport: ReportDefinition | null = null;
+  reportData: ReportDataResponse | null = null;
+  loadingView = false;
+  viewError = '';
+  searchTerm = '';
+
+  constructor(
+    private reportService: ReportService,
+    private periodService: PeriodService,
+    private ringService: RingService
+  ) {}
 
   ngOnInit(): void {
     this.setDefaultDates();
     this.filterReports();
+    this.loadPeriods();
+    this.loadRings();
+  }
+
+  loadPeriods(): void {
+    this.periodService.getAllPeriods().subscribe({
+      next: (res: any) => this.periods = res.data || [],
+      error: () => this.periods = []
+    });
+  }
+
+  loadRings(): void {
+    this.ringService.getAllRings(0, 200).subscribe({
+      next: (res: any) => {
+        this.allRings = res.data || [];
+        this.rings = this.allRings;
+      },
+      error: () => { this.allRings = []; this.rings = []; }
+    });
+  }
+
+  onPeriodChange(): void {
+    if (this.periodId) {
+      this.rings = this.allRings.filter(r => r.periodId === this.periodId);
+    } else {
+      this.rings = this.allRings;
+    }
+    this.ringId = null;
+  }
+
+  hasAnyFilter(filterType: string): boolean {
+    return this.filteredReports.some((r: any) => r[filterType]);
   }
 
   setDefaultDates(): void {
@@ -60,6 +113,47 @@ export class ReportsComponent implements OnInit {
     this.filteredReports = this.allReports.filter(r => r.category === this.activeCategory);
   }
 
+  viewReport(report: ReportDefinition): void {
+    this.viewingReport = report;
+    this.reportData = null;
+    this.loadingView = true;
+    this.viewError = '';
+    this.searchTerm = '';
+
+    this.reportService.getReportData(
+      report.key,
+      report.hasDateRange ? this.dateFrom : undefined,
+      report.hasDateRange ? this.dateTo : undefined,
+      report.hasPeriodFilter && this.periodId ? this.periodId : undefined,
+      report.hasRingFilter && this.ringId ? this.ringId : undefined
+    ).subscribe({
+      next: (data: ReportDataResponse) => {
+        this.reportData = data;
+        this.loadingView = false;
+      },
+      error: () => {
+        this.loadingView = false;
+        this.viewError = 'حدث خطأ أثناء تحميل بيانات التقرير';
+      },
+    });
+  }
+
+  closeView(): void {
+    this.viewingReport = null;
+    this.reportData = null;
+    this.viewError = '';
+    this.searchTerm = '';
+  }
+
+  get filteredRows(): string[][] {
+    if (!this.reportData?.rows) return [];
+    if (!this.searchTerm.trim()) return this.reportData.rows;
+    const term = this.searchTerm.trim().toLowerCase();
+    return this.reportData.rows.filter(row =>
+      row.some(cell => cell.toLowerCase().includes(term))
+    );
+  }
+
   download(report: ReportDefinition, format: 'PDF' | 'CSV'): void {
     const stateKey = report.key + '-' + format;
     this.downloading[stateKey] = true;
@@ -70,7 +164,8 @@ export class ReportsComponent implements OnInit {
       format,
       report.hasDateRange ? this.dateFrom : undefined,
       report.hasDateRange ? this.dateTo : undefined,
-      report.hasPeriodFilter && this.periodId ? this.periodId : undefined
+      report.hasPeriodFilter && this.periodId ? this.periodId : undefined,
+      report.hasRingFilter && this.ringId ? this.ringId : undefined
     ).subscribe({
       next: (blob: Blob) => {
         this.downloading[stateKey] = false;
@@ -83,12 +178,16 @@ export class ReportsComponent implements OnInit {
         a.click();
         window.URL.revokeObjectURL(url);
       },
-      error: (err: any) => {
+      error: () => {
         this.downloading[stateKey] = false;
         this.downloadError[stateKey] = 'حدث خطأ أثناء تحميل التقرير';
         setTimeout(() => this.downloadError[stateKey] = '', 4000);
       },
     });
+  }
+
+  printReport(): void {
+    window.print();
   }
 
   isDownloading(reportKey: string, format: string): boolean {

@@ -13,8 +13,9 @@ export class AlertService {
   error(message: string) {
     return this._snackBar.openFromComponent(AlertComponent, {
       duration: 5000,
-      verticalPosition: 'bottom',
+      verticalPosition: 'top',
       horizontalPosition: 'center',
+      panelClass: ['custom-snackbar'],
       data: {message: message, type: 'error'},
     });
   }
@@ -22,8 +23,9 @@ export class AlertService {
   success(message: string) {
     return this._snackBar.openFromComponent(AlertComponent, {
       duration: 5000,
-      verticalPosition: 'bottom',
+      verticalPosition: 'top',
       horizontalPosition: 'center',
+      panelClass: ['custom-snackbar'],
       data: {message: message, type: 'success'},
     });
   }

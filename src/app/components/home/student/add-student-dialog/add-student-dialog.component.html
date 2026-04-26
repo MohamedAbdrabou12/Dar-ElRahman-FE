@@ -84,7 +84,7 @@
           <!-- Address -->
           <div class="md:col-span-2">
             <label for="address" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              العنوان <span class="text-red-500">*</span>
+              العنوان
             </label>
             <input
               id="address"
@@ -92,12 +92,6 @@
               formControlName="address"
               class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             />
-            @if(studentForm.controls['address'].touched && studentForm.controls['address'].hasError('required')) {
-              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>الرجاء إدخال العنوان</span>
-              </div>
-            }
           </div>
 
           <!-- Gender -->
@@ -179,7 +173,7 @@
           <!-- Mother Name -->
           <div>
             <label for="motherName" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              إسم الأم <span class="text-red-500">*</span>
+              إسم الأم
             </label>
             <input
               id="motherName"
@@ -187,18 +181,12 @@
               formControlName="motherName"
               class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             />
-            @if(studentForm.controls['motherName'].touched && studentForm.controls['motherName'].hasError('required')) {
-              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>الرجاء إدخال إسم الأم</span>
-              </div>
-            }
           </div>
 
           <!-- Mother Phone -->
           <div>
             <label for="motherPhoneNumber" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              تليفون الأم <span class="text-red-500">*</span>
+              تليفون الأم
             </label>
             <input
               id="motherPhoneNumber"
@@ -206,12 +194,6 @@
               formControlName="motherPhoneNumber"
               class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             />
-            @if(studentForm.controls['motherPhoneNumber'].touched && studentForm.controls['motherPhoneNumber'].hasError('required')) {
-              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>الرجاء إدخال تليفون الأم</span>
-              </div>
-            }
           </div>
 
           <!-- Father Phone -->
@@ -236,7 +218,7 @@
           <!-- Father Email -->
           <div class="md:col-span-2 lg:col-span-3">
             <label for="fatherEmailAddress" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              البريد الإلكتروني للأب <span class="text-red-500">*</span>
+              البريد الإلكتروني للأب
             </label>
             <input
               id="fatherEmailAddress"
@@ -244,12 +226,6 @@
               formControlName="fatherEmailAddress"
               class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
             />
-            @if(studentForm.controls['fatherEmailAddress'].touched && studentForm.controls['fatherEmailAddress'].hasError('required')) {
-              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>الرجاء إدخال البريد الإلكتروني للأب</span>
-              </div>
-            }
           </div>
         </div>
       </div>
@@ -288,7 +264,7 @@
           <!-- Ring -->
           <div>
             <label for="ringId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              الحلقة <span class="text-red-500">*</span>
+              الحلقة
             </label>
             <select
               id="ringId"
@@ -300,12 +276,6 @@
                 <option [value]="ring.id">{{ ring.name }}</option>
               }
             </select>
-            @if(studentForm.controls['ringId'].touched && studentForm.controls['ringId'].hasError('required')) {
-              <div class="text-red-500 text-sm mt-1 flex items-center gap-1">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>الرجاء إختيار الحلقة</span>
-              </div>
-            }
           </div>
 
           <!-- Status -->

@@ -91,14 +91,7 @@ export class StaffComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.staffService.createStaff(result).subscribe({
-          next: () => {
-            this.getAllStaff();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllStaff();
       }
     });
   }
@@ -117,14 +110,7 @@ export class StaffComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.staffService.updateStaff(result).subscribe({
-          next: () => {
-            this.getAllStaff();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllStaff();
       }
     });
   }

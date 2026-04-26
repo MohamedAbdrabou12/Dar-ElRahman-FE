@@ -275,8 +275,17 @@
             </mat-form-field>
           </div>
 
+          <!-- Out of Work -->
+          <div class="flex items-center gap-3">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="outOfWork" class="sr-only peer" />
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-500"></div>
+            </label>
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">خارج العمل</span>
+          </div>
+
           <!-- Exit Date -->
-          <div>
+          <div *ngIf="teacherForm.get('outOfWork')?.value">
             <mat-form-field class="w-full" appearance="outline">
               <mat-label>تاريخ الخروج</mat-label>
               <input
@@ -288,19 +297,6 @@
               <mat-datepicker-toggle matIconSuffix [for]="exitDatePicker"></mat-datepicker-toggle>
               <mat-datepicker #exitDatePicker></mat-datepicker>
             </mat-form-field>
-          </div>
-
-          <!-- Out of Work -->
-          <div>
-            <label for="outOfWork" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
-              خارج العمل
-            </label>
-            <input
-              id="outOfWork"
-              type="checkbox"
-              formControlName="outOfWork"
-              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-            />
           </div>
         </div>
       </div>

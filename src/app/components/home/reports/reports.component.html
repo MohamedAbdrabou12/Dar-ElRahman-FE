@@ -1,114 +1,306 @@
 <div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
-        <i class="fas fa-file-alt text-primary"></i>
-        التقارير
-      </h1>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">تصدير التقارير بصيغة PDF أو CSV</p>
-    </div>
-  </div>
 
-  <!-- Category Tabs -->
-  <div class="flex flex-wrap gap-2">
-    <button
-      *ngFor="let cat of categories"
-      (click)="selectCategory(cat.key)"
-      class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2 border"
-      [ngClass]="{
-        'bg-primary text-white border-primary shadow-sm': activeCategory === cat.key,
-        'bg-white dark:bg-neutral-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-neutral-700 hover:border-primary/40 hover:text-primary': activeCategory !== cat.key
-      }"
-    >
-      <i [class]="cat.icon"></i>
-      {{ cat.label }}
-    </button>
-  </div>
-
-  <!-- Date Range Filter -->
-  <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-4">
-    <div class="flex flex-wrap items-end gap-4">
-      <div class="flex flex-col gap-1">
-        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">من تاريخ</label>
-        <input
-          type="date"
-          [(ngModel)]="dateFrom"
-          class="px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-lg bg-gray-50 dark:bg-neutral-900 text-gray-700 dark:text-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
-        />
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">إلى تاريخ</label>
-        <input
-          type="date"
-          [(ngModel)]="dateTo"
-          class="px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-lg bg-gray-50 dark:bg-neutral-900 text-gray-700 dark:text-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- Report Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-    <div
-      *ngFor="let report of filteredReports"
-      class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-5 hover:shadow-lg hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300"
-    >
-      <!-- Report Header -->
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
-          <i [class]="report.icon" class="text-primary text-lg"></i>
+  <!-- ==================== REPORT RESULTS VIEW ==================== -->
+  <ng-container *ngIf="viewingReport">
+    <!-- Results Header -->
+    <div class="flex items-center justify-between no-print">
+      <div class="flex items-center gap-3">
+        <button
+          (click)="closeView()"
+          class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-neutral-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-neutral-600 transition-all"
+        >
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+            <i [class]="viewingReport.icon" class="text-primary"></i>
+            {{ viewingReport.label }}
+          </h1>
+          <p *ngIf="reportData?.subtitle" class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ reportData.subtitle }}</p>
         </div>
-        <h3 class="text-sm font-bold text-gray-800 dark:text-gray-100">{{ report.label }}</h3>
       </div>
-
-      <!-- Tags -->
-      <div class="flex flex-wrap gap-1.5 mb-4">
-        <span *ngIf="report.hasDateRange"
-              class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
-          <i class="fas fa-calendar-alt me-1"></i>نطاق زمني
-        </span>
-        <span *ngIf="report.hasPeriodFilter"
-              class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border border-violet-100 dark:border-violet-800">
-          <i class="fas fa-filter me-1"></i>فترة
-        </span>
-      </div>
-
-      <!-- Download Buttons -->
-      <div class="flex gap-2">
+      <div class="flex items-center gap-2">
         <button
-          (click)="download(report, 'PDF')"
-          [disabled]="isDownloading(report.key, 'PDF')"
-          class="flex-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+          (click)="printReport()"
+          class="px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center gap-2 shadow-sm"
         >
-          <i class="fas fa-file-pdf" [class.fa-spin]="isDownloading(report.key, 'PDF')" [class.fa-spinner]="isDownloading(report.key, 'PDF')"></i>
-          <span *ngIf="!isDownloading(report.key, 'PDF')">PDF</span>
-          <span *ngIf="isDownloading(report.key, 'PDF')">جاري...</span>
+          <i class="fas fa-print"></i>
+          طباعة
         </button>
         <button
-          (click)="download(report, 'CSV')"
-          [disabled]="isDownloading(report.key, 'CSV')"
-          class="flex-1 px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+          (click)="download(viewingReport, 'PDF')"
+          [disabled]="isDownloading(viewingReport.key, 'PDF')"
+          class="px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center gap-2 disabled:opacity-50 shadow-sm"
         >
-          <i class="fas fa-file-csv" [class.fa-spin]="isDownloading(report.key, 'CSV')" [class.fa-spinner]="isDownloading(report.key, 'CSV')"></i>
-          <span *ngIf="!isDownloading(report.key, 'CSV')">CSV</span>
-          <span *ngIf="isDownloading(report.key, 'CSV')">جاري...</span>
+          <i class="fas fa-file-pdf" [class.fa-spin]="isDownloading(viewingReport.key, 'PDF')" [class.fa-spinner]="isDownloading(viewingReport.key, 'PDF')"></i>
+          PDF
         </button>
-      </div>
-
-      <!-- Error Message -->
-      <div *ngIf="getError(report.key, 'PDF') || getError(report.key, 'CSV')"
-           class="mt-2 text-xs text-red-500 dark:text-red-400 text-center">
-        <i class="fas fa-exclamation-circle me-1"></i>
-        {{ getError(report.key, 'PDF') || getError(report.key, 'CSV') }}
+        <button
+          (click)="download(viewingReport, 'CSV')"
+          [disabled]="isDownloading(viewingReport.key, 'CSV')"
+          class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center gap-2 disabled:opacity-50 shadow-sm"
+        >
+          <i class="fas fa-file-csv" [class.fa-spin]="isDownloading(viewingReport.key, 'CSV')" [class.fa-spinner]="isDownloading(viewingReport.key, 'CSV')"></i>
+          CSV
+        </button>
       </div>
     </div>
-  </div>
 
-  <!-- Empty State -->
-  <div *ngIf="filteredReports.length === 0"
-       class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-12 text-center">
-    <i class="fas fa-folder-open text-gray-300 dark:text-neutral-600 text-5xl mb-4"></i>
-    <p class="text-gray-500 dark:text-gray-400 font-semibold">لا توجد تقارير في هذه الفئة</p>
-  </div>
+    <!-- Export Error -->
+    <div *ngIf="getError(viewingReport.key, 'PDF') || getError(viewingReport.key, 'CSV')"
+         class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3 text-sm text-red-600 dark:text-red-400 text-center no-print">
+      <i class="fas fa-exclamation-circle me-1"></i>
+      {{ getError(viewingReport.key, 'PDF') || getError(viewingReport.key, 'CSV') }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loadingView" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-16 text-center">
+      <i class="fas fa-spinner fa-spin text-primary text-4xl mb-4"></i>
+      <p class="text-gray-500 dark:text-gray-400 font-semibold">جاري تحميل بيانات التقرير...</p>
+    </div>
+
+    <!-- View Error -->
+    <div *ngIf="viewError" class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-red-200 dark:border-red-800 p-12 text-center">
+      <i class="fas fa-exclamation-triangle text-red-400 text-4xl mb-4"></i>
+      <p class="text-red-500 dark:text-red-400 font-semibold">{{ viewError }}</p>
+      <button (click)="viewReport(viewingReport)" class="mt-4 px-5 py-2 bg-primary text-white rounded-lg hover:bg-hover transition-all text-sm font-semibold">
+        <i class="fas fa-redo me-1"></i> إعادة المحاولة
+      </button>
+    </div>
+
+    <!-- Results Content -->
+    <div *ngIf="reportData && !loadingView" class="print-area space-y-6">
+      <!-- Search Bar (screen only) -->
+      <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-4 no-print">
+        <div class="flex items-center gap-4">
+          <div class="relative flex-1">
+            <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              placeholder="بحث في نتائج التقرير..."
+              class="w-full pr-10 pl-4 py-2.5 rounded-lg border border-gray-200 dark:border-neutral-600 bg-gray-50 dark:bg-neutral-900 text-gray-700 dark:text-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
+            />
+          </div>
+          <div class="text-sm text-gray-500 dark:text-gray-400 font-semibold whitespace-nowrap">
+            {{ filteredRows.length }} سجل
+          </div>
+        </div>
+      </div>
+
+      <!-- Print Header (print only) -->
+      <div class="report-print-only">
+        <div class="print-header">
+          <h1>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</h1>
+          <h2>{{ reportData.title }}</h2>
+          <p *ngIf="reportData.subtitle">{{ reportData.subtitle }}</p>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 overflow-hidden">
+        <!-- Empty Results -->
+        <div *ngIf="filteredRows.length === 0" class="p-12 text-center">
+          <i class="fas fa-inbox text-gray-300 dark:text-neutral-600 text-5xl mb-4"></i>
+          <p class="text-gray-500 dark:text-gray-400 font-semibold">لا توجد بيانات للعرض</p>
+        </div>
+
+        <!-- Table -->
+        <div *ngIf="filteredRows.length > 0" class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50 dark:bg-neutral-900 border-b border-gray-200 dark:border-gray-700">
+              <tr>
+                <th *ngFor="let header of reportData.headers"
+                    class="px-5 py-4 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider whitespace-nowrap">
+                  {{ header }}
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 dark:divide-gray-700/50">
+              <tr *ngFor="let row of filteredRows; let i = index"
+                  class="transition-colors duration-150"
+                  [ngClass]="i % 2 === 0 ? 'bg-white dark:bg-neutral-800' : 'bg-gray-50/50 dark:bg-neutral-800/50'"
+              >
+                <td *ngFor="let cell of row"
+                    class="px-5 py-3.5 text-center text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                  {{ cell }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Summary Section -->
+      <div *ngIf="reportData.summary && reportData.summary.length > 0"
+           class="bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 rounded-xl border border-primary/20 dark:border-primary/30 p-5">
+        <h3 class="text-sm font-bold text-gray-800 dark:text-gray-100 mb-3 flex items-center gap-2">
+          <i class="fas fa-chart-bar text-primary"></i>
+          ملخص التقرير
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div *ngFor="let pair of reportData.summary"
+               class="bg-white dark:bg-neutral-800 rounded-lg p-3 flex justify-between items-center shadow-sm">
+            <span class="text-xs font-semibold text-gray-600 dark:text-gray-400">{{ pair[0] }}</span>
+            <span class="text-sm font-bold text-primary">{{ pair[1] }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Print Footer (print only) -->
+      <div class="report-print-only">
+        <div class="print-footer">
+          <span>دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ==================== REPORTS LIST VIEW ==================== -->
+  <ng-container *ngIf="!viewingReport">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-3">
+          <i class="fas fa-file-alt text-primary"></i>
+          التقارير
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">عرض وتصدير التقارير بصيغة PDF أو CSV</p>
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="flex flex-wrap gap-2">
+      <button
+        *ngFor="let cat of categories"
+        (click)="selectCategory(cat.key)"
+        class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center gap-2 border"
+        [ngClass]="{
+          'bg-primary text-white border-primary shadow-sm': activeCategory === cat.key,
+          'bg-white dark:bg-neutral-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-neutral-700 hover:border-primary/40 hover:text-primary': activeCategory !== cat.key
+        }"
+      >
+        <i [class]="cat.icon"></i>
+        {{ cat.label }}
+      </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-4">
+      <div class="flex flex-wrap items-end gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">من تاريخ</label>
+          <input
+            type="date"
+            [(ngModel)]="dateFrom"
+            class="px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-lg bg-gray-50 dark:bg-neutral-900 text-gray-700 dark:text-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">إلى تاريخ</label>
+          <input
+            type="date"
+            [(ngModel)]="dateTo"
+            class="px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-lg bg-gray-50 dark:bg-neutral-900 text-gray-700 dark:text-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all"
+          />
+        </div>
+        <div class="flex flex-col gap-1" *ngIf="hasAnyFilter('hasPeriodFilter')">
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">الفترة</label>
+          <select
+            [(ngModel)]="periodId"
+            (ngModelChange)="onPeriodChange()"
+            class="px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-lg bg-gray-50 dark:bg-neutral-900 text-gray-700 dark:text-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all min-w-[160px]"
+          >
+            <option [ngValue]="null">-- كل الفترات --</option>
+            <option *ngFor="let period of periods" [ngValue]="period.id">{{ period.name }}</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1" *ngIf="hasAnyFilter('hasRingFilter')">
+          <label class="text-xs font-semibold text-gray-500 dark:text-gray-400">الحلقة</label>
+          <select
+            [(ngModel)]="ringId"
+            class="px-3 py-2 border border-gray-200 dark:border-neutral-600 rounded-lg bg-gray-50 dark:bg-neutral-900 text-gray-700 dark:text-gray-200 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all min-w-[160px]"
+          >
+            <option [ngValue]="null">-- كل الحلقات --</option>
+            <option *ngFor="let ring of rings" [ngValue]="ring.id">{{ ring.name }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div
+        *ngFor="let report of filteredReports"
+        class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-5 hover:shadow-lg hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300"
+      >
+        <!-- Report Header -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-11 h-11 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+            <i [class]="report.icon" class="text-primary text-lg"></i>
+          </div>
+          <h3 class="text-sm font-bold text-gray-800 dark:text-gray-100">{{ report.label }}</h3>
+        </div>
+
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-1.5 mb-4">
+          <span *ngIf="report.hasDateRange"
+                class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800">
+            <i class="fas fa-calendar-alt me-1"></i>نطاق زمني
+          </span>
+          <span *ngIf="report.hasPeriodFilter"
+                class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 border border-violet-100 dark:border-violet-800">
+            <i class="fas fa-filter me-1"></i>فترة
+          </span>
+          <span *ngIf="report.hasRingFilter"
+                class="px-2 py-0.5 text-[10px] font-semibold rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800">
+            <i class="fas fa-mosque me-1"></i>حلقة
+          </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2">
+          <button
+            (click)="viewReport(report)"
+            class="flex-1 px-3 py-2 bg-primary hover:bg-hover text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
+          >
+            <i class="fas fa-eye"></i>
+            عرض
+          </button>
+          <button
+            (click)="download(report, 'PDF')"
+            [disabled]="isDownloading(report.key, 'PDF')"
+            class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+          >
+            <i class="fas fa-file-pdf" [class.fa-spin]="isDownloading(report.key, 'PDF')" [class.fa-spinner]="isDownloading(report.key, 'PDF')"></i>
+            <span *ngIf="!isDownloading(report.key, 'PDF')">PDF</span>
+            <span *ngIf="isDownloading(report.key, 'PDF')">جاري...</span>
+          </button>
+          <button
+            (click)="download(report, 'CSV')"
+            [disabled]="isDownloading(report.key, 'CSV')"
+            class="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+          >
+            <i class="fas fa-file-csv" [class.fa-spin]="isDownloading(report.key, 'CSV')" [class.fa-spinner]="isDownloading(report.key, 'CSV')"></i>
+            <span *ngIf="!isDownloading(report.key, 'CSV')">CSV</span>
+            <span *ngIf="isDownloading(report.key, 'CSV')">جاري...</span>
+          </button>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="getError(report.key, 'PDF') || getError(report.key, 'CSV')"
+             class="mt-2 text-xs text-red-500 dark:text-red-400 text-center">
+          <i class="fas fa-exclamation-circle me-1"></i>
+          {{ getError(report.key, 'PDF') || getError(report.key, 'CSV') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredReports.length === 0"
+         class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-100 dark:border-neutral-700 p-12 text-center">
+      <i class="fas fa-folder-open text-gray-300 dark:text-neutral-600 text-5xl mb-4"></i>
+      <p class="text-gray-500 dark:text-gray-400 font-semibold">لا توجد تقارير في هذه الفئة</p>
+    </div>
+  </ng-container>
 </div>

@@ -8,6 +8,8 @@ import { Teacher } from '../../../../models/Teacher.model';
 import { Period } from '../../../../models/Period.model';
 import { MemorizationOrder } from '../../../../models/enums/MemorizationOrder.enum';
 import { MemorizationPart } from '../../../../models/enums/MemorizationPart.enum';
+import { RingService } from '../../../../services/ring/ring.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface RingDialogData {
   isEdit: boolean;
@@ -55,7 +57,9 @@ export class AddRingDialogComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddRingDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RingDialogData
+    @Inject(MAT_DIALOG_DATA) public data: RingDialogData,
+    private ringService: RingService,
+    private alertService: AlertService
   ) {
     this.teachers = data.teachers;
     this.periods = data.periods;
@@ -71,7 +75,8 @@ export class AddRingDialogComponent implements OnInit {
         periodId: this.data.ring.periodId,
         memorizationPart: this.data.ring.memorizationPart,
         memorizationOrder: this.data.ring.memorizationOrder || MemorizationOrder.descending,
-        teacherId: this.data.ring.teacherId?.toString() || ''
+        teacherId: this.data.ring.teacherId?.toString() || '',
+        maxExamBatch: this.data.ring.maxExamBatch || 5
       });
     }
   }
@@ -83,7 +88,8 @@ export class AddRingDialogComponent implements OnInit {
       periodId: [null, Validators.required],
       memorizationPart: [MemorizationPart.page, Validators.required],
       memorizationOrder: [MemorizationOrder.descending, Validators.required],
-      teacherId: [null, Validators.required]
+      teacherId: [null, Validators.required],
+      maxExamBatch: [5, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -97,7 +103,20 @@ export class AddRingDialogComponent implements OnInit {
 
   onSubmit(): void {
     if (this.ringForm.valid) {
-      this.dialogRef.close(this.ringForm.value);
+      const action = this.data.isEdit
+        ? this.ringService.updateRing(this.ringForm.value)
+        : this.ringService.addRing(this.ringForm.value);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

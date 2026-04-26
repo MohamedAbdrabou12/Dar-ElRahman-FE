@@ -28,7 +28,7 @@
           {{ milestone.parts === 30 ? 'ختم القرآن الكريم' : milestone.labelAr }}
         </div>
         <div class="milestone-parts-label">
-          {{ milestone.parts === 30 ? 'كاملاً' : 'جزءاً' }}
+          {{ milestone.parts === 30 ? 'كاملاً' : milestone.parts === 1 ? 'جزء' : milestone.parts <= 10 ? 'أجزاء' : 'جزءاً' }}
         </div>
       </button>
     </div>
@@ -82,12 +82,12 @@
             <!-- Header -->
             <div class="cert-header">
               <div class="logo-area">
-                <img src="assets/imgs/logo3.png" alt="Logo" />
+                <img src="assets/imgs/logo.jpg" alt="Logo" />
                 <div>
-                  <div class="cert-org-name">دار الرحمن لتحفيظ القرآن الكريم</div>
+                  <div class="cert-org-name">دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية</div>
                   <div class="cert-subtitle">Dar Al-Rahman for Quran Memorization</div>
                 </div>
-                <img src="assets/imgs/logo3.png" alt="Logo" />
+                <img src="assets/imgs/logo.jpg" alt="Logo" />
               </div>
               <div class="cert-divider"></div>
             </div>
@@ -100,7 +100,7 @@
 
             <!-- Body -->
             <div class="cert-body">
-              <div class="cert-text">تشهد إدارة دار الرحمن لتحفيظ القرآن الكريم بأن {{ data.student.gender === 'FEMALE' ? 'الطالبة' : 'الطالب' }}</div>
+              <div class="cert-text">تشهد إدارة دار عباد الرحمن  لخدمة القرآن الكريم بالنصارية بأن {{ data.student.gender === 'FEMALE' ? 'الطالبة' : 'الطالب' }}</div>
 
               <!-- Profile Picture + Name -->
               <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
@@ -132,12 +132,7 @@
               </div>
 
               <div class="cert-footer-item">
-                <span class="cert-footer-label">مدير الدار</span>
-                <div class="cert-signature-line"></div>
-              </div>
-
-              <div class="cert-footer-item">
-                <span class="cert-footer-label">المُعَلِم</span>
+                <span class="cert-footer-label">إدارة الدار</span>
                 <div class="cert-signature-line"></div>
               </div>
             </div>

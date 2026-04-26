@@ -10,6 +10,7 @@ import {SurahsService} from 'src/app/services/surahs/surahs.service';
 import {QuestionnaireType} from "../../../models/enums/QuestionnaireType.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {AddQuestionnaireDialogComponent} from "./add-questionnaire-dialog/add-questionnaire-dialog.component";
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-questionnaire',
@@ -48,7 +49,8 @@ export class QuestionnaireComponent implements OnInit {
     private questionnaireService: QuestionnaireService,
     private ringService: RingService,
     private surahService: SurahsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    protected authService: AuthService,
   ) {
   }
 
@@ -150,14 +152,7 @@ export class QuestionnaireComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.questionnaireService.addQuestionnaire(result).subscribe({
-          next: () => {
-            this.getAllQuestionnaires();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllQuestionnaires();
       }
     });
   }
@@ -177,14 +172,7 @@ export class QuestionnaireComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.questionnaireService.updateQuestionnaire(result).subscribe({
-          next: () => {
-            this.getAllQuestionnaires();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllQuestionnaires();
       }
     });
   }

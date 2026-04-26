@@ -95,14 +95,14 @@ export class AddAbsenceDialogComponent implements OnInit {
         };
 
         this.absenceService.updateStudentAbsence(payload).subscribe({
-          next: () => {
+          next: (response: any) => {
+            if (response?.successful === false) return;
             this.alertService.success('تم التحديث بنجاح');
             this.loadingService.stopLoading();
             this.dialogRef.close(true);
           },
           error: () => {
-            this.alertService.error('فشل في التحديث');
-            this.loadingService.stopLoading();
+            // ErrorHandlerInterceptor handles the error toast
           }
         });
       } else {
@@ -112,14 +112,14 @@ export class AddAbsenceDialogComponent implements OnInit {
           absenceDate: this.formatDate(absenceDate)
         };
         this.absenceService.createStudentAbsence(payload).subscribe({
-          next: () => {
+          next: (response: any) => {
+            if (response?.successful === false) return;
             this.alertService.success('تم الإضافة بنجاح');
-            this.dialogRef.close(true);
             this.loadingService.stopLoading();
+            this.dialogRef.close(true);
           },
           error: () => {
-            this.alertService.error('فشل في الإضافة');
-            this.loadingService.stopLoading();
+            // ErrorHandlerInterceptor handles the error toast
           }
         });
       }

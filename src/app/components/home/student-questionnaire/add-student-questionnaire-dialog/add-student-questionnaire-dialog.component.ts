@@ -10,6 +10,8 @@ import { Grade } from '../../../../models/enums/Grade.enum';
 import { StudentQuestionnaire } from '../../../../models/StudentQuestionnaire.model';
 import { QuestionnaireService } from '../../../../services/questionnaire/questionnaire.service';
 import { StudentService } from '../../../../services/student/student.service';
+import { StudentQuestionnaireService } from '../../../../services/student-questionnaire/student-questionnaire.service';
+import { AlertService } from '../../../../services/alert.service';
 
 export interface StudentQuestionnaireDialogData {
   isEdit: boolean;
@@ -45,7 +47,9 @@ export class AddStudentQuestionnaireDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<AddStudentQuestionnaireDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: StudentQuestionnaireDialogData,
     private questionnaireService: QuestionnaireService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private studentQuestionnaireService: StudentQuestionnaireService,
+    private alertService: AlertService
   ) {
     this.rings = data.rings;
   }
@@ -114,7 +118,20 @@ export class AddStudentQuestionnaireDialogComponent implements OnInit {
 
   onSubmit(): void {
     if (this.studentQuestionnaireForm.valid) {
-      this.dialogRef.close(this.studentQuestionnaireForm.value);
+      const action = this.data.isEdit
+        ? this.studentQuestionnaireService.updateStudentQuestionnaire(this.studentQuestionnaireForm.value)
+        : this.studentQuestionnaireService.addStudentQuestionnaire(this.studentQuestionnaireForm.value);
+
+      action.subscribe({
+        next: (response: any) => {
+          if (response?.successful === false) return;
+          this.alertService.success('\u062a\u0645\u062a \u0627\u0644\u0639\u0645\u0644\u064a\u0629 \u0628\u0646\u062c\u0627\u062d!');
+          this.dialogRef.close('success');
+        },
+        error: () => {
+          // ErrorHandlerInterceptor handles the error toast
+        }
+      });
     }
   }
 

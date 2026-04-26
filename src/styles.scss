@@ -188,6 +188,18 @@ body {
   @apply bg-error;
 }
 
+/* Custom alert snackbar - strip Material defaults */
+.custom-snackbar {
+  &.mat-mdc-snack-bar-container {
+    .mdc-snackbar__surface {
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      min-width: unset !important;
+    }
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

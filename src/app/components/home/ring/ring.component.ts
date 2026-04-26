@@ -11,6 +11,7 @@ import {MemorizationPart} from "../../../models/enums/MemorizationPart.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {AddRingDialogComponent} from "./add-ring-dialog/add-ring-dialog.component";
 import {PeriodService} from '../../../services/period/period.service';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-ring',
@@ -52,15 +53,18 @@ export class RingComponent implements OnInit {
     private ringService: RingService,
     private teacherService: TeacherService,
     private periodService: PeriodService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    protected authService: AuthService,
   ) {
   }
 
   ngOnInit(): void {
     this.getAllRings();
-    this.getAllTeachers();
-    this.getAllPeriods();
-    this.buildRingForm();
+    if (this.authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
+      this.getAllTeachers();
+      this.getAllPeriods();
+      this.buildRingForm();
+    }
   }
 
   private getAllRings() {
@@ -162,14 +166,7 @@ export class RingComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.ringService.addRing(result).subscribe({
-          next: () => {
-            this.getAllRings();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllRings();
       }
     });
   }
@@ -189,14 +186,7 @@ export class RingComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.ringService.updateRing(result).subscribe({
-          next: () => {
-            this.getAllRings();
-          },
-          error: (error) => {
-            this.error = error;
-          }
-        });
+        this.getAllRings();
       }
     });
   }
