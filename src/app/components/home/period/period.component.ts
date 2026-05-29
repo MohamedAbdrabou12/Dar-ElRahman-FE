@@ -32,7 +32,7 @@ export class PeriodComponent implements OnInit {
   totalRecords = 0;
   totalPages = 0;
 
-  constructor(private periodService: PeriodService, private authService: AuthService) {
+  constructor(private periodService: PeriodService, protected authService: AuthService) {
     this.isAdmin = this.authService.hasRole('ADMIN');
   }
 
@@ -44,8 +44,8 @@ export class PeriodComponent implements OnInit {
     this.periodService.getPeriods(this.pageNo, this.pageSize, true).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected && this.filteredData.length > 0) {
           this.rowSelected = this.filteredData[0];

@@ -8,6 +8,7 @@ import {StudentService} from "../../../services/student/student.service";
 import {Student} from "../../../models/Student.model";
 import {MatDialog} from "@angular/material/dialog";
 import {AddGraduateDialogComponent} from "./add-graduate-dialog/add-graduate-dialog.component";
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-graduate',
@@ -44,7 +45,8 @@ export class GraduateComponent implements OnInit {
   constructor(
     private studentService: StudentService,
     private graduateService: GraduateService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    protected authService: AuthService
   ) {
   }
 
@@ -58,8 +60,8 @@ export class GraduateComponent implements OnInit {
     this.graduateService.getAllGraduates(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];

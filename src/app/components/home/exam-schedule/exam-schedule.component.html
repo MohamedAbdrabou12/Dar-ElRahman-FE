@@ -116,7 +116,7 @@
               <td class="px-6 py-4">
                 <div class="flex justify-center items-center gap-2 flex-wrap">
                   <button
-                    *ngIf="schedule.status === ExamStatus.PENDING"
+                    *ngIf="schedule.status === ExamStatus.PENDING && authService.hasAnyRole(['ADMIN', 'SUPERVISOR', 'TECHNICAL'])"
                     class="px-3 py-2 bg-green text-white rounded-lg hover:bg-green-600 transition-all duration-300 text-xs font-semibold flex items-center gap-1"
                     (click)="markAsExamined(schedule.id!)"
                   >
@@ -124,7 +124,7 @@
                     <span>تم الاختبار</span>
                   </button>
                   <button
-                    *ngIf="schedule.status === ExamStatus.PENDING"
+                    *ngIf="schedule.status === ExamStatus.PENDING && authService.hasAnyRole(['ADMIN', 'SUPERVISOR', 'TECHNICAL'])"
                     class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 text-xs font-semibold flex items-center gap-1"
                     (click)="cancelSchedule(schedule.id!)"
                   >

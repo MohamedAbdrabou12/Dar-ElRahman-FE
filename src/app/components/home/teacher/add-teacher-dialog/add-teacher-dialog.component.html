@@ -260,6 +260,26 @@
           حالة التوظيف
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Period -->
+          <div>
+            <label for="periodId" class="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              الفترة <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="periodId"
+              formControlName="periodId"
+              class="w-full rounded-lg border border-gray-300 dark:border-gray-700 px-4 py-3 bg-white dark:bg-neutral-900 text-text dark:text-dark-text focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+            >
+              <option [ngValue]="null" disabled>اختر الفترة</option>
+              <option *ngFor="let period of periods" [ngValue]="period.id">{{ period.name }}</option>
+            </select>
+            <div *ngIf="teacherForm.get('periodId')?.invalid && teacherForm.get('periodId')?.touched"
+                 class="text-red-500 text-sm mt-1 flex items-center gap-1">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>الرجاء اختيار الفترة</span>
+            </div>
+          </div>
+
           <!-- Joining Date -->
           <div>
             <mat-form-field class="w-full" appearance="outline">

@@ -4,6 +4,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {StaffService} from 'src/app/services/staff/staff.service';
 import {MatDialog} from '@angular/material/dialog';
 import {AddStaffDialogComponent} from './add-staff-dialog/add-staff-dialog.component';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-staff',
@@ -27,7 +28,7 @@ export class StaffComponent implements OnInit {
   error: any;
   deleteError: any;
 
-  constructor(private staffService: StaffService) {}
+  constructor(private staffService: StaffService, protected authService: AuthService) {}
 
   ngOnInit(): void {
     this.getAllStaff();
@@ -37,8 +38,8 @@ export class StaffComponent implements OnInit {
     this.staffService.getAllStaff(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];

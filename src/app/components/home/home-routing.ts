@@ -20,7 +20,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.StudentComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER', 'TECHNICAL']},
   },
   {
     path: AppRoutes.TEACHER,
@@ -47,7 +47,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.AbsenceComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER', 'TECHNICAL']},
   },
   {
     path: AppRoutes.RING,
@@ -83,7 +83,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.StudentQuestionnaireComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER', 'TECHNICAL']},
   },
   {
     path: AppRoutes.TEACHER_RESULT,
@@ -101,7 +101,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.GraduateComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TECHNICAL']},
   },
   {
     path: AppRoutes.TUITIONS,
@@ -110,7 +110,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.TuitionComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN']},
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.STAFF,
@@ -119,7 +119,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.StaffComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN']},
+    data: {roles: ['ADMIN', 'SUPERVISOR']},
   },
   {
     path: AppRoutes.EXAM_DISTRIBUTION,
@@ -128,7 +128,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.ExamDistributionComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'TEACHER', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TEACHER', 'TECHNICAL']},
   },
   {
     path: AppRoutes.EXAM_SCHEDULE,
@@ -137,7 +137,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.ExamScheduleComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TECHNICAL']},
   },
   {
     path: AppRoutes.SALARY_CONFIG,
@@ -155,7 +155,7 @@ export const HOME_CHILDREN_ROUTES: Routes = [
         (c) => c.ReportsComponent,
       ),
     canActivate: [roleGuard],
-    data: {roles: ['ADMIN', 'SUPERVISOR']},
+    data: {roles: ['ADMIN', 'SUPERVISOR', 'TECHNICAL']},
   },
   {
     path: AppRoutes.TEACHER_DASHBOARD,

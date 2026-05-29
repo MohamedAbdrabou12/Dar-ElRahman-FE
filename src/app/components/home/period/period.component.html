@@ -52,6 +52,7 @@
   </div>
 }
 
+@if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
 <button
   type="button"
   class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
@@ -60,6 +61,7 @@
   <i class="fas fa-plus-circle"></i>
   إضافة فترة جديدة
 </button>
+}
 
 <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
   <!-- Search Bar -->
@@ -130,6 +132,7 @@
                   <span>عرض</span>
                 </button>
 
+                @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
                 <button
                   class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
                   (click)="editPeriod(row)"
@@ -145,6 +148,7 @@
                   <i class="fa fa-trash"></i>
                   <span>حذف</span>
                 </button>
+                }
 
                 <button
                   *ngIf="isAdmin && row.monthlyTuition"

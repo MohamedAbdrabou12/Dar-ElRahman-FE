@@ -11,6 +11,8 @@ import {FormsModule} from "@angular/forms";
 import {ConfirmDialogComponent} from "../../shared/confirmation/confirmation.component";
 import {TeacherMaritalStatus} from "../../../models/enums/TeacherMaritalStatus.enum";
 import {StudentMaritalStatus} from "../../../models/enums/StudentMaritalStatus.enum";
+import {normalizeArabic} from '../../../utils/arabic-normalizer';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-absence',
@@ -39,7 +41,8 @@ export class AbsenceComponent {
   constructor(
     private absenceService: StudentAbsenceService,
     private alertService: AlertService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    protected authService: AuthService
   ) {
     this.loadAbsences();
   }
@@ -49,8 +52,8 @@ export class AbsenceComponent {
     this.absenceService.getAllStudentAbsences(this.pageNo, this.pageSize).subscribe({
       next: (response) => {
         this.absences.set(response?.data);
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredAbsences()?.[0];
@@ -70,12 +73,12 @@ export class AbsenceComponent {
       this.filteredAbsences.set(data);
       return;
     }
-    const term = this.searchTerm.toLowerCase();
+    const term = normalizeArabic(this.searchTerm.toLowerCase());
     this.filteredAbsences.set(
       data.filter((row: any) =>
-        row.student?.fullName?.toLowerCase().includes(term) ||
+        normalizeArabic(row.student?.fullName)?.toLowerCase().includes(term) ||
         row.studentId?.toString().includes(term) ||
-        row.student?.ring?.name?.toLowerCase().includes(term) ||
+        normalizeArabic(row.student?.ring?.name)?.toLowerCase().includes(term) ||
         row.absenceDate?.toLowerCase().includes(term)
       )
     );

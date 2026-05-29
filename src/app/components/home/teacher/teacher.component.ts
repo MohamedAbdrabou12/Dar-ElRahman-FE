@@ -12,6 +12,8 @@ import {AppRegexPatterns} from 'src/app/constants/app-regex-patterns';
 import {TeacherMaritalStatus} from "../../../models/enums/TeacherMaritalStatus.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {AddTeacherDialogComponent} from "./add-teacher-dialog/add-teacher-dialog.component";
+import {normalizeArabic} from '../../../utils/arabic-normalizer';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-teacher',
@@ -56,7 +58,8 @@ export class TeacherComponent implements OnInit {
 
   constructor(
     private teacherService: TeacherService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    protected authService: AuthService
   ) {
   }
 
@@ -69,8 +72,8 @@ export class TeacherComponent implements OnInit {
     this.teacherService.getAllTeachers(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
@@ -87,10 +90,10 @@ export class TeacherComponent implements OnInit {
       this.filteredData = this.data;
       return;
     }
-    const term = this.searchTerm.toLowerCase();
+    const term = normalizeArabic(this.searchTerm.toLowerCase());
     this.filteredData = this.data.filter((row: any) =>
-      row.fullName?.toLowerCase().includes(term) ||
-      row.nationalId?.toLowerCase().includes(term) ||
+      normalizeArabic(row.fullName)?.toLowerCase().includes(term) ||
+      normalizeArabic(row.nationalId)?.toLowerCase().includes(term) ||
       row.id?.toString().includes(term) ||
       row.phoneNumber?.toLowerCase().includes(term)
     );

@@ -11,6 +11,7 @@ import {QuestionnaireType} from "../../../models/enums/QuestionnaireType.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {AddQuestionnaireDialogComponent} from "./add-questionnaire-dialog/add-questionnaire-dialog.component";
 import {AuthService} from '../../../services/auth.service';
+import {normalizeArabic} from '../../../utils/arabic-normalizer';
 
 @Component({
   selector: 'app-questionnaire',
@@ -65,8 +66,8 @@ export class QuestionnaireComponent implements OnInit {
     this.questionnaireService.getAllQuestionnaires(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
@@ -83,10 +84,10 @@ export class QuestionnaireComponent implements OnInit {
       this.filteredData = this.data;
       return;
     }
-    const term = this.searchTerm.toLowerCase();
+    const term = normalizeArabic(this.searchTerm.toLowerCase());
     this.filteredData = this.data.filter((row: any) =>
-      row.ring?.name?.toLowerCase().includes(term) ||
-      row.currentSurah?.nameAr?.toLowerCase().includes(term) ||
+      normalizeArabic(row.ring?.name)?.toLowerCase().includes(term) ||
+      normalizeArabic(row.currentSurah?.nameAr)?.toLowerCase().includes(term) ||
       row.id?.toString().includes(term)
     );
   }

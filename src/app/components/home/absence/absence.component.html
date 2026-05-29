@@ -137,12 +137,14 @@
 }
 
 <main class="p-2">
+  @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR', 'TEACHER', 'TECHNICAL'])) {
   <button
     class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg mb-4"
     (click)="openAddDialog()">
     <i class="fas fa-plus-circle"></i>
     <span>إضافة غياب</span>
   </button>
+}
 
   <div class="table-container bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
     <!-- Search Bar -->
@@ -186,6 +188,7 @@
                   <i class="fa fa-eye"></i>
                   <span>عرض</span>
                 </button>
+                @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR', 'TEACHER', 'TECHNICAL'])) {
                 <button
                   class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
                   (click)="openEditDialog(absence)"
@@ -193,10 +196,13 @@
                   <i class="fa fa-edit"></i>
                   <span>تعديل</span>
                 </button>
+                }
+                @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR', 'TEACHER'])) {
                 <button class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold" (click)="deleteAbsence(absence)">
                   <i class="fa fa-trash"></i>
                   <span>حذف</span>
                 </button>
+                }
               </div>
             </td>
           </tr>

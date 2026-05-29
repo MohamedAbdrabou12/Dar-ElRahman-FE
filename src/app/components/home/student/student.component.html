@@ -1,5 +1,6 @@
 @if (rowSelected) {
   <div class="flex justify-end mb-4 gap-3 no-print">
+    @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
     <button
       type="button"
       class="px-5 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
@@ -8,6 +9,8 @@
       <i class="fas fa-certificate"></i>
       إنشاء شهادة
     </button>
+    }
+    @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR', 'TECHNICAL'])) {
     <button
       type="button"
       class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
@@ -16,6 +19,7 @@
       <i class="fas fa-book-quran"></i>
       سور القرآن
     </button>
+    }
     <button
       type="button"
       class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"

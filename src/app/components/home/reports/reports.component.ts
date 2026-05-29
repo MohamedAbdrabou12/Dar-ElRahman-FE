@@ -6,6 +6,8 @@ import {PeriodService} from '../../../services/period/period.service';
 import {RingService} from '../../../services/ring/ring.service';
 import {Period} from '../../../models/Period.model';
 import {Ring} from '../../../models/Ring.model';
+import {normalizeArabic} from '../../../utils/arabic-normalizer';
+import {AuthService} from '../../../services/auth.service';
 
 interface CategoryTab {
   key: string;
@@ -57,11 +59,17 @@ export class ReportsComponent implements OnInit {
   constructor(
     private reportService: ReportService,
     private periodService: PeriodService,
-    private ringService: RingService
+    private ringService: RingService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.setDefaultDates();
+    // Set default category to first visible one for the user
+    const visibleCats = this.getVisibleCategories();
+    if (visibleCats.length > 0 && !visibleCats.some(c => c.key === this.activeCategory)) {
+      this.activeCategory = visibleCats[0].key;
+    }
     this.filterReports();
     this.loadPeriods();
     this.loadRings();
@@ -110,7 +118,15 @@ export class ReportsComponent implements OnInit {
   }
 
   filterReports(): void {
-    this.filteredReports = this.allReports.filter(r => r.category === this.activeCategory);
+    this.filteredReports = this.allReports.filter(
+      r => r.category === this.activeCategory && this.authService.hasAnyRole(r.roles)
+    );
+  }
+
+  getVisibleCategories(): CategoryTab[] {
+    return this.categories.filter(cat =>
+      this.allReports.some(r => r.category === cat.key && this.authService.hasAnyRole(r.roles))
+    );
   }
 
   viewReport(report: ReportDefinition): void {
@@ -148,9 +164,9 @@ export class ReportsComponent implements OnInit {
   get filteredRows(): string[][] {
     if (!this.reportData?.rows) return [];
     if (!this.searchTerm.trim()) return this.reportData.rows;
-    const term = this.searchTerm.trim().toLowerCase();
+    const term = normalizeArabic(this.searchTerm.trim().toLowerCase());
     return this.reportData.rows.filter(row =>
-      row.some(cell => cell.toLowerCase().includes(term))
+      row.some(cell => normalizeArabic(cell).toLowerCase().includes(term))
     );
   }
 

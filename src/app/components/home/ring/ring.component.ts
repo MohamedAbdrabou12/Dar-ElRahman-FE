@@ -12,6 +12,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {AddRingDialogComponent} from "./add-ring-dialog/add-ring-dialog.component";
 import {PeriodService} from '../../../services/period/period.service';
 import {AuthService} from '../../../services/auth.service';
+import {normalizeArabic} from '../../../utils/arabic-normalizer';
 
 @Component({
   selector: 'app-ring',
@@ -71,8 +72,8 @@ export class RingComponent implements OnInit {
     this.ringService.getAllRings(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
@@ -89,12 +90,12 @@ export class RingComponent implements OnInit {
       this.filteredData = this.data;
       return;
     }
-    const term = this.searchTerm.toLowerCase();
+    const term = normalizeArabic(this.searchTerm.toLowerCase());
     this.filteredData = this.data.filter((row: any) =>
-      row.name?.toLowerCase().includes(term) ||
+      normalizeArabic(row.name)?.toLowerCase().includes(term) ||
       row.id?.toString().includes(term) ||
-      row.teacherName?.toLowerCase().includes(term) ||
-      row.periodName?.toLowerCase().includes(term)
+      normalizeArabic(row.teacherName)?.toLowerCase().includes(term) ||
+      normalizeArabic(row.periodName)?.toLowerCase().includes(term)
     );
   }
 

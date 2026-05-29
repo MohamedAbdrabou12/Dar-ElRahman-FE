@@ -23,6 +23,7 @@ import {Surah} from "../../../models/Surah.model";
 import {StudentMaritalStatus} from "../../../models/enums/StudentMaritalStatus.enum";
 import {PeriodService} from '../../../services/period/period.service';
 import {AuthService} from '../../../services/auth.service';
+import {normalizeArabic} from '../../../utils/arabic-normalizer';
 
 @Component({
   selector: 'app-student',
@@ -85,8 +86,8 @@ export class StudentComponent implements OnInit {
     this.studentService.getAllStudent(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.data.set(response.data);
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.applySearch();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData()?.[0];
@@ -109,13 +110,13 @@ export class StudentComponent implements OnInit {
       this.filteredData.set(data);
       return;
     }
-    const term = this.searchTerm.toLowerCase();
+    const term = normalizeArabic(this.searchTerm.toLowerCase());
     this.filteredData.set(
       data.filter((row: any) =>
-        row.fullName?.toLowerCase().includes(term) ||
-        row.nationalId?.toLowerCase().includes(term) ||
+        normalizeArabic(row.fullName)?.toLowerCase().includes(term) ||
+        normalizeArabic(row.nationalId)?.toLowerCase().includes(term) ||
         row.id?.toString().includes(term) ||
-        row.ring?.teacherName?.toLowerCase().includes(term)
+        normalizeArabic(row.ring?.teacherName)?.toLowerCase().includes(term)
       )
     );
   }

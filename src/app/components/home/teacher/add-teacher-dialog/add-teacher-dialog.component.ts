@@ -11,6 +11,8 @@ import { AppRegexPatterns } from '../../../../constants/app-regex-patterns';
 import { TeacherMaritalStatus } from '../../../../models/enums/TeacherMaritalStatus.enum';
 import { TeacherService } from '../../../../services/teacher/teacher.service';
 import { AlertService } from '../../../../services/alert.service';
+import { PeriodService } from '../../../../services/period/period.service';
+import { Period } from '../../../../models/Period.model';
 
 export interface TeacherDialogData {
   isEdit: boolean;
@@ -37,17 +39,20 @@ export class AddTeacherDialogComponent implements OnInit {
   teacherForm!: FormGroup;
   maritalStatuses = Object.values(TeacherMaritalStatus);
   profilePicPreview: string = '';
+  periods: Period[] = [];
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddTeacherDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: TeacherDialogData,
     private teacherService: TeacherService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private periodService: PeriodService
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.loadPeriods();
 
     if (this.data.isEdit && this.data.teacher) {
       this.teacherForm.patchValue({
@@ -66,7 +71,8 @@ export class AddTeacherDialogComponent implements OnInit {
         outOfWork: this.data.teacher.outOfWork,
         emailAddress: this.data.teacher.emailAddress,
         gender: this.data.teacher.gender,
-        profilePictureUrl: this.data.teacher.profilePictureUrl
+        profilePictureUrl: this.data.teacher.profilePictureUrl,
+        periodId: this.data.teacher.periodId
       });
       this.profilePicPreview = this.data.teacher.profilePictureUrl || '';
     }
@@ -89,7 +95,8 @@ export class AddTeacherDialogComponent implements OnInit {
       outOfWork: [false],
       emailAddress: ['', [Validators.pattern(AppRegexPatterns.EMAIL_PATTERN)]],
       gender: ['', Validators.required],
-      profilePictureUrl: ['']
+      profilePictureUrl: [''],
+      periodId: [null, Validators.required]
     });
   }
 
@@ -114,6 +121,14 @@ export class AddTeacherDialogComponent implements OnInit {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     return `${year}-${month}`;
+  }
+
+  private loadPeriods(): void {
+    this.periodService.getAllPeriods().subscribe({
+      next: (response: any) => {
+        this.periods = response.data || response;
+      }
+    });
   }
 
   getArabicMaritalStatus(status: string): string {

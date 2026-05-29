@@ -20,4 +20,6 @@ export interface Teacher extends BaseAuditModel {
   deleted?: boolean; // Optional
   gender: string;
   profilePictureUrl?: string;
+  periodId: number;
+  periodName?: string;
 }

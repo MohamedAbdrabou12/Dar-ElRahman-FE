@@ -13,6 +13,8 @@ import {StudentQuestionnaire} from 'src/app/models/StudentQuestionnaire.model';
 import {QuestionnaireType} from "../../../models/enums/QuestionnaireType.enum";
 import {MatDialog} from "@angular/material/dialog";
 import {AddStudentQuestionnaireDialogComponent} from "./add-student-questionnaire-dialog/add-student-questionnaire-dialog.component";
+import {normalizeArabic} from '../../../utils/arabic-normalizer';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-student-questionnaire',
@@ -52,7 +54,8 @@ export class StudentQuestionnaireComponent implements OnInit {
     private ringService: RingService,
     private questionnaireService: QuestionnaireService,
     private studentService: StudentService,
-    private studentQuestionnaireService: StudentQuestionnaireService
+    private studentQuestionnaireService: StudentQuestionnaireService,
+    protected authService: AuthService
   ) {
     this.studentQuestionnaireForm = this.fb.group({
       id: [null],
@@ -139,8 +142,8 @@ export class StudentQuestionnaireComponent implements OnInit {
     this.studentQuestionnaireService.getAllStudentQuestionnaires(this.pageNo, this.pageSize).subscribe(
       (response: any) => {
         this.studentQuestionnaires = response.data;
-        this.totalRecords = response.totalRecords;
-        this.totalPages = response.totalPages;
+        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
+        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.filteredStudentQuestionnaires = response.data;
         this.filterStudentQuestionnaires();
         if (!this.rowSelected) {
@@ -177,7 +180,7 @@ export class StudentQuestionnaireComponent implements OnInit {
     const filters = this.filterForm.value;
     this.filteredStudentQuestionnaires = this.studentQuestionnaires.filter(item => {
       const ringMatch = !filters.ringId || item?.questionnaire?.ring?.id === Number(filters.ringId);
-      const studentMatch = !filters.studentName || item.student?.fullName.toLowerCase().includes(filters.studentName.toLowerCase());
+      const studentMatch = !filters.studentName || normalizeArabic(item.student?.fullName).toLowerCase().includes(normalizeArabic(filters.studentName).toLowerCase());
       const gradeMatch = !filters.grade || item.grade === filters.grade;
       const questionnaireMatch = !filters.questionnaireId || item.questionnaire?.id === Number(filters.questionnaireId);
 

@@ -1,0 +1,11 @@
+.git
+.gitignore
+.angular
+.idea
+.vscode
+node_modules
+dist
+*.md
+tsconfig.spec.json
+karma.conf.js
+.editorconfig

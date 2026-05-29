@@ -108,7 +108,7 @@
             </td>
             <td class="px-6 py-4 text-center">
               <button
-                *ngIf="schedule.status === ExamStatus.PENDING && authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])"
+                *ngIf="schedule.status === ExamStatus.PENDING && authService.hasAnyRole(['ADMIN', 'SUPERVISOR', 'TEACHER', 'TECHNICAL'])"
                 class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-300 text-xs font-semibold"
                 (click)="cancelSchedule(schedule.id!)"
               >

@@ -38,6 +38,10 @@
           <span class="text-sm text-gray-600 dark:text-gray-400">البريد الالكترونى:</span>
           <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.emailAddress }}</span>
         </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">الفترة:</span>
+          <span class="font-semibold text-text dark:text-dark-text">{{ rowSelected.periodName }}</span>
+        </div>
       </div>
     </div>
 
@@ -123,6 +127,7 @@
         <div class="print-row"><span class="print-label">الرقم القومي:</span><span class="print-value">{{ rowSelected.nationalId }}</span></div>
         <div class="print-row"><span class="print-label">رقم الهاتف:</span><span class="print-value">{{ rowSelected.phoneNumber }}</span></div>
         <div class="print-row"><span class="print-label">البريد الالكترونى:</span><span class="print-value">{{ rowSelected.emailAddress }}</span></div>
+        <div class="print-row"><span class="print-label">الفترة:</span><span class="print-value">{{ rowSelected.periodName }}</span></div>
       </div>
       <div class="print-card">
         <h3><i class="fas fa-user"></i> البيانات الشخصية</h3>
@@ -146,6 +151,7 @@
     </div>
   </div>
 }
+@if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
 <button
   type="button"
   class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
@@ -154,6 +160,7 @@
   <i class="fas fa-plus-circle"></i>
   اضافة مُعَلِم جديد
 </button>
+}
 
 <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">
   <!-- Search Bar -->
@@ -192,6 +199,7 @@
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">خارج العمل</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">المهنة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحالة الاجتماعية</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الفترة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">العمليات</th>
         </tr>
       </thead>
@@ -219,6 +227,7 @@
             </td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.profession }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ getArabicStatus(row.maritalStatus) }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ row.periodName }}</td>
             <td class="px-6 py-4">
               <div class="flex justify-center items-center gap-2">
                 <button
@@ -229,6 +238,7 @@
                   <span>عرض</span>
                 </button>
 
+                @if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
                 <button
                   class="px-3 py-2 bg-yellow text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 flex items-center gap-1 text-xs font-semibold"
                   (click)="editTeacher(row)"
@@ -244,6 +254,7 @@
                   <i class="fa fa-trash"></i>
                   <span>حذف</span>
                 </button>
+                }
               </div>
             </td>
           </tr>

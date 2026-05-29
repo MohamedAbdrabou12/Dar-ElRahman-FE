@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {ExamSchedule} from 'src/app/models/ExamSchedule.model';
 import {ExamStatus} from 'src/app/models/enums/ExamStatus.enum';
 import {ExamScheduleService} from 'src/app/services/exam-schedule/exam-schedule.service';
+import {AuthService} from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-exam-schedule',
@@ -26,6 +27,7 @@ export class ExamScheduleComponent implements OnInit {
 
   constructor(
     private examScheduleService: ExamScheduleService,
+    protected authService: AuthService,
   ) {
   }
 

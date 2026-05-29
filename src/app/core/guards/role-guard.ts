@@ -36,13 +36,16 @@ export function getDefaultRouteForRole(authService: AuthService): string {
   if (authService.hasRole('ADMIN') || authService.hasRole('SUPERVISOR')) {
     return AppRoutes.ADMIN_DASHBOARD;
   }
+  if (authService.hasRole('TECHNICAL')) {
+    return AppRoutes.STUDENT;
+  }
   if (authService.hasRole('TEACHER')) {
     return AppRoutes.STUDENT;
   }
   if (authService.hasRole('GUARDIAN')) {
     return AppRoutes.GUARDIAN_DASHBOARD;
   }
-  // Fallback: use teacher-dashboard or guardian-dashboard if user has ANY role
+  // Fallback: use student page if user has ANY role
   // to avoid looping back to a page they can't access
   return AppRoutes.STUDENT;
 }
