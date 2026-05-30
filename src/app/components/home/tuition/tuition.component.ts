@@ -26,7 +26,8 @@ export class TuitionComponent implements OnInit {
   students: Student[] = [];
   today = new Date();
 
-  searchTerm = '';
+  filterForm!: FormGroup;
+  showFilters = false;
   pageNo = 0;
   pageSize = 10;
   totalRecords = 0;
@@ -51,18 +52,24 @@ export class TuitionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filterForm = this.fb.group({
+      studentName: [''],
+      paymentStatus: [null],
+      tuitionMonth: ['']
+    });
     this.getAllTuitions();
     this.buildTuitionForm();
     this.getNonTuitionStudents();
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
   }
 
   private getAllTuitions() {
-    this.tuitionService.getAllTuitions(this.pageNo, this.pageSize).subscribe(
+    this.tuitionService.getAllTuitions(0, 10000).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
-        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
-        this.applySearch();
+        this.applyFilters();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
         }
@@ -73,27 +80,50 @@ export class TuitionComponent implements OnInit {
     );
   }
 
-  applySearch() {
-    if (!this.searchTerm.trim()) {
-      this.filteredData = this.data;
-      return;
-    }
-    const term = this.searchTerm.toLowerCase();
-    this.filteredData = this.data.filter((row: any) =>
-      row.student?.fullName?.toLowerCase().includes(term) ||
-      row.student?.nationalId?.toLowerCase().includes(term) ||
-      row.id?.toString().includes(term)
-    );
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 
-  onSearchChange() {
-    this.applySearch();
+  resetFilters(): void {
+    this.filterForm.reset({
+      studentName: '',
+      paymentStatus: null,
+      tuitionMonth: ''
+    });
+  }
+
+  applyFilters() {
+    const filters = this.filterForm?.value;
+    if (!filters) {
+      this.filteredData = this.data;
+    } else {
+      this.filteredData = this.data.filter((row: any) => {
+        const nameMatch = !filters.studentName || row.student?.fullName?.toLowerCase().includes(filters.studentName.toLowerCase()) || row.student?.nationalId?.toLowerCase().includes(filters.studentName.toLowerCase());
+        let statusMatch = true;
+        if (filters.paymentStatus === 'exempted') statusMatch = row.exempted === true;
+        else if (filters.paymentStatus === 'paid') statusMatch = !row.exempted && row.paid === true;
+        else if (filters.paymentStatus === 'unpaid') statusMatch = !row.exempted && !row.paid;
+        let monthMatch = true;
+        if (filters.tuitionMonth) {
+          const itemMonth = row.tuitionMonth ? new Date(row.tuitionMonth).toISOString().substring(0, 7) : '';
+          monthMatch = itemMonth === filters.tuitionMonth;
+        }
+        return nameMatch && statusMatch && monthMatch;
+      });
+    }
+    this.totalRecords = this.filteredData.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+    if (this.pageNo >= this.totalPages) this.pageNo = 0;
+  }
+
+  get paginatedData() {
+    const start = this.pageNo * this.pageSize;
+    return this.filteredData.slice(start, start + this.pageSize);
   }
 
   goToPage(page: number) {
     if (page < 0 || page >= this.totalPages) return;
     this.pageNo = page;
-    this.getAllTuitions();
   }
 
   private getNonTuitionStudents() {

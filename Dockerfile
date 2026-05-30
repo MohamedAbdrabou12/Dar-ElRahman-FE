@@ -18,5 +18,5 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy the Angular build output
 COPY --from=build /app/dist/dar-el-rahman/browser /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 8081
 CMD ["nginx", "-g", "daemon off;"]

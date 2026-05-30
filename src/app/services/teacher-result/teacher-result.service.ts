@@ -39,4 +39,11 @@ export class TeacherResultService {
       teacherResult
     );
   }
+
+  triggerResultCalculation(): Observable<any> {
+    return this.http.post(
+      `${environment.memoApiUrl}${BackendEndpoints.teacher_result}/trigger-teacher-result-calculations`,
+      {}
+    );
+  }
 }

@@ -139,11 +139,9 @@ export class StudentQuestionnaireComponent implements OnInit {
   }
 
   loadStudentQuestionnaires(): void {
-    this.studentQuestionnaireService.getAllStudentQuestionnaires(this.pageNo, this.pageSize).subscribe(
+    this.studentQuestionnaireService.getAllStudentQuestionnaires(0, 10000).subscribe(
       (response: any) => {
         this.studentQuestionnaires = response.data;
-        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
-        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
         this.filteredStudentQuestionnaires = response.data;
         this.filterStudentQuestionnaires();
         if (!this.rowSelected) {
@@ -159,7 +157,6 @@ export class StudentQuestionnaireComponent implements OnInit {
   goToPage(page: number): void {
     if (page < 0 || page >= this.totalPages) return;
     this.pageNo = page;
-    this.loadStudentQuestionnaires();
   }
 
   toggleFilters(): void {
@@ -197,6 +194,14 @@ export class StudentQuestionnaireComponent implements OnInit {
 
       return ringMatch && studentMatch && gradeMatch && questionnaireMatch && dateMatch;
     });
+    this.totalRecords = this.filteredStudentQuestionnaires.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+    if (this.pageNo >= this.totalPages) this.pageNo = 0;
+  }
+
+  get paginatedStudentQuestionnaires() {
+    const start = this.pageNo * this.pageSize;
+    return this.filteredStudentQuestionnaires.slice(start, start + this.pageSize);
   }
 
   onRowClick(row: any): void {

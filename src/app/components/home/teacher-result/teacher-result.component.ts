@@ -58,6 +58,9 @@ export class TeacherResultComponent implements OnInit {
   };
   error: any;
   deleteError: any;
+  triggerLoading = false;
+  triggerSuccess = false;
+  triggerError: string | null = null;
 
   teacherResultForm: FormGroup | undefined;
 
@@ -259,6 +262,25 @@ export class TeacherResultComponent implements OnInit {
       revisionWeight: teacherResult.revisionWeight,
       teacher: teacherResult.teacher,
     };
+  }
+
+  triggerCalculation() {
+    this.triggerLoading = true;
+    this.triggerSuccess = false;
+    this.triggerError = null;
+    this.teacherResultService.triggerResultCalculation().subscribe({
+      next: () => {
+        this.triggerLoading = false;
+        this.triggerSuccess = true;
+        this.getAllTeacherResults();
+        setTimeout(() => this.triggerSuccess = false, 5000);
+      },
+      error: (err) => {
+        this.triggerLoading = false;
+        this.triggerError = err?.error?.errorDescription || 'حدث خطأ أثناء حساب النتائج';
+        setTimeout(() => this.triggerError = null, 5000);
+      }
+    });
   }
 
   printEntity() {

@@ -44,6 +44,7 @@ export class AddQuestionnaireDialogComponent implements OnInit {
   questionnaireTypes = Object.values(QuestionnaireType);
   surahLoading = false;
   surahAutoPopulated = false;
+  today = new Date();
 
   constructor(
     private fb: FormBuilder,

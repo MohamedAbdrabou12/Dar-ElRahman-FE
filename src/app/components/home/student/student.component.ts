@@ -6,7 +6,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TeacherService} from 'src/app/services/teacher/teacher.service';
 import {StudentService} from 'src/app/services/student/student.service';
 import {RingService} from 'src/app/services/ring/ring.service';
@@ -30,7 +30,7 @@ import {normalizeArabic} from '../../../utils/arabic-normalizer';
   standalone: true,
   templateUrl: './student.component.html',
   styleUrls: ['./student.component.scss'],
-  imports: [NgClass, FormsModule, CommonModule],
+  imports: [NgClass, FormsModule, CommonModule, ReactiveFormsModule],
 })
 export class StudentComponent implements OnInit {
   error: any;
@@ -41,7 +41,8 @@ export class StudentComponent implements OnInit {
   rings = signal<any[] | undefined>(undefined);
   surahs = signal<Surah[] | undefined>(undefined);
 
-  searchTerm = '';
+  filterForm: FormGroup;
+  showFilters = false;
   pageNo = 0;
   pageSize = 10;
   totalRecords = 0;
@@ -53,6 +54,7 @@ export class StudentComponent implements OnInit {
   dialog = inject(MatDialog);
 
   constructor(
+    private fb: FormBuilder,
     private teacherService: TeacherService,
     private ringService: RingService,
     private studentService: StudentService,
@@ -62,6 +64,13 @@ export class StudentComponent implements OnInit {
     protected loadingService: LoadingService,
     protected authService: AuthService,
   ) {
+    this.filterForm = this.fb.group({
+      studentName: [''],
+      ringId: [null],
+      status: [null],
+      gender: [null],
+      period: [null]
+    });
     effect(() => {
       if (this.data() && this.teachers() && this.rings())
         this.loadingService.stopLoading();
@@ -79,16 +88,17 @@ export class StudentComponent implements OnInit {
       this.teachers.set([]);
       this.periods.set([]);
     }
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
   }
 
 
   private getAllStudents() {
-    this.studentService.getAllStudent(this.pageNo, this.pageSize).subscribe(
+    this.studentService.getAllStudent(0, 10000).subscribe(
       (response: any) => {
         this.data.set(response.data);
-        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
-        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
-        this.applySearch();
+        this.applyFilters();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData()?.[0];
         }
@@ -100,35 +110,51 @@ export class StudentComponent implements OnInit {
     );
   }
 
-  applySearch() {
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  resetFilters(): void {
+    this.filterForm.reset({
+      studentName: '',
+      ringId: null,
+      status: null,
+      gender: null,
+      period: null
+    });
+  }
+
+  applyFilters() {
     const data = this.data();
     if (!data) {
       this.filteredData.set(undefined);
       return;
     }
-    if (!this.searchTerm.trim()) {
-      this.filteredData.set(data);
-      return;
-    }
-    const term = normalizeArabic(this.searchTerm.toLowerCase());
-    this.filteredData.set(
-      data.filter((row: any) =>
-        normalizeArabic(row.fullName)?.toLowerCase().includes(term) ||
-        normalizeArabic(row.nationalId)?.toLowerCase().includes(term) ||
-        row.id?.toString().includes(term) ||
-        normalizeArabic(row.ring?.teacherName)?.toLowerCase().includes(term)
-      )
-    );
+    const filters = this.filterForm.value;
+    const filtered = data.filter((row: any) => {
+      const nameMatch = !filters.studentName || normalizeArabic(row.fullName)?.toLowerCase().includes(normalizeArabic(filters.studentName.toLowerCase())) || normalizeArabic(row.nationalId)?.toLowerCase().includes(normalizeArabic(filters.studentName.toLowerCase())) || row.id?.toString().includes(filters.studentName);
+      const ringMatch = !filters.ringId || row.ring?.id === Number(filters.ringId);
+      const statusMatch = !filters.status || row.status === filters.status;
+      const genderMatch = !filters.gender || row.gender === filters.gender;
+      const periodMatch = !filters.period || row.ring?.periodName === filters.period;
+      return nameMatch && ringMatch && statusMatch && genderMatch && periodMatch;
+    });
+    this.filteredData.set(filtered);
+    this.totalRecords = filtered.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+    if (this.pageNo >= this.totalPages) this.pageNo = 0;
   }
 
-  onSearchChange() {
-    this.applySearch();
+  get paginatedData() {
+    const data = this.filteredData();
+    if (!data) return undefined;
+    const start = this.pageNo * this.pageSize;
+    return data.slice(start, start + this.pageSize);
   }
 
   goToPage(page: number) {
     if (page < 0 || page >= this.totalPages) return;
     this.pageNo = page;
-    this.getAllStudents();
   }
 
   selectRow(row: any) {

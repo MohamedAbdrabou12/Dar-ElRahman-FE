@@ -14,6 +14,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {AddTeacherDialogComponent} from "./add-teacher-dialog/add-teacher-dialog.component";
 import {normalizeArabic} from '../../../utils/arabic-normalizer';
 import {AuthService} from '../../../services/auth.service';
+import {PeriodService} from '../../../services/period/period.service';
+import {Period} from '../../../models/Period.model';
 
 @Component({
   selector: 'app-teacher',
@@ -29,7 +31,10 @@ export class TeacherComponent implements OnInit {
   rowSelected: any;
   today = new Date();
 
-  searchTerm = '';
+  filterForm!: FormGroup;
+  showFilters = false;
+  periods: Period[] = [];
+  maritalStatuses = Object.values(TeacherMaritalStatus);
   pageNo = 0;
   pageSize = 10;
   totalRecords = 0;
@@ -59,22 +64,31 @@ export class TeacherComponent implements OnInit {
   constructor(
     private teacherService: TeacherService,
     private fb: FormBuilder,
+    private periodService: PeriodService,
     protected authService: AuthService
   ) {
   }
 
   ngOnInit(): void {
+    this.filterForm = this.fb.group({
+      teacherName: [''],
+      outOfWork: [null],
+      periodName: [null],
+      maritalStatus: [null]
+    });
     this.getAllTeachers();
     this.buildTeacherForm();
+    this.loadPeriods();
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
   }
 
   private getAllTeachers() {
-    this.teacherService.getAllTeachers(this.pageNo, this.pageSize).subscribe(
+    this.teacherService.getAllTeachers(0, 10000).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
-        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
-        this.applySearch();
+        this.applyFilters();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
         }
@@ -85,28 +99,52 @@ export class TeacherComponent implements OnInit {
     );
   }
 
-  applySearch() {
-    if (!this.searchTerm.trim()) {
-      this.filteredData = this.data;
-      return;
-    }
-    const term = normalizeArabic(this.searchTerm.toLowerCase());
-    this.filteredData = this.data.filter((row: any) =>
-      normalizeArabic(row.fullName)?.toLowerCase().includes(term) ||
-      normalizeArabic(row.nationalId)?.toLowerCase().includes(term) ||
-      row.id?.toString().includes(term) ||
-      row.phoneNumber?.toLowerCase().includes(term)
+  private loadPeriods(): void {
+    this.periodService.getAllPeriods().subscribe(
+      (response: any) => { this.periods = response.data; },
+      (error) => { console.error('Periods fetch failed', error); }
     );
   }
 
-  onSearchChange() {
-    this.applySearch();
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  resetFilters(): void {
+    this.filterForm.reset({
+      teacherName: '',
+      outOfWork: null,
+      periodName: null,
+      maritalStatus: null
+    });
+  }
+
+  applyFilters() {
+    const filters = this.filterForm?.value;
+    if (!filters) {
+      this.filteredData = this.data;
+    } else {
+      this.filteredData = this.data.filter((row: any) => {
+        const nameMatch = !filters.teacherName || normalizeArabic(row.fullName)?.toLowerCase().includes(normalizeArabic(filters.teacherName.toLowerCase())) || normalizeArabic(row.nationalId)?.toLowerCase().includes(normalizeArabic(filters.teacherName.toLowerCase())) || row.phoneNumber?.toLowerCase().includes(filters.teacherName.toLowerCase());
+        const outOfWorkMatch = filters.outOfWork === null || filters.outOfWork === '' || row.outOfWork === (filters.outOfWork === 'true');
+        const periodMatch = !filters.periodName || row.periodName === filters.periodName;
+        const statusMatch = !filters.maritalStatus || row.maritalStatus === filters.maritalStatus;
+        return nameMatch && outOfWorkMatch && periodMatch && statusMatch;
+      });
+    }
+    this.totalRecords = this.filteredData.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+    if (this.pageNo >= this.totalPages) this.pageNo = 0;
+  }
+
+  get paginatedData() {
+    const start = this.pageNo * this.pageSize;
+    return this.filteredData.slice(start, start + this.pageSize);
   }
 
   goToPage(page: number) {
     if (page < 0 || page >= this.totalPages) return;
     this.pageNo = page;
-    this.getAllTeachers();
   }
 
   buildTeacherForm() {

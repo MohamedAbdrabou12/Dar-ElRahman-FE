@@ -195,15 +195,46 @@
     </div>
   </div>
 }
-@if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
-<button
-  type="button"
-  class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"
-  (click)="handleAddClick()"
->
-  <i class="fas fa-plus-circle"></i>
-  اضافة نتيجة مُعَلِم جديد
-</button>
+<!--@if (authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {-->
+<!--<button-->
+<!--  type="button"-->
+<!--  class="mb-6 px-6 py-3 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold animate-fade-in-up"-->
+<!--  (click)="handleAddClick()"-->
+<!--&gt;-->
+<!--  <i class="fas fa-plus-circle"></i>-->
+<!--  اضافة نتيجة مُعَلِم جديد-->
+<!--</button>-->
+<!--}-->
+
+@if (authService.hasAnyRole(['ADMIN'])) {
+  <div class="flex items-center gap-3 mb-4 no-print animate-fade-in-up">
+    <button
+      type="button"
+      class="px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-hover transition-all duration-300 flex items-center gap-2 shadow-md hover:shadow-lg font-semibold text-sm"
+      [disabled]="triggerLoading"
+      (click)="triggerCalculation()"
+    >
+      @if (triggerLoading) {
+        <i class="fas fa-spinner fa-spin"></i>
+        جاري حساب النتائج...
+      } @else {
+        <i class="fas fa-calculator"></i>
+        حساب نتائج المعلمين
+      }
+    </button>
+    @if (triggerSuccess) {
+      <span class="px-4 py-2 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-lg text-sm font-semibold animate-fade-in-up">
+        <i class="fas fa-check-circle"></i>
+        تم حساب النتائج بنجاح
+      </span>
+    }
+    @if (triggerError) {
+      <span class="px-4 py-2 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-lg text-sm font-semibold animate-fade-in-up">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ triggerError }}
+      </span>
+    }
+  </div>
 }
 
 <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in-up">

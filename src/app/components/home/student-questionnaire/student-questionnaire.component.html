@@ -166,6 +166,7 @@
         <tr>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">اسم الطالب</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">الحلقة</th>
+          <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">السورة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">رقم المحاولة</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">تاريخ السؤال</th>
           <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 dark:text-gray-300">التقدير</th>
@@ -173,10 +174,11 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-        @for (item of filteredStudentQuestionnaires; track item.id) {
+        @for (item of paginatedStudentQuestionnaires; track item.id) {
           <tr class="hover:bg-gray-50 dark:hover:bg-neutral-900/50 transition-colors duration-200">
             <td class="px-6 py-4 text-center text-sm font-semibold text-text dark:text-dark-text">{{ item.student?.fullName }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ item.questionnaire?.ring?.name }}</td>
+            <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ item.questionnaire?.currentSurah?.nameAr }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ item.attemptNumber }}</td>
             <td class="px-6 py-4 text-center text-sm text-text dark:text-dark-text">{{ item.questionnaire?.questionDate | date: 'yyyy-MM-dd' }}</td>
             <td class="px-6 py-4 text-center">

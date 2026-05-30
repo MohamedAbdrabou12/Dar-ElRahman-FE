@@ -25,7 +25,9 @@ export class GraduateComponent implements OnInit {
   rowSelected: Graduate | undefined;
   students: Student[] = [];
 
-  searchTerm = '';
+  filterForm!: FormGroup;
+  showFilters = false;
+  today = new Date();
   pageNo = 0;
   pageSize = 10;
   totalRecords = 0;
@@ -51,18 +53,24 @@ export class GraduateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filterForm = this.fb.group({
+      studentName: [''],
+      finalGrade: [null],
+      completionDate: ['']
+    });
     this.getAllGraduates();
     this.buildGraduateForm();
     this.getNonGraduateStudents();
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
   }
 
   private getAllGraduates() {
-    this.graduateService.getAllGraduates(this.pageNo, this.pageSize).subscribe(
+    this.graduateService.getAllGraduates(0, 10000).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
-        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
-        this.applySearch();
+        this.applyFilters();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
         }
@@ -73,27 +81,47 @@ export class GraduateComponent implements OnInit {
     );
   }
 
-  applySearch() {
-    if (!this.searchTerm.trim()) {
-      this.filteredData = this.data;
-      return;
-    }
-    const term = this.searchTerm.toLowerCase();
-    this.filteredData = this.data.filter((row: any) =>
-      row.student?.fullName?.toLowerCase().includes(term) ||
-      row.student?.nationalId?.toLowerCase().includes(term) ||
-      row.id?.toString().includes(term)
-    );
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 
-  onSearchChange() {
-    this.applySearch();
+  resetFilters(): void {
+    this.filterForm.reset({
+      studentName: '',
+      finalGrade: null,
+      completionDate: ''
+    });
+  }
+
+  applyFilters() {
+    const filters = this.filterForm?.value;
+    if (!filters) {
+      this.filteredData = this.data;
+    } else {
+      this.filteredData = this.data.filter((row: any) => {
+        const nameMatch = !filters.studentName || row.student?.fullName?.toLowerCase().includes(filters.studentName.toLowerCase()) || row.student?.nationalId?.toLowerCase().includes(filters.studentName.toLowerCase());
+        const gradeMatch = !filters.finalGrade || row.finalGrade === filters.finalGrade;
+        let dateMatch = true;
+        if (filters.completionDate) {
+          const itemDate = row.completionDate ? new Date(row.completionDate).toISOString().split('T')[0] : '';
+          dateMatch = itemDate === filters.completionDate;
+        }
+        return nameMatch && gradeMatch && dateMatch;
+      });
+    }
+    this.totalRecords = this.filteredData.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+    if (this.pageNo >= this.totalPages) this.pageNo = 0;
+  }
+
+  get paginatedData() {
+    const start = this.pageNo * this.pageSize;
+    return this.filteredData.slice(start, start + this.pageSize);
   }
 
   goToPage(page: number) {
     if (page < 0 || page >= this.totalPages) return;
     this.pageNo = page;
-    this.getAllGraduates();
   }
 
   private getNonGraduateStudents() {

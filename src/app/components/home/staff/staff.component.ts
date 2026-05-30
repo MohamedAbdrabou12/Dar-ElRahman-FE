@@ -1,6 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {Component, inject, OnInit} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {StaffService} from 'src/app/services/staff/staff.service';
 import {MatDialog} from '@angular/material/dialog';
 import {AddStaffDialogComponent} from './add-staff-dialog/add-staff-dialog.component';
@@ -20,7 +20,9 @@ export class StaffComponent implements OnInit {
   rowSelected: any;
   today = new Date();
 
-  searchTerm = '';
+  filterForm!: FormGroup;
+  showFilters = false;
+  staffTypes = ['ADMIN', 'TECHNICAL', 'SUPERVISOR'];
   pageNo = 0;
   pageSize = 10;
   totalRecords = 0;
@@ -28,19 +30,25 @@ export class StaffComponent implements OnInit {
   error: any;
   deleteError: any;
 
-  constructor(private staffService: StaffService, protected authService: AuthService) {}
+  constructor(private staffService: StaffService, private fb: FormBuilder, protected authService: AuthService) {}
 
   ngOnInit(): void {
+    this.filterForm = this.fb.group({
+      staffName: [''],
+      staffType: [null],
+      outOfWork: [null]
+    });
     this.getAllStaff();
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
   }
 
   private getAllStaff() {
-    this.staffService.getAllStaff(this.pageNo, this.pageSize).subscribe(
+    this.staffService.getAllStaff(0, 10000).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
-        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
-        this.applySearch();
+        this.applyFilters();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
         }
@@ -51,28 +59,43 @@ export class StaffComponent implements OnInit {
     );
   }
 
-  applySearch() {
-    if (!this.searchTerm.trim()) {
-      this.filteredData = this.data;
-      return;
-    }
-    const term = this.searchTerm.toLowerCase();
-    this.filteredData = this.data.filter((row: any) =>
-      row.fullName?.toLowerCase().includes(term) ||
-      row.nationalId?.toLowerCase().includes(term) ||
-      row.id?.toString().includes(term) ||
-      row.phoneNumber?.toLowerCase().includes(term)
-    );
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 
-  onSearchChange() {
-    this.applySearch();
+  resetFilters(): void {
+    this.filterForm.reset({
+      staffName: '',
+      staffType: null,
+      outOfWork: null
+    });
+  }
+
+  applyFilters() {
+    const filters = this.filterForm?.value;
+    if (!filters) {
+      this.filteredData = this.data;
+    } else {
+      this.filteredData = this.data.filter((row: any) => {
+        const nameMatch = !filters.staffName || row.fullName?.toLowerCase().includes(filters.staffName.toLowerCase()) || row.nationalId?.toLowerCase().includes(filters.staffName.toLowerCase()) || row.phoneNumber?.toLowerCase().includes(filters.staffName.toLowerCase());
+        const typeMatch = !filters.staffType || row.staffType === filters.staffType;
+        const outOfWorkMatch = filters.outOfWork === null || filters.outOfWork === '' || row.outOfWork === (filters.outOfWork === 'true');
+        return nameMatch && typeMatch && outOfWorkMatch;
+      });
+    }
+    this.totalRecords = this.filteredData.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+    if (this.pageNo >= this.totalPages) this.pageNo = 0;
+  }
+
+  get paginatedData() {
+    const start = this.pageNo * this.pageSize;
+    return this.filteredData.slice(start, start + this.pageSize);
   }
 
   goToPage(page: number) {
     if (page < 0 || page >= this.totalPages) return;
     this.pageNo = page;
-    this.getAllStaff();
   }
 
   selectRow(row: any) {
@@ -120,7 +143,7 @@ export class StaffComponent implements OnInit {
     this.staffService.deleteStaff(staff.id).subscribe(
       (data) => {
         this.data = this.data.filter((s) => s.id !== staff.id);
-        this.applySearch();
+        this.applyFilters();
         this.deleteError = null;
         if (this.rowSelected?.id === staff.id) {
           this.rowSelected = this.filteredData[0] || null;

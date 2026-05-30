@@ -29,7 +29,8 @@ export class RingComponent implements OnInit {
   rowSelected: Ring | undefined;
   today = new Date();
 
-  searchTerm = '';
+  filterForm!: FormGroup;
+  showFilters = false;
   pageNo = 0;
   pageSize = 10;
   totalRecords = 0;
@@ -60,21 +61,28 @@ export class RingComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.filterForm = this.fb.group({
+      ringName: [''],
+      periodId: [null],
+      memorizationPart: [null],
+      memorizationOrder: [null]
+    });
     this.getAllRings();
     if (this.authService.hasAnyRole(['ADMIN', 'SUPERVISOR'])) {
       this.getAllTeachers();
       this.getAllPeriods();
       this.buildRingForm();
     }
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
   }
 
   private getAllRings() {
-    this.ringService.getAllRings(this.pageNo, this.pageSize).subscribe(
+    this.ringService.getAllRings(0, 10000).subscribe(
       (response: any) => {
         this.data = response.data;
-        this.totalRecords = response.totalRecords ?? response.data?.length ?? 0;
-        this.totalPages = Math.max(response.totalPages ?? 0, Math.ceil(this.totalRecords / this.pageSize));
-        this.applySearch();
+        this.applyFilters();
         if (!this.rowSelected) {
           this.rowSelected = this.filteredData[0];
         }
@@ -85,28 +93,45 @@ export class RingComponent implements OnInit {
     );
   }
 
-  applySearch() {
-    if (!this.searchTerm.trim()) {
-      this.filteredData = this.data;
-      return;
-    }
-    const term = normalizeArabic(this.searchTerm.toLowerCase());
-    this.filteredData = this.data.filter((row: any) =>
-      normalizeArabic(row.name)?.toLowerCase().includes(term) ||
-      row.id?.toString().includes(term) ||
-      normalizeArabic(row.teacherName)?.toLowerCase().includes(term) ||
-      normalizeArabic(row.periodName)?.toLowerCase().includes(term)
-    );
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 
-  onSearchChange() {
-    this.applySearch();
+  resetFilters(): void {
+    this.filterForm.reset({
+      ringName: '',
+      periodId: null,
+      memorizationPart: null,
+      memorizationOrder: null
+    });
+  }
+
+  applyFilters() {
+    const filters = this.filterForm?.value;
+    if (!filters) {
+      this.filteredData = this.data;
+    } else {
+      this.filteredData = this.data.filter((row: any) => {
+        const nameMatch = !filters.ringName || normalizeArabic(row.name)?.toLowerCase().includes(normalizeArabic(filters.ringName.toLowerCase())) || normalizeArabic(row.teacherName)?.toLowerCase().includes(normalizeArabic(filters.ringName.toLowerCase())) || row.id?.toString().includes(filters.ringName);
+        const periodMatch = !filters.periodId || row.periodId === Number(filters.periodId);
+        const partMatch = !filters.memorizationPart || row.memorizationPart === filters.memorizationPart;
+        const orderMatch = !filters.memorizationOrder || row.memorizationOrder === filters.memorizationOrder;
+        return nameMatch && periodMatch && partMatch && orderMatch;
+      });
+    }
+    this.totalRecords = this.filteredData.length;
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+    if (this.pageNo >= this.totalPages) this.pageNo = 0;
+  }
+
+  get paginatedData() {
+    const start = this.pageNo * this.pageSize;
+    return this.filteredData.slice(start, start + this.pageSize);
   }
 
   goToPage(page: number) {
     if (page < 0 || page >= this.totalPages) return;
     this.pageNo = page;
-    this.getAllRings();
   }
 
   private getAllTeachers() {
@@ -225,8 +250,8 @@ export class RingComponent implements OnInit {
   };
 
   private memorizationOrderMap: { [key: string]: string } = {
-    [MemorizationOrder.descending]: 'تنازلي',
-    [MemorizationOrder.ascending]: 'تصاعدي'
+    [MemorizationOrder.descending]: 'تنازلي(من الناس إلى البقرة)',
+    [MemorizationOrder.ascending]: 'تصاعدي(من البقرة إلى الناس)'
   };
 
   getArabicMemorizationOrder(order: string | null | undefined): string {

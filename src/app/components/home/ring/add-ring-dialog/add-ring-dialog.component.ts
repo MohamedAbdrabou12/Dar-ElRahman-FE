@@ -50,8 +50,8 @@ export class AddRingDialogComponent implements OnInit {
   };
 
   private memorizationOrderMap: { [key: string]: string } = {
-    [MemorizationOrder.descending]: 'تنازلي',
-    [MemorizationOrder.ascending]: 'تصاعدي'
+    [MemorizationOrder.descending]: 'تنازلي(من الناس إلى البقرة)',
+    [MemorizationOrder.ascending]: 'تصاعدي(من البقرة إلى الناس)'
   };
 
   constructor(
